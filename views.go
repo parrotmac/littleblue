@@ -36,7 +36,33 @@ func (a *App) webhookUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	go webhookBody.ProcessWebhookEvent(a)
+	repoDashedName := webhookBody.getDashedName()
+
+	newJob := BuildContext{
+
+		// TODO: Have GithubWebhookRequest implement interface to build a GithubRepository
+		Source: GitRepository{
+			FullName: webhookBody.Repository.FullName,
+			DashedName: repoDashedName,
+			RepoName: webhookBody.Repository.Name,
+		},
+
+		// TODO: Pull from a mapping
+		Docker: DockerBuildSpec{
+			RegistryURL:a.AppSettings.dockerRegistryURL,
+			RegistryUsername:a.AppSettings.dockerRegistryUsername,
+			RegistryPassword:a.AppSettings.dockerRegistryPassword,
+			Tag: "latest",
+		},
+		Messages: []Message{},
+		broadcastChannel: &a.wsBroadcast,
+	}
+
+	a.Jobs[repoDashedName] = newJob
+
+	newJob.addMessage(MSG_LEVEL_DEBUG, "Event received")
+
+	go a.ProcessWebhook(&newJob, &webhookBody)
 
 	log.Println(webhookBody)
 
