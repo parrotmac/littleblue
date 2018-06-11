@@ -21,7 +21,7 @@ func (a *App) BuildImageFromTar(tarPath string, tag string) error {
 		Tags: []string{tag},
 	}
 
-	defaultHeaders := map[string]string{"User-Agent": "ricky-0.0.1"}
+	defaultHeaders := map[string]string{"User-Agent": "littleblue-0.0.1"}
 	cli, _ := client.NewClientWithOpts(client.WithVersion("1.37"), client.WithHTTPHeaders(defaultHeaders))
 	buildResponse, err := cli.ImageBuild(context.Background(), dockerBuildContext, buildOptions)
 	if err != nil {

@@ -8,7 +8,7 @@ import (
 )
 
 func (a *App) frontendRoute(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("<h1 style=\"font-family: sans-serif\">Ricky</h1>"))
+	w.Write([]byte("<h1 style=\"font-family: sans-serif\">Little Blue</h1>"))
 }
 
 func (a *App) webhookUpdate(w http.ResponseWriter, r *http.Request) {
