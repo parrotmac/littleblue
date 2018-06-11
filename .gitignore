@@ -1,0 +1,7 @@
+.idea/
+
+workdir/
+*.tgz
+*.tar.gz
+*.tar
+
