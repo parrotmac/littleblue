@@ -16,6 +16,8 @@ type EnvSettings struct {
 	dockerRegistryURL		string
 	dockerRegistryUsername	string
 	dockerRegistryPassword	string
+
+	slackWebhookURL			string
 }
 
 type WebhookRepo struct {
@@ -68,6 +70,8 @@ func main() {
 		dockerRegistryURL: os.Getenv("DOCKER_REGISTRY_URL"),
 		dockerRegistryUsername: os.Getenv("DOCKER_REGISTRY_USER"),
 		dockerRegistryPassword: os.Getenv("DOCKER_REGISTRY_PASS"),
+
+		slackWebhookURL:	os.Getenv("SLACK_WEBHOOK_URL"),
 	}
 
 	a.InitializeRouting()
