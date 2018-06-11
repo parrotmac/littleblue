@@ -35,6 +35,9 @@ type GithubWebhookRequest struct {
 	}
 }
 
+func (gwr *GithubWebhookRequest) getDashedName() string {
+	return strings.Replace(gwr.Repository.FullName, "/", "-", -1)
+}
 
 func (a *App) VerifyRequestBodyHmac(bodyBytes []byte, hmacSecret []byte, providedSignature []byte) bool {
 
@@ -47,7 +50,7 @@ func (a *App) VerifyRequestBodyHmac(bodyBytes []byte, hmacSecret []byte, provide
 }
 
 
-func (wh *GithubWebhookRequest) CloneRepo(a *App, destinationPath string) error {
+func (a *App) CloneGithubRepo(wh *GithubWebhookRequest, destinationPath string) error {
 	user := wh.Repository.Owner.Login
 	pass := a.AppSettings.githubAuthToken
 	repoEndpointString := fmt.Sprintf("https://%s:%s@github.com/%s.git", user, pass, wh.Repository.FullName)
@@ -81,14 +84,14 @@ func (wh *GithubWebhookRequest) WalkDir(searchDir string) ([]string, error) {
 }
 
 
-func (wh *GithubWebhookRequest) ProcessWebhookEvent(a *App) {
+func (a *App) ProcessWebhook(bCtx *BuildContext, wh *GithubWebhookRequest) {
 
 	workingDirectory := "workdir/repo"
 
 	os.RemoveAll(workingDirectory)
 	os.MkdirAll(workingDirectory, 0755)
 
-	err := wh.CloneRepo(a, workingDirectory)
+	err := a.CloneGithubRepo(wh, workingDirectory)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -147,11 +150,12 @@ func (wh *GithubWebhookRequest) ProcessWebhookEvent(a *App) {
 		tarTarget.Write(buf.Bytes())
 	}
 
-	dockerImageName := strings.Replace(wh.Repository.FullName, "/", "-", -1)
+
+	dockerImageName := wh.getDashedName()
 
 	fullImageTag := fmt.Sprintf("%s/%s", a.AppSettings.dockerRegistryURL, dockerImageName)
 
 	log.Printf("Building %s", fullImageTag)
 
-	a.BuildImageFromTar("workdir/repo.tar", fullImageTag)
+	bCtx.BuildImageFromTar("workdir/repo.tar", fullImageTag)
 }

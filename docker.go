@@ -12,7 +12,7 @@ import (
 	"encoding/base64"
 )
 
-func (a *App) BuildImageFromTar(tarPath string, tag string) error {
+func (bCtx *BuildContext) BuildImageFromTar(tarPath string, tag string) error {
 	dockerBuildContext, err := os.Open(tarPath)
 	defer dockerBuildContext.Close()
 
@@ -31,16 +31,16 @@ func (a *App) BuildImageFromTar(tarPath string, tag string) error {
 	if err != nil {
 		fmt.Printf("%s", err.Error())
 	}
-	fmt.Printf("********* %s **********", buildResponse.OSType)
+	bCtx.addMessage(MSG_LEVEL_INFO, fmt.Sprintf("Build OS: %s", buildResponse.OSType))
 
 	scanner := bufio.NewScanner(buildResponse.Body)
 	for scanner.Scan() {
-		fmt.Println(scanner.Text())
+		bCtx.addMessage(MSG_LEVEL_INFO, scanner.Text())
 	}
 
 	auth := types.AuthConfig{
-		Username: a.AppSettings.dockerRegistryUsername,
-		Password: a.AppSettings.dockerRegistryPassword,
+		Username: bCtx.Docker.RegistryUsername,
+		Password: bCtx.Docker.RegistryPassword,
 	}
 	authBytes, _ := json.Marshal(auth)
 	authBase64 := base64.URLEncoding.EncodeToString(authBytes)
@@ -55,7 +55,7 @@ func (a *App) BuildImageFromTar(tarPath string, tag string) error {
 
 	scanner = bufio.NewScanner(readCloser)
 	for scanner.Scan() {
-		fmt.Println(scanner.Text())
+		bCtx.addMessage(MSG_LEVEL_INFO, scanner.Text())
 	}
 
 	return nil

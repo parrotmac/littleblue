@@ -5,31 +5,94 @@ import (
 	"log"
 	"net/http"
 	"github.com/gorilla/mux"
+	"github.com/gorilla/websocket"
+	json2 "encoding/json"
+	"time"
+	"fmt"
 )
 
 type EnvSettings struct {
 	githubWebhookSecret string
 	githubAuthToken		string
 
-	gitBranch           string
+	slackWebhookURL			string
 
 	dockerRegistryURL		string
 	dockerRegistryUsername	string
 	dockerRegistryPassword	string
-
-	slackWebhookURL			string
 }
 
-type WebhookRepo struct {
+type MessageLevel string
+const (
+	MSG_LEVEL_DEBUG MessageLevel = "DEBUG"
+	MSG_LEVEL_INFO  MessageLevel = "INFO"
+	MSG_LEVEL_WARN  MessageLevel = "WARN"
+	MSG_LEVEL_ERROR MessageLevel = "ERROR"
+)
 
+type Message struct {
+	Level			MessageLevel 	`json:"level"`
+	RepoFullName	string	`json:"repo_full_name"`
+	BuildIdentifier	string	`json:"build_identifier"`
+	Body			string	`json:"body"`
 }
+
+
+
+type GitRepository struct {
+	FullName		string	`json:"full_name"` 		// parrotmac/littleblue
+	DashedName		string	`json:"dashed_name"` 	// parrotmac-littleblue
+	RepoName		string	`json:"repo_name"` 		// littleblue
+
+	// TODO: Refactor path scheme to be robust, supporting different providers and branches
+	FilesystemPath	string							// workdir/repos/parrotmac-littleblue
+}
+
+type DockerBuildSpec struct {
+	RegistryURL			string
+	RegistryUsername	string
+	RegistryPassword	string
+	ImageName			string
+	Tag					string
+}
+
+type BuildContext struct {
+	Source				GitRepository
+	Docker				DockerBuildSpec
+	Messages			[]Message
+	broadcastChannel 	*chan Message
+}
+
+func (bCtx BuildContext) addMessage(level MessageLevel, json interface{}) {
+	messageBytes, err := json2.Marshal(json)
+	if err != nil {
+		log.Println(err)
+	}
+
+	newMessage := Message{
+		Level:				level,
+		RepoFullName: 		bCtx.Source.FullName,
+		BuildIdentifier: 	fmt.Sprint(int64(time.Now().Unix())), // TODO: Give more meaning
+		Body: 				string(messageBytes),
+	}
+
+	go func() {
+		*bCtx.broadcastChannel <- newMessage
+	}()
+	bCtx.Messages = append(bCtx.Messages, newMessage)
+}
+
 
 type App struct {
-	Router  *mux.Router
-	APIRouter  *mux.Router
-	AppSettings *EnvSettings
-	Repos		map[string]WebhookRepo
-	GHWebhook	*GithubWebhookRequest
+	Router  		*mux.Router
+	APIRouter  		*mux.Router
+
+	AppSettings 	*EnvSettings
+
+	Jobs			map[string]BuildContext
+
+	wsClients		map[*websocket.Conn]bool
+	wsBroadcast		chan Message
 }
 
 func (a *App) InitializeRouting() {
@@ -45,6 +108,8 @@ func (a *App) InitializeRouting() {
 }
 
 func (a *App) initializeApiRoutes() {
+	a.Router.HandleFunc("/ws", a.websocketConnectionHandler)
+
 	webhookRouter := a.APIRouter.PathPrefix("/webhook").Subrouter()
 	webhookRouter.HandleFunc("", a.webhookUpdate).Methods("POST")
 }
@@ -59,19 +124,24 @@ func (a *App) Run(addr string) {
 }
 
 func main() {
-	a := App{}
+	a := App{
+		Jobs: map[string]BuildContext{},
+	}
+
+	a.wsClients = make(map[*websocket.Conn]bool)
+	a.wsBroadcast = make(chan Message)
+
+	go a.handleMessages()
 
 	a.AppSettings = &EnvSettings{
 		githubWebhookSecret: 	os.Getenv("GH_WEBHOOK_SECRET"),
 		githubAuthToken: 		os.Getenv("GH_AUTH_TOKEN"),
 
-		gitBranch:	os.Getenv("GIT_BRANCH"),
+		slackWebhookURL:	os.Getenv("SLACK_WEBHOOK_URL"),
 
 		dockerRegistryURL: os.Getenv("DOCKER_REGISTRY_URL"),
 		dockerRegistryUsername: os.Getenv("DOCKER_REGISTRY_USER"),
 		dockerRegistryPassword: os.Getenv("DOCKER_REGISTRY_PASS"),
-
-		slackWebhookURL:	os.Getenv("SLACK_WEBHOOK_URL"),
 	}
 
 	a.InitializeRouting()
