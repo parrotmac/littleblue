@@ -12,13 +12,13 @@ import (
 	"encoding/base64"
 )
 
-func (a *App) BuildImageFromTar(tarPath string) error {
+func (a *App) BuildImageFromTar(tarPath string, tag string) error {
 	dockerBuildContext, err := os.Open(tarPath)
 	defer dockerBuildContext.Close()
 
 	buildOptions := types.ImageBuildOptions{
 		Dockerfile:   "Dockerfile",
-		Tags: []string{"thingregistry.com/ricky-test:latest"},
+		Tags: []string{tag},
 	}
 
 	defaultHeaders := map[string]string{"User-Agent": "ricky-0.0.1"}
@@ -45,7 +45,7 @@ func (a *App) BuildImageFromTar(tarPath string) error {
 	authBytes, _ := json.Marshal(auth)
 	authBase64 := base64.URLEncoding.EncodeToString(authBytes)
 
-	readCloser, err := cli.ImagePush(context.Background(), "thingregistry.com/ricky-test:latest", types.ImagePushOptions{
+	readCloser, err := cli.ImagePush(context.Background(), tag, types.ImagePushOptions{
 		RegistryAuth: authBase64,
 	})
 

@@ -14,6 +14,7 @@ func (a *App) frontendRoute(w http.ResponseWriter, r *http.Request) {
 func (a *App) webhookUpdate(w http.ResponseWriter, r *http.Request) {
 	bodyBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
 		return
 	}
@@ -23,17 +24,19 @@ func (a *App) webhookUpdate(w http.ResponseWriter, r *http.Request) {
 	hmacSignatureValid := a.VerifyRequestBodyHmac(bodyBytes, []byte(a.AppSettings.githubWebhookSecret), providedSignature)
 
 	if !hmacSignatureValid {
+		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte("Signature verification failed. Please check your application configuration."))
 		return
 	}
 
 	var webhookBody GithubWebhookRequest
 	if err := json.Unmarshal(bodyBytes, &webhookBody); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("Unable to decode JSON body"))
 		return
 	}
 
-	go a.ProcessWebhookEvent()
+	go webhookBody.ProcessWebhookEvent(a)
 
 	log.Println(webhookBody)
 

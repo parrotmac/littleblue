@@ -10,22 +10,24 @@ import (
 type EnvSettings struct {
 	githubWebhookSecret string
 	githubAuthToken		string
-	githubUser			string
-	githubRepo		 	string
 
 	gitBranch           string
-
-	dockerContainerName	string
 
 	dockerRegistryURL		string
 	dockerRegistryUsername	string
 	dockerRegistryPassword	string
 }
 
+type WebhookRepo struct {
+
+}
+
 type App struct {
 	Router  *mux.Router
 	APIRouter  *mux.Router
 	AppSettings *EnvSettings
+	Repos		map[string]WebhookRepo
+	GHWebhook	*GithubWebhookRequest
 }
 
 func (a *App) InitializeRouting() {
@@ -60,12 +62,8 @@ func main() {
 	a.AppSettings = &EnvSettings{
 		githubWebhookSecret: 	os.Getenv("GH_WEBHOOK_SECRET"),
 		githubAuthToken: 		os.Getenv("GH_AUTH_TOKEN"),
-		githubUser:       		os.Getenv("GH_USER"),
-		githubRepo:       		os.Getenv("GH_REPO"),
 
 		gitBranch:	os.Getenv("GIT_BRANCH"),
-
-		dockerContainerName: os.Getenv("CONTAINER_NAME"),
 
 		dockerRegistryURL: os.Getenv("DOCKER_REGISTRY_URL"),
 		dockerRegistryUsername: os.Getenv("DOCKER_REGISTRY_USER"),
