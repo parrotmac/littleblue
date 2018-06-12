@@ -46,7 +46,6 @@ func (a *App) handleMessages() {
 		// Grab the next message from the broadcast channel
 		msg := <-a.wsBroadcast
 		// Send it out to every client that is currently connected
-		log.Println(msg)
 		for client := range a.wsClients {
 			err := client.WriteJSON(msg)
 			if err != nil {

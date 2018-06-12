@@ -38,7 +38,6 @@ type Message struct {
 }
 
 
-
 type GitRepository struct {
 	FullName		string	`json:"full_name"` 		// parrotmac/littleblue
 	DashedName		string	`json:"dashed_name"` 	// parrotmac-littleblue
@@ -56,6 +55,8 @@ type DockerBuildSpec struct {
 	Tag					string
 }
 
+type BuildId string
+
 type BuildContext struct {
 	Source				GitRepository
 	Docker				DockerBuildSpec
@@ -63,8 +64,8 @@ type BuildContext struct {
 	broadcastChannel 	*chan Message
 }
 
-func (bCtx BuildContext) addMessage(level MessageLevel, json interface{}) {
-	messageBytes, err := json2.Marshal(json)
+func (bCtx *BuildContext) addMessage(level MessageLevel, iface interface{}) {
+	messageJsonBytes, err := json2.Marshal(iface)
 	if err != nil {
 		log.Println(err)
 	}
@@ -73,13 +74,14 @@ func (bCtx BuildContext) addMessage(level MessageLevel, json interface{}) {
 		Level:				level,
 		RepoFullName: 		bCtx.Source.FullName,
 		BuildIdentifier: 	fmt.Sprint(int64(time.Now().Unix())), // TODO: Give more meaning
-		Body: 				string(messageBytes),
+		Body: 				string(messageJsonBytes),
 	}
+
+	bCtx.Messages = append(bCtx.Messages, newMessage)
 
 	go func() {
 		*bCtx.broadcastChannel <- newMessage
 	}()
-	bCtx.Messages = append(bCtx.Messages, newMessage)
 }
 
 
@@ -89,7 +91,7 @@ type App struct {
 
 	AppSettings 	*EnvSettings
 
-	Jobs			map[string]BuildContext
+	buildContexts	[]*BuildContext
 
 	wsClients		map[*websocket.Conn]bool
 	wsBroadcast		chan Message
@@ -110,6 +112,7 @@ func (a *App) InitializeRouting() {
 func (a *App) initializeApiRoutes() {
 	a.Router.HandleFunc("/ws", a.websocketConnectionHandler)
 
+	a.APIRouter.HandleFunc("/jobs", a.getJobsRoute).Methods("GET")
 	webhookRouter := a.APIRouter.PathPrefix("/webhook").Subrouter()
 	webhookRouter.HandleFunc("", a.webhookUpdate).Methods("POST")
 }
@@ -125,7 +128,7 @@ func (a *App) Run(addr string) {
 
 func main() {
 	a := App{
-		Jobs: map[string]BuildContext{},
+		buildContexts: []*BuildContext{},
 	}
 
 	a.wsClients = make(map[*websocket.Conn]bool)

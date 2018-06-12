@@ -7,8 +7,34 @@ import (
 	"encoding/json"
 )
 
+func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
+	response, _ := json.Marshal(payload)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(code)
+	w.Write(response)
+}
+
 func (a *App) frontendRoute(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("<h1 style=\"font-family: sans-serif\">Little Blue</h1>"))
+}
+
+func (a *App) getJobsRoute(w http.ResponseWriter, r *http.Request) {
+	type WebSafeJob struct {
+		RepoName	string		`json:"repo_name"`
+		Messages	[]Message	`json:"messages"`
+	}
+
+	webSafeJobs := map[string]WebSafeJob{}
+
+	for _, buildContext := range a.buildContexts {
+		webSafeJobs[buildContext.Source.FullName] = WebSafeJob{
+			RepoName: buildContext.Source.FullName,
+			Messages: buildContext.Messages,
+		}
+	}
+
+	respondWithJSON(w, http.StatusOK, webSafeJobs)
 }
 
 func (a *App) webhookUpdate(w http.ResponseWriter, r *http.Request) {
@@ -38,7 +64,7 @@ func (a *App) webhookUpdate(w http.ResponseWriter, r *http.Request) {
 
 	repoDashedName := webhookBody.getDashedName()
 
-	newJob := BuildContext{
+	newBuildContext := &BuildContext{
 
 		// TODO: Have GithubWebhookRequest implement interface to build a GithubRepository
 		Source: GitRepository{
@@ -58,11 +84,10 @@ func (a *App) webhookUpdate(w http.ResponseWriter, r *http.Request) {
 		broadcastChannel: &a.wsBroadcast,
 	}
 
-	a.Jobs[repoDashedName] = newJob
+	oldBuildCtx := a.buildContexts
+	a.buildContexts = append(oldBuildCtx, newBuildContext)
 
-	newJob.addMessage(MSG_LEVEL_DEBUG, "Event received")
-
-	go a.ProcessWebhook(&newJob, &webhookBody)
+	go a.ProcessWebhook(newBuildContext, &webhookBody)
 
 	log.Println(webhookBody)
 
