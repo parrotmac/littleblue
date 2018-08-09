@@ -7,13 +7,18 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
 	json2 "encoding/json"
-	"time"
 	"fmt"
+	"github.com/src-d/go-git/config"
 )
+
+type RefSpec config.RefSpec
 
 type EnvSettings struct {
 	githubWebhookSecret string
 	githubAuthToken		string
+
+	bitbucketWebhookSecret	string
+	bitbucketAuthToken		string
 
 	slackWebhookURL			string
 
@@ -42,6 +47,7 @@ type GitRepository struct {
 	FullName		string	`json:"full_name"` 		// parrotmac/littleblue
 	DashedName		string	`json:"dashed_name"` 	// parrotmac-littleblue
 	RepoName		string	`json:"repo_name"` 		// littleblue
+	GitRefSpec		RefSpec	`json:"ref_spec"`		// refs/heads/master
 
 	// TODO: Refactor path scheme to be robust, supporting different providers and branches
 	FilesystemPath	string							// workdir/repos/parrotmac-littleblue
@@ -55,26 +61,30 @@ type DockerBuildSpec struct {
 	Tag					string
 }
 
-type BuildId string
-
 type BuildContext struct {
 	Source				GitRepository
 	Docker				DockerBuildSpec
 	Messages			[]Message
 	broadcastChannel 	*chan Message
+	BuildIdentifier		string
 }
 
-func (bCtx *BuildContext) addMessage(level MessageLevel, iface interface{}) {
-	messageJsonBytes, err := json2.Marshal(iface)
-	if err != nil {
-		log.Println(err)
-	}
-
+func (bCtx *BuildContext) addMessage(level MessageLevel, iface interface{}, shouldMarshal bool) {
 	newMessage := Message{
 		Level:				level,
 		RepoFullName: 		bCtx.Source.FullName,
-		BuildIdentifier: 	fmt.Sprint(int64(time.Now().Unix())), // TODO: Give more meaning
-		Body: 				string(messageJsonBytes),
+		BuildIdentifier: 	bCtx.BuildIdentifier,
+	}
+
+	if (shouldMarshal) {
+		messageJsonBytes, err := json2.Marshal(iface)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		newMessage.Body = string(messageJsonBytes)
+	} else {
+		newMessage.Body = fmt.Sprintf("%v", iface)
 	}
 
 	bCtx.Messages = append(bCtx.Messages, newMessage)
@@ -118,7 +128,8 @@ func (a *App) initializeApiRoutes() {
 }
 
 func (a *App) initializeFrontendRoutes() {
-	a.Router.HandleFunc("/", a.frontendRoute).Methods("GET")
+	fs := http.FileServer(http.Dir("static/"))
+	a.Router.PathPrefix("/").Handler(fs)
 }
 
 func (a *App) Run(addr string) {
@@ -139,6 +150,9 @@ func main() {
 	a.AppSettings = &EnvSettings{
 		githubWebhookSecret: 	os.Getenv("GH_WEBHOOK_SECRET"),
 		githubAuthToken: 		os.Getenv("GH_AUTH_TOKEN"),
+
+		bitbucketWebhookSecret: os.Getenv("BB_WEBHOOK_SECRET"),
+		bitbucketAuthToken:		os.Getenv("BB_AUTH_TOKEN"),
 
 		slackWebhookURL:	os.Getenv("SLACK_WEBHOOK_URL"),
 

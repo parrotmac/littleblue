@@ -13,10 +13,12 @@ import (
 	"archive/tar"
 	"bytes"
 	"strings"
+	"gopkg.in/src-d/go-git.v4/plumbing"
 )
 
 type GithubWebhookRequest struct {
 	Zen			string 	`json:"zen"`
+	Ref			string  `json:"ref"`
 	HookId		int 	`json:"hook_id"`
 	Hook		struct{
 		Type	string 	`json:"type"`
@@ -55,9 +57,16 @@ func (a *App) CloneGithubRepo(wh *GithubWebhookRequest, destinationPath string) 
 	pass := a.AppSettings.githubAuthToken
 	repoEndpointString := fmt.Sprintf("https://%s:%s@github.com/%s.git", user, pass, wh.Repository.FullName)
 
+	refName := plumbing.ReferenceName(wh.Ref)
+
+	log.Printf("Cloning branch %s", refName)
+
 	_, err := git.PlainClone(destinationPath, false, &git.CloneOptions{
-		URL:      repoEndpointString,
-		Progress: os.Stdout,
+		URL:               repoEndpointString,
+		Auth:              nil,
+		ReferenceName:     refName,
+		SingleBranch:      true,
+		Depth:             1,
 	})
 	if err != nil {
 		return err
@@ -86,7 +95,8 @@ func (wh *GithubWebhookRequest) WalkDir(searchDir string) ([]string, error) {
 
 func (a *App) ProcessWebhook(bCtx *BuildContext, wh *GithubWebhookRequest) {
 
-	workingDirectory := "workdir/repo"
+	workingDirectory := fmt.Sprintf("workdir/repo-%s", filepath.Clean(bCtx.BuildIdentifier))
+	tarTargetFilename := fmt.Sprintf("workdir/repo-%s.tar", filepath.Clean(bCtx.BuildIdentifier))
 
 	os.RemoveAll(workingDirectory)
 	os.MkdirAll(workingDirectory, 0755)
@@ -143,7 +153,7 @@ func (a *App) ProcessWebhook(bCtx *BuildContext, wh *GithubWebhookRequest) {
 
 	os.Chdir(oldDir)
 
-	if tarTarget, err := os.Create("workdir/repo.tar"); err != nil {
+	if tarTarget, err := os.Create(tarTargetFilename); err != nil {
 		log.Fatal(err)
 	} else {
 		defer tarTarget.Close()
@@ -157,5 +167,5 @@ func (a *App) ProcessWebhook(bCtx *BuildContext, wh *GithubWebhookRequest) {
 
 	log.Printf("Building %s", fullImageTag)
 
-	bCtx.BuildImageFromTar("workdir/repo.tar", fullImageTag)
+	bCtx.BuildImageFromTar(tarTargetFilename, fullImageTag)
 }

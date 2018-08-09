@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Little Blue Container Builder</title>
+</head>
+<body>
+<h3>Little Blue</h3>
+<hr>
+<div id="root">
+    <ul class="jobList">
+        <li v-for="job in jobs">
+        {{ job.repo_name }}
+        <ul>
+            <li v-for="msg in job.messages">
+                <p v-if="'stream' in JSON.parse(msg.body)">
+                    {{JSON.parse(msg.body)['stream']}}
+                </p>
+                <p v-else>{{msg.body}}</p>
+            </li>
+        </ul>
+        </li>
+    </ul>
+</div>
+<script src="/js/vue.js"></script>
+<script src="/js/main.js"></script>
+</body>
+</html>
+

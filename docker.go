@@ -31,11 +31,15 @@ func (bCtx *BuildContext) BuildImageFromTar(tarPath string, tag string) error {
 	if err != nil {
 		fmt.Printf("%s", err.Error())
 	}
-	bCtx.addMessage(MSG_LEVEL_INFO, fmt.Sprintf("Build OS: %s", buildResponse.OSType))
+	bCtx.addMessage(MSG_LEVEL_INFO, struct {
+		BuildOS		string `json:"build_os"'`
+	}{
+		BuildOS: buildResponse.OSType,
+	}, true)
 
 	scanner := bufio.NewScanner(buildResponse.Body)
 	for scanner.Scan() {
-		bCtx.addMessage(MSG_LEVEL_INFO, scanner.Text())
+		bCtx.addMessage(MSG_LEVEL_INFO, scanner.Text(), false)
 	}
 
 	auth := types.AuthConfig{
@@ -55,7 +59,7 @@ func (bCtx *BuildContext) BuildImageFromTar(tarPath string, tag string) error {
 
 	scanner = bufio.NewScanner(readCloser)
 	for scanner.Scan() {
-		bCtx.addMessage(MSG_LEVEL_INFO, scanner.Text())
+		bCtx.addMessage(MSG_LEVEL_INFO, scanner.Text(), false)
 	}
 
 	return nil

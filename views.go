@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"log"
 	"encoding/json"
+	"fmt"
+	"time"
 )
 
 func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
@@ -25,13 +27,13 @@ func (a *App) getJobsRoute(w http.ResponseWriter, r *http.Request) {
 		Messages	[]Message	`json:"messages"`
 	}
 
-	webSafeJobs := map[string]WebSafeJob{}
+	webSafeJobs := []WebSafeJob{}
 
 	for _, buildContext := range a.buildContexts {
-		webSafeJobs[buildContext.Source.FullName] = WebSafeJob{
+		webSafeJobs = append(webSafeJobs, WebSafeJob{
 			RepoName: buildContext.Source.FullName,
 			Messages: buildContext.Messages,
-		}
+		})
 	}
 
 	respondWithJSON(w, http.StatusOK, webSafeJobs)
@@ -71,6 +73,7 @@ func (a *App) webhookUpdate(w http.ResponseWriter, r *http.Request) {
 			FullName: webhookBody.Repository.FullName,
 			DashedName: repoDashedName,
 			RepoName: webhookBody.Repository.Name,
+			GitRefSpec:	RefSpec(webhookBody.Ref),
 		},
 
 		// TODO: Pull from a mapping
@@ -82,6 +85,7 @@ func (a *App) webhookUpdate(w http.ResponseWriter, r *http.Request) {
 		},
 		Messages: []Message{},
 		broadcastChannel: &a.wsBroadcast,
+		BuildIdentifier: fmt.Sprint(int64(time.Now().Unix())),
 	}
 
 	oldBuildCtx := a.buildContexts
