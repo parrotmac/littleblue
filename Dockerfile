@@ -1,12 +1,7 @@
 FROM golang:latest as gobuilder
 
 WORKDIR /go/src/app
-#COPY . .
-COPY docker.go .
-COPY main.go .
-COPY slack.go .
-COPY utils.go .
-COPY views.go .
+COPY . .
 
 RUN go get -d -v ./
 RUN go build -v ./

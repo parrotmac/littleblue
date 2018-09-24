@@ -1,24 +1,31 @@
 package main
 
 import (
-	"os"
-	"log"
+	"bufio"
+	"context"
+	"encoding/base64"
+	"encoding/json"
+	"fmt"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
-	"context"
-	"fmt"
-	"bufio"
-	"encoding/json"
-	"encoding/base64"
+	"log"
+	"os"
 )
 
 func (bCtx *BuildContext) BuildImageFromTar(tarPath string, tag string) error {
 	dockerBuildContext, err := os.Open(tarPath)
 	defer dockerBuildContext.Close()
 
+	runEnv := string("build")
+
+	buildArgs := map[string]*string{
+		"RUN_ENV": &runEnv,
+	}
+
 	buildOptions := types.ImageBuildOptions{
 		Dockerfile:   "Dockerfile",
 		Tags: []string{tag},
+		BuildArgs: buildArgs,
 	}
 
 	defaultHeaders := map[string]string{"User-Agent": "littleblue-0.0.1"}
@@ -32,7 +39,7 @@ func (bCtx *BuildContext) BuildImageFromTar(tarPath string, tag string) error {
 		fmt.Printf("%s", err.Error())
 	}
 	bCtx.addMessage(MSG_LEVEL_INFO, struct {
-		BuildOS		string `json:"build_os"'`
+		BuildOS		string	`json:"build_os"`
 	}{
 		BuildOS: buildResponse.OSType,
 	}, true)
