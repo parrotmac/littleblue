@@ -5,16 +5,21 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
-	"fmt"
+	"os"
+
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
-	"log"
-	"os"
+	"github.com/sirupsen/logrus"
 )
 
 func (bCtx *BuildContext) BuildImageFromTar(tarPath string, tag string) error {
 	dockerBuildContext, err := os.Open(tarPath)
-	defer dockerBuildContext.Close()
+	defer func() {
+		err := dockerBuildContext.Close()
+		if err != nil {
+			logrus.Errorln(err)
+		}
+	}()
 
 	runEnv := string("build")
 
@@ -28,17 +33,17 @@ func (bCtx *BuildContext) BuildImageFromTar(tarPath string, tag string) error {
 		BuildArgs: buildArgs,
 	}
 
-	defaultHeaders := map[string]string{"User-Agent": "littleblue-0.0.1"}
-	cli, _ := client.NewClientWithOpts(client.WithVersion("1.37"), client.WithHTTPHeaders(defaultHeaders))
-	buildResponse, err := cli.ImageBuild(context.Background(), dockerBuildContext, buildOptions)
+	cx, err := client.NewEnvClient()
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
+	buildResponse, err := cx.ImageBuild(context.Background(), dockerBuildContext, buildOptions)
 	if err != nil {
-		fmt.Printf("%s", err.Error())
+		return err
 	}
-	bCtx.addMessage(MSG_LEVEL_INFO, struct {
+
+	bCtx.addMessage(MsgLevelInfo, struct {
 		BuildOS		string	`json:"build_os"`
 	}{
 		BuildOS: buildResponse.OSType,
@@ -46,7 +51,7 @@ func (bCtx *BuildContext) BuildImageFromTar(tarPath string, tag string) error {
 
 	scanner := bufio.NewScanner(buildResponse.Body)
 	for scanner.Scan() {
-		bCtx.addMessage(MSG_LEVEL_INFO, scanner.Text(), false)
+		bCtx.addMessage(MsgLevelInfo, scanner.Text(), false)
 	}
 
 	auth := types.AuthConfig{
@@ -56,7 +61,7 @@ func (bCtx *BuildContext) BuildImageFromTar(tarPath string, tag string) error {
 	authBytes, _ := json.Marshal(auth)
 	authBase64 := base64.URLEncoding.EncodeToString(authBytes)
 
-	readCloser, err := cli.ImagePush(context.Background(), tag, types.ImagePushOptions{
+	readCloser, err := cx.ImagePush(context.Background(), tag, types.ImagePushOptions{
 		RegistryAuth: authBase64,
 	})
 
@@ -66,7 +71,7 @@ func (bCtx *BuildContext) BuildImageFromTar(tarPath string, tag string) error {
 
 	scanner = bufio.NewScanner(readCloser)
 	for scanner.Scan() {
-		bCtx.addMessage(MSG_LEVEL_INFO, scanner.Text(), false)
+		bCtx.addMessage(MsgLevelInfo, scanner.Text(), false)
 	}
 
 	return nil

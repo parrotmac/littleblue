@@ -5,9 +5,10 @@
 package main
 
 import (
-	"github.com/gorilla/websocket"
-	"net/http"
 	"log"
+	"net/http"
+
+	"github.com/gorilla/websocket"
 )
 
 var upgrader = websocket.Upgrader{
