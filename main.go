@@ -1,14 +1,16 @@
 package main
 
 import (
-	"os"
+	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
+	"os"
+
+
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
-	json2 "encoding/json"
-	"fmt"
-	"github.com/src-d/go-git/config"
+	"gopkg.in/src-d/go-git.v4/config"
 )
 
 type RefSpec config.RefSpec
@@ -29,10 +31,10 @@ type EnvSettings struct {
 
 type MessageLevel string
 const (
-	MSG_LEVEL_DEBUG MessageLevel = "DEBUG"
-	MSG_LEVEL_INFO  MessageLevel = "INFO"
-	MSG_LEVEL_WARN  MessageLevel = "WARN"
-	MSG_LEVEL_ERROR MessageLevel = "ERROR"
+	MsgLevelDebug MessageLevel = "DEBUG"
+	MsgLevelInfo  MessageLevel = "INFO"
+	MsgLevelWarn  MessageLevel = "WARN"
+	MsgLevelError MessageLevel = "ERROR"
 )
 
 type Message struct {
@@ -77,7 +79,7 @@ func (bCtx *BuildContext) addMessage(level MessageLevel, iface interface{}, shou
 	}
 
 	if (shouldMarshal) {
-		messageJsonBytes, err := json2.Marshal(iface)
+		messageJsonBytes, err := json.Marshal(iface)
 		if err != nil {
 			log.Println(err)
 			return

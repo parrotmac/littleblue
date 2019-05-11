@@ -1,18 +1,19 @@
 package main
 
 import (
-	"io"
-	"os"
-	"fmt"
-	"log"
+	"archive/tar"
+	"bytes"
 	"crypto/hmac"
 	"crypto/sha1"
 	"encoding/hex"
-	"gopkg.in/src-d/go-git.v4"
+	"fmt"
+	"io"
+	"log"
+	"os"
 	"path/filepath"
-	"archive/tar"
-	"bytes"
 	"strings"
+
+	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/plumbing"
 )
 
