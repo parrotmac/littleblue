@@ -28,9 +28,9 @@ func (bCtx *BuildContext) BuildImageFromTar(tarPath string, tag string) error {
 	}
 
 	buildOptions := types.ImageBuildOptions{
-		Dockerfile:   "Dockerfile",
-		Tags: []string{tag},
-		BuildArgs: buildArgs,
+		Dockerfile: "Dockerfile",
+		Tags:       []string{tag},
+		BuildArgs:  buildArgs,
 	}
 
 	cx, err := client.NewEnvClient()
@@ -44,7 +44,7 @@ func (bCtx *BuildContext) BuildImageFromTar(tarPath string, tag string) error {
 	}
 
 	bCtx.addMessage(MsgLevelInfo, struct {
-		BuildOS		string	`json:"build_os"`
+		BuildOS string `json:"build_os"`
 	}{
 		BuildOS: buildResponse.OSType,
 	}, true)

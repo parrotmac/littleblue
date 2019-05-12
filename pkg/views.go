@@ -18,8 +18,8 @@ func (a *App) frontendRoute(w http.ResponseWriter, r *http.Request) {
 
 func (a *App) getJobsRoute(w http.ResponseWriter, r *http.Request) {
 	type WebSafeJob struct {
-		RepoName	string    `json:"repo_name"`
-		Messages	[]Message `json:"messages"`
+		RepoName string    `json:"repo_name"`
+		Messages []Message `json:"messages"`
 	}
 
 	webSafeJobs := []WebSafeJob{}
@@ -70,14 +70,14 @@ func (a *App) webhookUpdate(w http.ResponseWriter, r *http.Request) {
 
 		// TODO: Pull from a mapping
 		Docker: DockerBuildSpec{
-			RegistryURL:a.AppSettings.dockerRegistryURL,
-			RegistryUsername:a.AppSettings.dockerRegistryUsername,
-			RegistryPassword:a.AppSettings.dockerRegistryPassword,
-			Tag: "latest",
+			RegistryURL:      a.AppSettings.dockerRegistryURL,
+			RegistryUsername: a.AppSettings.dockerRegistryUsername,
+			RegistryPassword: a.AppSettings.dockerRegistryPassword,
+			Tag:              "latest",
 		},
-		Messages: []Message{},
+		Messages:         []Message{},
 		broadcastChannel: &a.wsBroadcast,
-		BuildIdentifier: fmt.Sprint(int64(time.Now().Unix())),
+		BuildIdentifier:  fmt.Sprint(int64(time.Now().Unix())),
 	}
 
 	oldBuildCtx := a.buildContexts

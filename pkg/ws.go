@@ -39,7 +39,6 @@ func (a *App) websocketConnectionHandler(w http.ResponseWriter, r *http.Request)
 		// Send the newly received message to the broadcast channel
 		a.wsBroadcast <- msg
 	}
-
 }
 
 func (a *App) handleMessages() {
