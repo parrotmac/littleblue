@@ -1,27 +1,18 @@
-FROM golang:latest as gobuilder
+FROM golang:latest as builder
 
-WORKDIR /go/src/app
+# Install script isn't cross-platform
+RUN go get -u github.com/golang/dep/cmd/dep
+
+RUN mkdir -p /go/src/github.com/parrotmac/littleblue/
+WORKDIR /go/src/github.com/parrotmac/littleblue/
 COPY . .
 
-RUN go get -d -v ./
-RUN go build -v ./
+RUN dep ensure -v -vendor-only
+RUN go build -o bin/littleblue cmd/main.go
 
-RUN mkdir /go/src/app/workdir
+FROM alpine:latest
 
-ENTRYPOINT ["/go/src/app/app"]
+RUN mkdir -p /opt/littleblue
+COPY --from=builder /go/src/github.com/parrotmac/littleblue/bin/littleblue /opt/littleblue
 
-#RUN ls
-#
-#FROM docker:git
-#
-#RUN mkdir -p /app
-#WORKDIR /app
-#RUN mkdir workdir
-#
-#COPY --from=gobuilder /go/src/app/app .
-#
-#RUN stat /app/app
-#RUN ls
-#RUN pwd
-#
-#ENTRYPOINT ["/bin/sh"]
+CMD ["/opt/littleblue/littleblue"]
