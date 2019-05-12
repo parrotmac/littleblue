@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 
-
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
 	"gopkg.in/src-d/go-git.v4/config"
@@ -17,19 +16,20 @@ type RefSpec config.RefSpec
 
 type EnvSettings struct {
 	githubWebhookSecret string
-	githubAuthToken		string
+	githubAuthToken     string
 
-	bitbucketWebhookSecret	string
-	bitbucketAuthToken		string
+	bitbucketWebhookSecret string
+	bitbucketAuthToken     string
 
-	slackWebhookURL			string
+	slackWebhookURL string
 
-	dockerRegistryURL		string
-	dockerRegistryUsername	string
-	dockerRegistryPassword	string
+	dockerRegistryURL      string
+	dockerRegistryUsername string
+	dockerRegistryPassword string
 }
 
 type MessageLevel string
+
 const (
 	MsgLevelDebug MessageLevel = "DEBUG"
 	MsgLevelInfo  MessageLevel = "INFO"
@@ -38,47 +38,46 @@ const (
 )
 
 type Message struct {
-	Level			MessageLevel 	`json:"level"`
-	RepoFullName	string	`json:"repo_full_name"`
-	BuildIdentifier	string	`json:"build_identifier"`
-	Body			string	`json:"body"`
+	Level           MessageLevel `json:"level"`
+	RepoFullName    string       `json:"repo_full_name"`
+	BuildIdentifier string       `json:"build_identifier"`
+	Body            string       `json:"body"`
 }
 
-
 type GitRepository struct {
-	FullName		string	`json:"full_name"` 		// parrotmac/littleblue
-	DashedName		string	`json:"dashed_name"` 	// parrotmac-littleblue
-	RepoName		string	`json:"repo_name"` 		// littleblue
-	GitRefSpec		RefSpec	`json:"ref_spec"`		// refs/heads/master
+	FullName   string  `json:"full_name"`   // parrotmac/littleblue
+	DashedName string  `json:"dashed_name"` // parrotmac-littleblue
+	RepoName   string  `json:"repo_name"`   // littleblue
+	GitRefSpec RefSpec `json:"ref_spec"`    // refs/heads/master
 
 	// TODO: Refactor path scheme to be robust, supporting different providers and branches
-	FilesystemPath	string							// workdir/repos/parrotmac-littleblue
+	FilesystemPath string // workdir/repos/parrotmac-littleblue
 }
 
 type DockerBuildSpec struct {
-	RegistryURL			string
-	RegistryUsername	string
-	RegistryPassword	string
-	ImageName			string
-	Tag					string
+	RegistryURL      string
+	RegistryUsername string
+	RegistryPassword string
+	ImageName        string
+	Tag              string
 }
 
 type BuildContext struct {
-	Source				GitRepository
-	Docker				DockerBuildSpec
-	Messages			[]Message
-	broadcastChannel 	*chan Message
-	BuildIdentifier		string
+	Source           GitRepository
+	Docker           DockerBuildSpec
+	Messages         []Message
+	broadcastChannel *chan Message
+	BuildIdentifier  string
 }
 
 func (bCtx *BuildContext) addMessage(level MessageLevel, iface interface{}, shouldMarshal bool) {
 	newMessage := Message{
-		Level:				level,
-		RepoFullName: 		bCtx.Source.FullName,
-		BuildIdentifier: 	bCtx.BuildIdentifier,
+		Level:           level,
+		RepoFullName:    bCtx.Source.FullName,
+		BuildIdentifier: bCtx.BuildIdentifier,
 	}
 
-	if (shouldMarshal) {
+	if shouldMarshal {
 		messageJsonBytes, err := json.Marshal(iface)
 		if err != nil {
 			log.Println(err)
@@ -96,17 +95,16 @@ func (bCtx *BuildContext) addMessage(level MessageLevel, iface interface{}, shou
 	}()
 }
 
-
 type App struct {
-	Router  		*mux.Router
-	APIRouter  		*mux.Router
+	Router    *mux.Router
+	APIRouter *mux.Router
 
-	AppSettings 	*EnvSettings
+	AppSettings *EnvSettings
 
-	buildContexts	[]*BuildContext
+	buildContexts []*BuildContext
 
-	wsClients		map[*websocket.Conn]bool
-	wsBroadcast		chan Message
+	wsClients   map[*websocket.Conn]bool
+	wsBroadcast chan Message
 }
 
 func (a *App) InitializeRouting() {
@@ -150,15 +148,15 @@ func NewDefaultApp() *App {
 	go a.handleMessages()
 
 	a.AppSettings = &EnvSettings{
-		githubWebhookSecret: 	os.Getenv("GH_WEBHOOK_SECRET"),
-		githubAuthToken: 		os.Getenv("GH_AUTH_TOKEN"),
+		githubWebhookSecret: os.Getenv("GH_WEBHOOK_SECRET"),
+		githubAuthToken:     os.Getenv("GH_AUTH_TOKEN"),
 
 		bitbucketWebhookSecret: os.Getenv("BB_WEBHOOK_SECRET"),
-		bitbucketAuthToken:		os.Getenv("BB_AUTH_TOKEN"),
+		bitbucketAuthToken:     os.Getenv("BB_AUTH_TOKEN"),
 
-		slackWebhookURL:	os.Getenv("SLACK_WEBHOOK_URL"),
+		slackWebhookURL: os.Getenv("SLACK_WEBHOOK_URL"),
 
-		dockerRegistryURL: os.Getenv("DOCKER_REGISTRY_URL"),
+		dockerRegistryURL:      os.Getenv("DOCKER_REGISTRY_URL"),
 		dockerRegistryUsername: os.Getenv("DOCKER_REGISTRY_USER"),
 		dockerRegistryPassword: os.Getenv("DOCKER_REGISTRY_PASS"),
 	}

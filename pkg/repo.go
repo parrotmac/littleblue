@@ -18,23 +18,22 @@ import (
 )
 
 type GithubWebhookRequest struct {
-	Zen			string 	`json:"zen"`
-	Ref			string  `json:"ref"`
-	HookId		int 	`json:"hook_id"`
-	Hook		struct{
-		Type	string 	`json:"type"`
-		Id		int		`json:"id"`
+	Zen    string `json:"zen"`
+	Ref    string `json:"ref"`
+	HookId int    `json:"hook_id"`
+	Hook   struct {
+		Type string `json:"type"`
+		Id   int    `json:"id"`
 	} `json:"hook"`
-	Repository	struct{
-		FullName		string	`json:"full_name"`
-		Name			string 	`json:"name"`
-		Private			bool	`json:"private"`
-		CloneURL		string	`json:"clone_url"`
-		DefaultBranch	string	`json:"default_branch"`
-		Owner			struct{
-			Login	string	`json:"login"`
+	Repository struct {
+		FullName      string `json:"full_name"`
+		Name          string `json:"name"`
+		Private       bool   `json:"private"`
+		CloneURL      string `json:"clone_url"`
+		DefaultBranch string `json:"default_branch"`
+		Owner         struct {
+			Login string `json:"login"`
 		} `json:"owner"`
-
 	}
 }
 
@@ -52,7 +51,6 @@ func (a *App) VerifyRequestBodyHmac(bodyBytes []byte, hmacSecret []byte, provide
 	return hmac.Equal(providedSignature, []byte(fullComputedHash))
 }
 
-
 func (a *App) CloneGithubRepo(wh *GithubWebhookRequest, destinationPath string) error {
 	user := wh.Repository.Owner.Login
 	pass := a.AppSettings.githubAuthToken
@@ -63,11 +61,11 @@ func (a *App) CloneGithubRepo(wh *GithubWebhookRequest, destinationPath string) 
 	log.Printf("Cloning branch %s", refName)
 
 	_, err := git.PlainClone(destinationPath, false, &git.CloneOptions{
-		URL:               repoEndpointString,
-		Auth:              nil,
-		ReferenceName:     refName,
-		SingleBranch:      true,
-		Depth:             1,
+		URL:           repoEndpointString,
+		Auth:          nil,
+		ReferenceName: refName,
+		SingleBranch:  true,
+		Depth:         1,
 	})
 	if err != nil {
 		return err
@@ -92,7 +90,6 @@ func (wh *GithubWebhookRequest) WalkDir(searchDir string) ([]string, error) {
 
 	return fileList, nil
 }
-
 
 func (a *App) ProcessWebhook(bCtx *BuildContext, wh *GithubWebhookRequest) {
 
@@ -160,7 +157,6 @@ func (a *App) ProcessWebhook(bCtx *BuildContext, wh *GithubWebhookRequest) {
 		defer tarTarget.Close()
 		tarTarget.Write(buf.Bytes())
 	}
-
 
 	dockerImageName := wh.getDashedName()
 
