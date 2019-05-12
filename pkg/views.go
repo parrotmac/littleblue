@@ -1,30 +1,25 @@
-package main
+package pkg
 
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/parrotmac/littleblue/pkg/internal/httputils"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"time"
 )
 
-func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
-	response, _ := json.Marshal(payload)
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(code)
-	w.Write(response)
-}
-
 func (a *App) frontendRoute(w http.ResponseWriter, r *http.Request) {
+	// FIXME
+	// Serve static or templated file
 	w.Write([]byte("<h1 style=\"font-family: sans-serif\">Little Blue</h1>"))
 }
 
 func (a *App) getJobsRoute(w http.ResponseWriter, r *http.Request) {
 	type WebSafeJob struct {
-		RepoName	string		`json:"repo_name"`
-		Messages	[]Message	`json:"messages"`
+		RepoName	string    `json:"repo_name"`
+		Messages	[]Message `json:"messages"`
 	}
 
 	webSafeJobs := []WebSafeJob{}
@@ -36,14 +31,13 @@ func (a *App) getJobsRoute(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 
-	respondWithJSON(w, http.StatusOK, webSafeJobs)
+	httputils.RespondWithJSON(w, http.StatusOK, webSafeJobs)
 }
 
 func (a *App) webhookUpdate(w http.ResponseWriter, r *http.Request) {
 	bodyBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		httputils.RespondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
@@ -52,15 +46,13 @@ func (a *App) webhookUpdate(w http.ResponseWriter, r *http.Request) {
 	hmacSignatureValid := a.VerifyRequestBodyHmac(bodyBytes, []byte(a.AppSettings.githubWebhookSecret), providedSignature)
 
 	if !hmacSignatureValid {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte("Signature verification failed. Please check your application configuration."))
+		httputils.RespondWithError(w, http.StatusUnauthorized, "Signature verification failed. Please check your application configuration.")
 		return
 	}
 
 	var webhookBody GithubWebhookRequest
 	if err := json.Unmarshal(bodyBytes, &webhookBody); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("Unable to decode JSON body"))
+		httputils.RespondWithError(w, http.StatusBadRequest, "Unable to decode JSON body")
 		return
 	}
 
@@ -70,10 +62,10 @@ func (a *App) webhookUpdate(w http.ResponseWriter, r *http.Request) {
 
 		// TODO: Have GithubWebhookRequest implement interface to build a GithubRepository
 		Source: GitRepository{
-			FullName: webhookBody.Repository.FullName,
+			FullName:   webhookBody.Repository.FullName,
 			DashedName: repoDashedName,
-			RepoName: webhookBody.Repository.Name,
-			GitRefSpec:	RefSpec(webhookBody.Ref),
+			RepoName:   webhookBody.Repository.Name,
+			GitRefSpec: RefSpec(webhookBody.Ref),
 		},
 
 		// TODO: Pull from a mapping
@@ -95,5 +87,5 @@ func (a *App) webhookUpdate(w http.ResponseWriter, r *http.Request) {
 
 	log.Println(webhookBody)
 
-	w.Write([]byte("OK"))
+	httputils.RespondWithStatus(w, http.StatusOK, "OK")
 }

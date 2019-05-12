@@ -1,4 +1,4 @@
-package main
+package pkg
 
 import (
 	"encoding/json"
@@ -139,7 +139,7 @@ func (a *App) Run(addr string) {
 	log.Fatal(http.ListenAndServe(addr, a.Router))
 }
 
-func main() {
+func NewDefaultApp() *App {
 	a := App{
 		buildContexts: []*BuildContext{},
 	}
@@ -165,5 +165,5 @@ func main() {
 
 	a.InitializeRouting()
 
-	a.Run("0.0.0.0:9000")
+	return &a
 }
