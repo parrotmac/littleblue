@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <title>Little Blue Container Builder</title>
+    <link href="styles/main.css" rel="stylesheet" />
 </head>
 <body>
 <h3>Little Blue</h3>
@@ -11,19 +12,12 @@
     <ul class="jobList">
         <li v-for="job in jobs">
         {{ job.repo_name }}
-        <ul>
-            <li v-for="msg in job.messages">
-                <p v-if="'stream' in JSON.parse(msg.body)">
-                    {{JSON.parse(msg.body)['stream']}}
-                </p>
-                <p v-else>{{msg.body}}</p>
-            </li>
-        </ul>
         </li>
     </ul>
+    <pre class="build-log" v-html="buildOutput"></pre>
 </div>
+<script src="https://unpkg.com/ansi_up@4.0.3/ansi_up.js" type="text/javascript"></script><!-- FIXME -->
 <script src="/js/vue.js"></script>
 <script src="/js/main.js"></script>
 </body>
 </html>
-
