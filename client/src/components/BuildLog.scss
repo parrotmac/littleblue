@@ -1,6 +1,7 @@
 @import "~@blueprintjs/core/src/common/colors";
 
 .build-log {
+  white-space: pre-wrap;
   color: $light-gray5;
   background-color: #2a2e33;
   margin: 0;
