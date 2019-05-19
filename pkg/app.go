@@ -3,12 +3,10 @@ package pkg
 import (
 	"encoding/json"
 	"fmt"
-	"log"
-	"net/http"
-
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
 	"gopkg.in/src-d/go-git.v4/config"
+	"log"
 )
 
 type RefSpec config.RefSpec
@@ -105,7 +103,6 @@ type App struct {
 
 func (a *App) InitializeRouting() {
 	a.Router = mux.NewRouter()
-	a.Router.StrictSlash(true)
 	a.APIRouter = a.Router.PathPrefix("/api").Subrouter()
 
 	log.Print("[INIT] Setting up routes")
@@ -124,9 +121,9 @@ func (a *App) initializeApiRoutes() {
 }
 
 func (a *App) Run() {
-	bindAddress := fmt.Sprintf("0.0.0.0:%d", a.config.ServerPort)
-	log.Printf("Starting HTTP server at %v", bindAddress)
-	log.Fatal(http.ListenAndServe(bindAddress, a.Router))
+	server := SetupServer(a.config.ServerPort, a.Router)
+	log.Printf("Starting HTTP server at %v", server.Addr)
+	log.Fatal(server.ListenAndServe())
 }
 
 func NewDefaultApp(config *appConfig) *App {
