@@ -10,10 +10,19 @@ import (
 	"time"
 )
 
-func (a *App) frontendRoute(w http.ResponseWriter, r *http.Request) {
-	// FIXME
-	// Serve static or templated file
-	w.Write([]byte("<h1 style=\"font-family: sans-serif\">Little Blue</h1>"))
+func (a *App) initializeFrontendRoutes() {
+
+	staticUrlPrefix := "/static/"
+	clientDirectoryPath := "client/build/static/"
+
+	staticFileServer := http.FileServer(http.Dir(clientDirectoryPath))
+	a.Router.PathPrefix(staticUrlPrefix).Handler(http.StripPrefix(staticUrlPrefix, staticFileServer))
+
+	indexHandler := func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "client/build/")
+	}
+	a.Router.PathPrefix("/").HandlerFunc(indexHandler)
+
 }
 
 func (a *App) getJobsRoute(w http.ResponseWriter, r *http.Request) {
