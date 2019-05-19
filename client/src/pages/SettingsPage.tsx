@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import { Card, Elevation, H5 } from '@blueprintjs/core';
 
-import './SettingsPage.css';
+import './SettingsPage.scss';
 
 class SettingsPage extends Component {
     public render(): JSX.Element {

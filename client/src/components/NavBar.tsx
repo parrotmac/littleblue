@@ -9,7 +9,7 @@ import {
 } from '@blueprintjs/core';
 import { Link } from 'react-router-dom';
 
-import './NavBar.css';
+import './NavBar.scss';
 
 class NavBar extends Component {
     public render(): JSX.Element {

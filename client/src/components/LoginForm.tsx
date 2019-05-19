@@ -9,7 +9,7 @@ import {
     Tooltip,
 } from '@blueprintjs/core';
 
-import './LoginForm.css';
+import './LoginForm.scss';
 
 export interface ILoginFormState {
     disabled: boolean;

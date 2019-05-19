@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import NavBar from './components/NavBar';
 import Routes from "./containers/Routes";
 
-import './App.css';
+import './App.scss';
 
 class App extends Component {
 
