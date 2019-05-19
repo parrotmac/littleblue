@@ -123,11 +123,6 @@ func (a *App) initializeApiRoutes() {
 	webhookRouter.HandleFunc("", a.webhookUpdate).Methods("POST")
 }
 
-func (a *App) initializeFrontendRoutes() {
-	fs := http.FileServer(http.Dir("static/"))
-	a.Router.PathPrefix("/").Handler(fs)
-}
-
 func (a *App) Run() {
 	bindAddress := fmt.Sprintf("0.0.0.0:%d", a.config.ServerPort)
 	log.Printf("Starting HTTP server at %v", bindAddress)
