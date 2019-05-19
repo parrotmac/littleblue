@@ -1,0 +1,7 @@
+.NavBar {
+    position: absolute;
+}
+
+.NavBar a, .NavBar a:visited, .NavBar a:link {
+    /* Override link colors here */
+}

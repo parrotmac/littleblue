@@ -1,0 +1,12 @@
+@import "~@blueprintjs/core/src/common/colors";
+
+.build-log {
+  color: $light-gray5;
+  background-color: #2a2e33;
+  margin: 0;
+  padding: 20px
+}
+
+.ansi-bright-red-fg {
+  color: $red5;
+}
