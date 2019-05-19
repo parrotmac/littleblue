@@ -1,0 +1,7 @@
+server_port: 9000
+github:
+  webhook_secret: psst
+  auth_token: lol
+registry:
+  username: user
+  password: pass
