@@ -1,8 +1,23 @@
 package main
 
-import "github.com/parrotmac/littleblue/pkg"
+import (
+	"github.com/sirupsen/logrus"
+
+	"github.com/parrotmac/littleblue/pkg"
+)
 
 func main() {
-	app := pkg.NewDefaultApp()
-	app.Run("0.0.0.0:9000")
+	// Load configuration
+	err := pkg.LoadConfig(".")
+	if err != nil {
+		logrus.Fatalln(err)
+	}
+	err = pkg.Config.Validate()
+	if err != nil {
+		logrus.Fatalln(err)
+	}
+
+	// Create application from configuration
+	app := pkg.NewDefaultApp(&pkg.Config)
+	app.Run()
 }

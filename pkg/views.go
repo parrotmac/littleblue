@@ -43,7 +43,7 @@ func (a *App) webhookUpdate(w http.ResponseWriter, r *http.Request) {
 
 	providedSignature := []byte(r.Header.Get("X-Hub-Signature"))
 
-	hmacSignatureValid := a.VerifyRequestBodyHmac(bodyBytes, []byte(a.AppSettings.githubWebhookSecret), providedSignature)
+	hmacSignatureValid := a.VerifyRequestBodyHmac(bodyBytes, []byte(a.config.GithubConfig.WebhookSecret), providedSignature)
 
 	if !hmacSignatureValid {
 		httputils.RespondWithError(w, http.StatusUnauthorized, "Signature verification failed. Please check your application configuration.")
@@ -70,9 +70,9 @@ func (a *App) webhookUpdate(w http.ResponseWriter, r *http.Request) {
 
 		// TODO: Pull from a mapping
 		Docker: DockerBuildSpec{
-			RegistryURL:      a.AppSettings.dockerRegistryURL,
-			RegistryUsername: a.AppSettings.dockerRegistryUsername,
-			RegistryPassword: a.AppSettings.dockerRegistryPassword,
+			RegistryURL:      a.config.DockerRegistryConfig.URL,
+			RegistryUsername: a.config.DockerRegistryConfig.Username,
+			RegistryPassword: a.config.DockerRegistryConfig.Password,
 			Tag:              "latest",
 		},
 		Messages:         []Message{},

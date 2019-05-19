@@ -53,7 +53,7 @@ func (a *App) VerifyRequestBodyHmac(bodyBytes []byte, hmacSecret []byte, provide
 
 func (a *App) CloneGithubRepo(wh *GithubWebhookRequest, destinationPath string) error {
 	user := wh.Repository.Owner.Login
-	pass := a.AppSettings.githubAuthToken
+	pass := a.config.GithubConfig.AuthToken
 	repoEndpointString := fmt.Sprintf("https://%s:%s@github.com/%s.git", user, pass, wh.Repository.FullName)
 
 	refName := plumbing.ReferenceName(wh.Ref)
@@ -160,7 +160,7 @@ func (a *App) ProcessWebhook(bCtx *BuildContext, wh *GithubWebhookRequest) {
 
 	dockerImageName := wh.getDashedName()
 
-	fullImageTag := fmt.Sprintf("%s/%s", a.AppSettings.dockerRegistryURL, dockerImageName)
+	fullImageTag := fmt.Sprintf("%s/%s", a.config.DockerRegistryConfig.URL, dockerImageName)
 
 	log.Printf("Building %s", fullImageTag)
 

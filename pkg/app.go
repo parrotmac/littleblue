@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
@@ -20,8 +19,6 @@ type EnvSettings struct {
 
 	bitbucketWebhookSecret string
 	bitbucketAuthToken     string
-
-	slackWebhookURL string
 
 	dockerRegistryURL      string
 	dockerRegistryUsername string
@@ -96,10 +93,9 @@ func (bCtx *BuildContext) addMessage(level MessageLevel, iface interface{}, shou
 }
 
 type App struct {
+	config    *appConfig
 	Router    *mux.Router
 	APIRouter *mux.Router
-
-	AppSettings *EnvSettings
 
 	buildContexts []*BuildContext
 
@@ -132,13 +128,15 @@ func (a *App) initializeFrontendRoutes() {
 	a.Router.PathPrefix("/").Handler(fs)
 }
 
-func (a *App) Run(addr string) {
-	log.Printf("Starting HTTP server at %v", addr)
-	log.Fatal(http.ListenAndServe(addr, a.Router))
+func (a *App) Run() {
+	bindAddress := fmt.Sprintf("0.0.0.0:%d", a.config.ServerPort)
+	log.Printf("Starting HTTP server at %v", bindAddress)
+	log.Fatal(http.ListenAndServe(bindAddress, a.Router))
 }
 
-func NewDefaultApp() *App {
+func NewDefaultApp(config *appConfig) *App {
 	a := App{
+		config:        config,
 		buildContexts: []*BuildContext{},
 	}
 
@@ -146,20 +144,6 @@ func NewDefaultApp() *App {
 	a.wsBroadcast = make(chan Message)
 
 	go a.handleMessages()
-
-	a.AppSettings = &EnvSettings{
-		githubWebhookSecret: os.Getenv("GH_WEBHOOK_SECRET"),
-		githubAuthToken:     os.Getenv("GH_AUTH_TOKEN"),
-
-		bitbucketWebhookSecret: os.Getenv("BB_WEBHOOK_SECRET"),
-		bitbucketAuthToken:     os.Getenv("BB_AUTH_TOKEN"),
-
-		slackWebhookURL: os.Getenv("SLACK_WEBHOOK_URL"),
-
-		dockerRegistryURL:      os.Getenv("DOCKER_REGISTRY_URL"),
-		dockerRegistryUsername: os.Getenv("DOCKER_REGISTRY_USER"),
-		dockerRegistryPassword: os.Getenv("DOCKER_REGISTRY_PASS"),
-	}
 
 	a.InitializeRouting()
 
