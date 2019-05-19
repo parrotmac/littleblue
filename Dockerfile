@@ -1,5 +1,8 @@
 FROM node:alpine as frontend
 
+# node-sass may not provide a prebuilt (e.g. for arm)
+RUN apk update
+RUN apk add python make g++
 
 RUN mkdir -p /app/client
 WORKDIR /app/client
