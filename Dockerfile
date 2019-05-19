@@ -37,6 +37,13 @@ RUN go build -o bin/littleblue cmd/main.go
 
 FROM alpine:latest
 
+# Ensure runtime has valid certs
+RUN apk update \
+        && apk upgrade \
+        && apk add --no-cache \
+        ca-certificates \
+        && update-ca-certificates 2>/dev/null || true
+
 RUN mkdir -p /opt/littleblue
 WORKDIR /opt/littleblue
 COPY --from=builder /go/src/github.com/parrotmac/littleblue/bin/littleblue .
