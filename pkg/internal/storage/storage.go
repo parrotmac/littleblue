@@ -25,17 +25,17 @@ func Setup(config config.PostgresConfig) (*Storage, error) {
 	}
 
 	return &Storage{
-		db: db,
+		DB: db,
 	}, nil
 }
 
 func (s *Storage) Shutdown() error {
-	return s.db.Close()
+	return s.DB.Close()
 }
 
 func (s *Storage) AutoMigrateModels() {
-	s.db.AutoMigrate(&User{})
-	s.db.AutoMigrate(&SourceProvider{})
-	s.db.AutoMigrate(&SourceRepository{})
-	s.db.AutoMigrate(&BuildConfiguration{})
+	s.DB.AutoMigrate(&User{})
+	s.DB.AutoMigrate(&SourceProvider{})
+	s.DB.AutoMigrate(&SourceRepository{})
+	s.DB.AutoMigrate(&BuildConfiguration{})
 }
