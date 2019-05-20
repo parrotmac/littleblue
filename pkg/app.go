@@ -3,6 +3,8 @@ package pkg
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/parrotmac/littleblue/pkg/internal/api"
+	"github.com/parrotmac/littleblue/pkg/internal/services"
 	"log"
 
 	"github.com/gorilla/mux"
@@ -119,12 +121,29 @@ func (a *App) InitializeRouting() {
 	log.Print("[INIT] Initialization complete")
 }
 
-func (a *App) initializeApiRoutes() {
-	a.Router.HandleFunc("/ws", a.websocketConnectionHandler)
+func (a *App) initUserRoutes() {
+	userService := services.UserService{
+		Backend: a.storage,
+	}
+	userRouter := api.UserRouter{
+		UserService: userService,
+	}
 
+	a.APIRouter.HandleFunc("/users", userRouter.CreateUserHandler).Methods("POST")
+	a.APIRouter.HandleFunc("/users/{user_id}/", userRouter.GetUserHandler).Methods("GET")
+	a.APIRouter.HandleFunc("/users/{user_id}/", userRouter.UpdateUserHandler).Methods("PATCH")
+}
+
+func (a *App) initWebhookRoutes() {
 	a.APIRouter.HandleFunc("/jobs", a.getJobsRoute).Methods("GET")
 	webhookRouter := a.APIRouter.PathPrefix("/webhook").Subrouter()
 	webhookRouter.HandleFunc("", a.webhookUpdate).Methods("POST")
+}
+
+func (a *App) initializeApiRoutes() {
+	a.Router.HandleFunc("/ws", a.websocketConnectionHandler)
+	a.initWebhookRoutes()
+	a.initUserRoutes()
 }
 
 func (a *App) Run() {
@@ -134,7 +153,6 @@ func (a *App) Run() {
 }
 
 func NewDefaultApp() *App {
-
 	// Load configuration
 	config := &config.AppConfig{}
 	err := config.LoadConfig(".")

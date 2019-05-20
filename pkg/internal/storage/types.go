@@ -7,7 +7,7 @@ import (
 )
 
 type Storage struct {
-	db *gorm.DB
+	DB *gorm.DB
 }
 
 type User struct {
