@@ -5,3 +5,8 @@ github:
 registry:
   username: user
   password: pass
+postgres:
+  port: 5432
+  database: littleblue
+  username: littleblue
+  password: lol
