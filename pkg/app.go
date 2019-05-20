@@ -3,13 +3,18 @@ package pkg
 import (
 	"encoding/json"
 	"fmt"
+	"log"
+
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
-	"gopkg.in/src-d/go-git.v4/config"
-	"log"
+	"github.com/sirupsen/logrus"
+	gitconfig "gopkg.in/src-d/go-git.v4/config"
+
+	"github.com/parrotmac/littleblue/pkg/internal/config"
+	"github.com/parrotmac/littleblue/pkg/internal/storage"
 )
 
-type RefSpec config.RefSpec
+type RefSpec gitconfig.RefSpec
 
 type EnvSettings struct {
 	githubWebhookSecret string
@@ -91,9 +96,11 @@ func (bCtx *BuildContext) addMessage(level MessageLevel, iface interface{}, shou
 }
 
 type App struct {
-	config    *appConfig
+	config    *config.AppConfig
 	Router    *mux.Router
 	APIRouter *mux.Router
+
+	storage *storage.Storage
 
 	buildContexts []*BuildContext
 
@@ -126,11 +133,30 @@ func (a *App) Run() {
 	log.Fatal(server.ListenAndServe())
 }
 
-func NewDefaultApp(config *appConfig) *App {
+func NewDefaultApp() *App {
+
+	// Load configuration
+	config := &config.AppConfig{}
+	err := config.LoadConfig(".")
+	if err != nil {
+		logrus.Fatalln(err)
+	}
+	err = config.Validate()
+	if err != nil {
+		logrus.Fatalln(err)
+	}
+
 	a := App{
 		config:        config,
 		buildContexts: []*BuildContext{},
 	}
+
+	dataStore, err := storage.Setup(config.PostgresConfig)
+	if err != nil {
+		logrus.Fatalln(err)
+	}
+	a.storage = dataStore
+	a.storage.AutoMigrateModels()
 
 	a.wsClients = make(map[*websocket.Conn]bool)
 	a.wsBroadcast = make(chan Message)
