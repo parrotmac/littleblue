@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/parrotmac/littleblue/pkg/internal/storage"
 	"net/http"
 
 	"github.com/parrotmac/littleblue/pkg/internal/httputils"
@@ -12,5 +13,18 @@ type SourceRepositoryRouter struct {
 }
 
 func (router *SourceRepositoryRouter) CreateSourceRepositoryHandler(w http.ResponseWriter, r *http.Request) {
-	httputils.RespondWithError(w, http.StatusNotImplemented, "not yet implemented")
+	sourceRepo := &storage.SourceRepository{}
+	err := httputils.ReadJsonBodyToEntity(r.Body, sourceRepo)
+	if err != nil {
+		httputils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	err = router.SourceRepositoryService.CreateSourceRepository(sourceRepo)
+	if err != nil {
+		httputils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	httputils.RespondWithStatus(w, http.StatusCreated, "created")
 }
