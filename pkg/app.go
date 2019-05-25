@@ -3,7 +3,6 @@ package pkg
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/parrotmac/littleblue/pkg/internal/httputils"
 	"log"
 
 	"github.com/gorilla/mux"
@@ -14,6 +13,7 @@ import (
 	"github.com/parrotmac/littleblue/pkg/internal/api"
 	"github.com/parrotmac/littleblue/pkg/internal/config"
 	"github.com/parrotmac/littleblue/pkg/internal/db"
+	"github.com/parrotmac/littleblue/pkg/internal/httputils"
 )
 
 type RefSpec gitconfig.RefSpec
