@@ -1,26 +1,30 @@
 package api
 
 import (
-	"github.com/parrotmac/littleblue/pkg/internal/storage"
+	"github.com/sirupsen/logrus"
 	"net/http"
 
+	"github.com/parrotmac/littleblue/pkg/internal/db"
+	"github.com/parrotmac/littleblue/pkg/internal/entities"
 	"github.com/parrotmac/littleblue/pkg/internal/httputils"
-	"github.com/parrotmac/littleblue/pkg/internal/services"
 )
 
 type SourceRepositoryRouter struct {
-	SourceRepositoryService services.SourceRepositoryService
+	StorageService *db.Storage
 }
 
 func (router *SourceRepositoryRouter) CreateSourceRepositoryHandler(w http.ResponseWriter, r *http.Request) {
-	sourceRepo := &storage.SourceRepository{}
+	sourceRepo := &entities.SourceRepository{}
+
 	err := httputils.ReadJsonBodyToEntity(r.Body, sourceRepo)
 	if err != nil {
 		httputils.RespondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	err = router.SourceRepositoryService.CreateSourceRepository(sourceRepo)
+	logrus.Infof("Creating Source Repo: %+v", *sourceRepo)
+
+	err = router.StorageService.CreateSourceRepository(sourceRepo)
 	if err != nil {
 		httputils.RespondWithError(w, http.StatusInternalServerError, err.Error())
 		return

@@ -3,8 +3,6 @@ package pkg
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/parrotmac/littleblue/pkg/internal/api"
-	"github.com/parrotmac/littleblue/pkg/internal/services"
 	"log"
 
 	"github.com/gorilla/mux"
@@ -12,8 +10,9 @@ import (
 	"github.com/sirupsen/logrus"
 	gitconfig "gopkg.in/src-d/go-git.v4/config"
 
+	"github.com/parrotmac/littleblue/pkg/internal/api"
 	"github.com/parrotmac/littleblue/pkg/internal/config"
-	"github.com/parrotmac/littleblue/pkg/internal/storage"
+	"github.com/parrotmac/littleblue/pkg/internal/db"
 )
 
 type RefSpec gitconfig.RefSpec
@@ -102,7 +101,7 @@ type App struct {
 	Router    *mux.Router
 	APIRouter *mux.Router
 
-	storage *storage.Storage
+	storage *db.Storage
 
 	buildContexts []*BuildContext
 
@@ -122,16 +121,34 @@ func (a *App) InitializeRouting() {
 }
 
 func (a *App) initUserRoutes() {
-	userService := services.UserService{
-		Backend: a.storage,
-	}
 	userRouter := api.UserRouter{
-		UserService: userService,
+		StorageService: a.storage,
 	}
 
 	a.APIRouter.HandleFunc("/users", userRouter.CreateUserHandler).Methods("POST")
 	a.APIRouter.HandleFunc("/users/{user_id}/", userRouter.GetUserHandler).Methods("GET")
 	a.APIRouter.HandleFunc("/users/{user_id}/", userRouter.UpdateUserHandler).Methods("PATCH")
+}
+
+func (a *App) initSourceProviderRoutes() {
+	router := api.SourceProviderRouter{
+		StorageService: a.storage,
+	}
+	a.APIRouter.HandleFunc("/source-providers", router.CreateSourceProviderHandler).Methods("POST")
+}
+
+func (a *App) initSourceRepoRoutes() {
+	router := api.SourceRepositoryRouter{
+		StorageService: a.storage,
+	}
+	a.APIRouter.HandleFunc("/repos", router.CreateSourceRepositoryHandler).Methods("POST")
+}
+
+func (a *App) initBuildConfigRoutes() {
+	router := api.BuildConfigRouter{
+		StorageService: a.storage,
+	}
+	a.APIRouter.HandleFunc("/build-configs", router.CreateBuildConfigHandler).Methods("POST")
 }
 
 func (a *App) initWebhookRoutes() {
@@ -144,6 +161,9 @@ func (a *App) initializeApiRoutes() {
 	a.Router.HandleFunc("/ws", a.websocketConnectionHandler)
 	a.initWebhookRoutes()
 	a.initUserRoutes()
+	a.initSourceProviderRoutes()
+	a.initSourceRepoRoutes()
+	a.initBuildConfigRoutes()
 }
 
 func (a *App) Run() {
@@ -169,7 +189,7 @@ func NewDefaultApp() *App {
 		buildContexts: []*BuildContext{},
 	}
 
-	dataStore, err := storage.Setup(config.PostgresConfig)
+	dataStore, err := db.Setup(config.PostgresConfig)
 	if err != nil {
 		logrus.Fatalln(err)
 	}
