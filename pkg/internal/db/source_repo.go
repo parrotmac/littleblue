@@ -16,6 +16,10 @@ type sourceRepositoryModel struct {
 	Name                     string // e.g. "parrotmac/littleblue"
 }
 
+func (sourceRepositoryModel) TableName() string {
+	return "source_repositories"
+}
+
 func (m *sourceRepositoryModel) toEntity() *entities.SourceRepository {
 	return &entities.SourceRepository{}
 }

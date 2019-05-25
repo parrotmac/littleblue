@@ -18,6 +18,10 @@ type buildConfigurationModel struct {
 	TaggingRules       pq.StringArray `gorm:"type:varchar(100)[]"`
 }
 
+func (buildConfigurationModel) TableName() string {
+	return "build_configurations"
+}
+
 func (m *buildConfigurationModel) toEntity() *entities.BuildConfiguration {
 	return &entities.BuildConfiguration{
 		ID:                 m.ID,
