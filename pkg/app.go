@@ -13,6 +13,7 @@ import (
 	"github.com/parrotmac/littleblue/pkg/internal/api"
 	"github.com/parrotmac/littleblue/pkg/internal/config"
 	"github.com/parrotmac/littleblue/pkg/internal/db"
+	"github.com/parrotmac/littleblue/pkg/internal/httputils"
 )
 
 type RefSpec gitconfig.RefSpec
@@ -97,9 +98,8 @@ func (bCtx *BuildContext) addMessage(level MessageLevel, iface interface{}, shou
 }
 
 type App struct {
-	config    *config.AppConfig
-	Router    *mux.Router
-	APIRouter *mux.Router
+	config     *config.AppConfig
+	BaseRouter *mux.Router
 
 	storage *db.Storage
 
@@ -109,65 +109,8 @@ type App struct {
 	wsBroadcast chan Message
 }
 
-func (a *App) InitializeRouting() {
-	a.Router = mux.NewRouter()
-	a.APIRouter = a.Router.PathPrefix("/api").Subrouter()
-
-	log.Print("[INIT] Setting up routes")
-	a.initializeApiRoutes()
-	a.initializeFrontendRoutes()
-
-	log.Print("[INIT] Initialization complete")
-}
-
-func (a *App) initUserRoutes() {
-	userRouter := api.UserRouter{
-		StorageService: a.storage,
-	}
-
-	a.APIRouter.HandleFunc("/users", userRouter.CreateUserHandler).Methods("POST")
-	a.APIRouter.HandleFunc("/users/{user_id}/", userRouter.GetUserHandler).Methods("GET")
-	a.APIRouter.HandleFunc("/users/{user_id}/", userRouter.UpdateUserHandler).Methods("PATCH")
-}
-
-func (a *App) initSourceProviderRoutes() {
-	router := api.SourceProviderRouter{
-		StorageService: a.storage,
-	}
-	a.APIRouter.HandleFunc("/source-providers", router.CreateSourceProviderHandler).Methods("POST")
-}
-
-func (a *App) initSourceRepoRoutes() {
-	router := api.SourceRepositoryRouter{
-		StorageService: a.storage,
-	}
-	a.APIRouter.HandleFunc("/repos", router.CreateSourceRepositoryHandler).Methods("POST")
-}
-
-func (a *App) initBuildConfigRoutes() {
-	router := api.BuildConfigRouter{
-		StorageService: a.storage,
-	}
-	a.APIRouter.HandleFunc("/build-configs", router.CreateBuildConfigHandler).Methods("POST")
-}
-
-func (a *App) initWebhookRoutes() {
-	a.APIRouter.HandleFunc("/jobs", a.getJobsRoute).Methods("GET")
-	webhookRouter := a.APIRouter.PathPrefix("/webhook").Subrouter()
-	webhookRouter.HandleFunc("", a.webhookUpdate).Methods("POST")
-}
-
-func (a *App) initializeApiRoutes() {
-	a.Router.HandleFunc("/ws", a.websocketConnectionHandler)
-	a.initWebhookRoutes()
-	a.initUserRoutes()
-	a.initSourceProviderRoutes()
-	a.initSourceRepoRoutes()
-	a.initBuildConfigRoutes()
-}
-
 func (a *App) Run() {
-	server := SetupServer(a.config.ServerPort, a.Router)
+	server := httputils.SetupServer(a.config.ServerPort, a.BaseRouter)
 	log.Printf("Starting HTTP server at %v", server.Addr)
 	log.Fatal(server.ListenAndServe())
 }
@@ -185,6 +128,7 @@ func NewDefaultApp() *App {
 	}
 
 	a := App{
+		BaseRouter:    mux.NewRouter(),
 		config:        config,
 		buildContexts: []*BuildContext{},
 	}
@@ -201,7 +145,19 @@ func NewDefaultApp() *App {
 
 	go a.handleMessages()
 
-	a.InitializeRouting()
+	apiServer := api.Server{
+		APIRouter: a.BaseRouter.PathPrefix("/api").Subrouter(),
+		Storage:   a.storage,
+	}
+	apiServer.Init()
+
+	a.BaseRouter.HandleFunc("/ws", a.websocketConnectionHandler)
+	initializeFrontendRoutes(a.BaseRouter)
+
+	// TODO Migrate migrate these once handlers are refactored
+	apiServer.APIRouter.HandleFunc("/jobs", a.getJobsRoute).Methods("GET")
+	webhookRouter := apiServer.APIRouter.PathPrefix("/webhook").Subrouter()
+	webhookRouter.HandleFunc("", a.webhookUpdate).Methods("POST")
 
 	return &a
 }

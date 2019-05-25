@@ -2,9 +2,11 @@ package httputils
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
+	"time"
 
 	"github.com/sirupsen/logrus"
 )
@@ -40,4 +42,14 @@ func ReadJsonBodyToEntity(body io.ReadCloser, dst interface{}) error {
 	}
 
 	return json.Unmarshal(bodyData, dst)
+}
+
+func SetupServer(port int, handler http.Handler) http.Server {
+	server := http.Server{
+		Handler:      handler,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 5 * time.Second,
+		Addr:         fmt.Sprintf("0.0.0.0:%d", port),
+	}
+	return server
 }
