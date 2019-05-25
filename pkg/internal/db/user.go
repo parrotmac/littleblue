@@ -17,6 +17,10 @@ type userModel struct {
 	GoogleAuthToken    string
 }
 
+func (userModel) TableName() string {
+	return "users"
+}
+
 func (m *userModel) fromEntity(user *entities.User) {
 	m.ID = uint(user.ID)
 	m.Email = user.Email

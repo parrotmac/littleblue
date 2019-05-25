@@ -16,6 +16,10 @@ type sourceProviderModel struct {
 	AuthorizationToken string `json:"auth_token"`           // token required to access resources
 }
 
+func (sourceProviderModel) TableName() string {
+	return "source_providers"
+}
+
 func (m *sourceProviderModel) toEntity() *entities.SourceProvider {
 	return &entities.SourceProvider{
 		ID:                 m.ID,
