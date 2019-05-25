@@ -5,7 +5,7 @@ import (
 )
 
 func (s *Storage) CreateUser(userEntity *entities.User) error {
-	model := userModel{}
+	model := &userModel{}
 	model.fromEntity(userEntity)
 	if db := s.DB.Create(model); db.Error != nil {
 		return db.Error
