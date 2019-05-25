@@ -8,22 +8,23 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/gorilla/mux"
+
 	"github.com/parrotmac/littleblue/pkg/internal/httputils"
 )
 
-func (a *App) initializeFrontendRoutes() {
+func initializeFrontendRoutes(router *mux.Router) {
 
 	staticUrlPrefix := "/static/"
 	clientDirectoryPath := "client/build/static/"
 
 	staticFileServer := http.FileServer(http.Dir(clientDirectoryPath))
-	a.Router.PathPrefix(staticUrlPrefix).Handler(http.StripPrefix(staticUrlPrefix, staticFileServer))
+	router.PathPrefix(staticUrlPrefix).Handler(http.StripPrefix(staticUrlPrefix, staticFileServer))
 
 	indexHandler := func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "client/build/")
 	}
-	a.Router.PathPrefix("/").HandlerFunc(indexHandler)
-
+	router.PathPrefix("/").HandlerFunc(indexHandler)
 }
 
 func (a *App) getJobsRoute(w http.ResponseWriter, r *http.Request) {
