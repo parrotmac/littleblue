@@ -8,17 +8,17 @@ import (
 
 	"github.com/gorilla/mux"
 
+	"github.com/parrotmac/littleblue/pkg/internal/db"
+	"github.com/parrotmac/littleblue/pkg/internal/entities"
 	"github.com/parrotmac/littleblue/pkg/internal/httputils"
-	"github.com/parrotmac/littleblue/pkg/internal/services"
-	"github.com/parrotmac/littleblue/pkg/internal/storage"
 )
 
 type UserRouter struct {
-	UserService services.UserService
+	StorageService *db.Storage
 }
 
 func (router *UserRouter) CreateUserHandler(w http.ResponseWriter, r *http.Request) {
-	newUser := &storage.User{}
+	newUser := &entities.User{}
 
 	requestBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -32,7 +32,7 @@ func (router *UserRouter) CreateUserHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	err = router.UserService.CreateUser(newUser)
+	err = router.StorageService.CreateUser(newUser)
 	if err != nil {
 		httputils.RespondWithError(w, http.StatusInternalServerError, err.Error())
 		return
@@ -54,7 +54,7 @@ func (router *UserRouter) GetUserHandler(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	user, err := router.UserService.GetUserByID(uint(userID))
+	user, err := router.StorageService.GetUserByID(uint(userID))
 	if err != nil {
 		httputils.RespondWithError(w, http.StatusInternalServerError, err.Error())
 		return
@@ -64,7 +64,7 @@ func (router *UserRouter) GetUserHandler(w http.ResponseWriter, r *http.Request)
 }
 
 func (router *UserRouter) UpdateUserHandler(w http.ResponseWriter, r *http.Request) {
-	updatedUser := &storage.User{}
+	updatedUser := &entities.User{}
 
 	requestBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -78,7 +78,7 @@ func (router *UserRouter) UpdateUserHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	err = router.UserService.UpdateUser(updatedUser)
+	err = router.StorageService.UpdateUser(updatedUser)
 	if err != nil {
 		httputils.RespondWithError(w, http.StatusInternalServerError, err.Error())
 		return

@@ -2,6 +2,8 @@ package httputils
 
 import (
 	"encoding/json"
+	"io"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/sirupsen/logrus"
@@ -29,4 +31,13 @@ func RespondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	if err != nil {
 		logrus.Errorln(err)
 	}
+}
+
+func ReadJsonBodyToEntity(body io.ReadCloser, dst interface{}) error {
+	bodyData, err := ioutil.ReadAll(body)
+	if err != nil {
+		return err
+	}
+
+	return json.Unmarshal(bodyData, dst)
 }

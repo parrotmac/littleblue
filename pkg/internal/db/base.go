@@ -1,4 +1,4 @@
-package storage
+package db
 
 import (
 	"errors"
@@ -9,6 +9,10 @@ import (
 
 	"github.com/parrotmac/littleblue/pkg/internal/config"
 )
+
+type Storage struct {
+	DB *gorm.DB
+}
 
 func Setup(config config.PostgresConfig) (*Storage, error) {
 	connStr := fmt.Sprintf(
@@ -34,8 +38,8 @@ func (s *Storage) Shutdown() error {
 }
 
 func (s *Storage) AutoMigrateModels() {
-	s.DB.AutoMigrate(&User{})
-	s.DB.AutoMigrate(&SourceProvider{})
-	s.DB.AutoMigrate(&SourceRepository{})
-	s.DB.AutoMigrate(&BuildConfiguration{})
+	s.DB.AutoMigrate(&userModel{})
+	s.DB.AutoMigrate(&sourceProviderModel{})
+	s.DB.AutoMigrate(&sourceRepositoryModel{})
+	s.DB.AutoMigrate(&buildConfigurationModel{})
 }
