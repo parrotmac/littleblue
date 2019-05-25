@@ -66,21 +66,6 @@
   version = "v0.4.0"
 
 [[projects]]
-  digest = "1:ba9a3ee3359edeeec2c6c1ddb6976db4b7ca6ad045e73b43471e32f01b5786e4"
-  name = "github.com/dsnet/compress"
-  packages = [
-    ".",
-    "bzip2",
-    "bzip2/internal/sais",
-    "internal",
-    "internal/errors",
-    "internal/prefix",
-  ]
-  pruneopts = ""
-  revision = "da652975a8eea9fa0735aba8056747a751db0bd3"
-  version = "v0.0.1"
-
-[[projects]]
   digest = "1:f21c1a68814ffc02db479adbd973c710e0ece6150ddc0726655c0a2048299152"
   name = "github.com/emirpasic/gods"
   packages = [
@@ -112,12 +97,12 @@
   version = "v3.5.0"
 
 [[projects]]
-  digest = "1:65c7ed49d9f36dd4752e43013323fa9229db60b29aa4f5a75aaecda3130c74e2"
+  digest = "1:ec5262e6c65f9fcedc01d7789ee4e18ad429dde822cfd50e57e3fd77c4d70c73"
   name = "github.com/gorilla/mux"
   packages = ["."]
   pruneopts = ""
-  revision = "c5c6c98bc25355028a63748a498942a6398ccd22"
-  version = "v1.7.1"
+  revision = "ed099d42384823742bba0bf9a72b53b55c9e2e38"
+  version = "v1.7.2"
 
 [[projects]]
   digest = "1:09aa5dd1332b93c96bde671bafb053249dc813febf7d5ca84e8f382ba255d67d"
@@ -147,20 +132,6 @@
   version = "v1.0.0"
 
 [[projects]]
-  digest = "1:e70ef1e4565079d35bd56bde9aae5430bd8eb6327b84f495e93dd9b96bfb1e4e"
-  name = "github.com/icedream/go-bsdiff"
-  packages = [
-    ".",
-    "diff",
-    "internal",
-    "internal/native",
-    "patch",
-  ]
-  pruneopts = ""
-  revision = "a1d297ebf5e610377602c9b33a70d0dcee9cd4f6"
-  version = "v1.0.0"
-
-[[projects]]
   branch = "master"
   digest = "1:95abc4eba158a39873bd4fabdee576d0ae13826b550f8b710881d80ae4093a0f"
   name = "github.com/jbenet/go-context"
@@ -169,12 +140,23 @@
   revision = "d14ea06fba99483203c19d92cfcd13ebe73135f4"
 
 [[projects]]
-  digest = "1:ca5c90960520407749b98c49650f54f5f90a667796e85c5ee1597478f702fb91"
-  name = "github.com/jessevdk/go-flags"
+  digest = "1:ac0cf20506076f1243a12c66052b862988915b1cd41881987addf0da946077c6"
+  name = "github.com/jinzhu/gorm"
+  packages = [
+    ".",
+    "dialects/postgres",
+  ]
+  pruneopts = ""
+  revision = "b7156195f7f3415f97c20abbd6aff894b847fee8"
+  version = "v1.9.8"
+
+[[projects]]
+  branch = "master"
+  digest = "1:d9a7385b84d8187fd94e0357045c6fa1147ca94caa56fdd539336c7c102fc728"
+  name = "github.com/jinzhu/inflection"
   packages = ["."]
   pruneopts = ""
-  revision = "c6ca198ec95c841fdb89fc0de7496fed11ab854e"
-  version = "v1.4.0"
+  revision = "04140366298a54a039076d798123ffa108fff46c"
 
 [[projects]]
   digest = "1:41e0bed5df4f9fd04c418bf9b6b7179b3671e416ad6175332601ca1c8dc74606"
@@ -191,6 +173,19 @@
   pruneopts = ""
   revision = "f55edac94c9bbba5d6182a4be46d86a2c9b5b50e"
   version = "v1.0.2"
+
+[[projects]]
+  digest = "1:a65d93f562c7d66d8db6f0c5df8ade208e0f42d9a9626924896697351ca161b3"
+  name = "github.com/lib/pq"
+  packages = [
+    ".",
+    "hstore",
+    "oid",
+    "scram",
+  ]
+  pruneopts = ""
+  revision = "bc6a3c0594130b1e34005880bc600b6d3f49fa7f"
+  version = "v1.1.1"
 
 [[projects]]
   digest = "1:ae39921edb7f801f7ce1b6b5484f9715a1dd2b52cb645daef095cd10fd6ee774"
@@ -223,18 +218,6 @@
   pruneopts = ""
   revision = "279bed98673dd5bef374d3b6e4b09e2af76183bf"
   version = "v1.0.0-rc1"
-
-[[projects]]
-  branch = "master"
-  digest = "1:ae45843aefdf52aec5f645b2c79e8a2fd219166182c7384b2db096f13b38b5fa"
-  name = "github.com/parrotmac/docker-patcher"
-  packages = [
-    "pkg/internal/docker_api",
-    "pkg/internal/utils",
-    "pkg/patcher",
-  ]
-  pruneopts = ""
-  revision = "c8ae7d35e669a185cdc45a9ae0935f62f9a1bac5"
 
 [[projects]]
   digest = "1:049b5bee78dfdc9628ee0e557219c41f683e5b06c5a5f20eaba0105ccc586689"
@@ -312,12 +295,12 @@
   version = "v1.0.3"
 
 [[projects]]
-  digest = "1:90fe60ab6f827e308b0c8cc1e11dce8ff1e96a927c8b171271a3cb04dd517606"
+  digest = "1:9b483544fcf4fc0155e566f49ee669c205fba12a36eb18e7f80510796a606db4"
   name = "github.com/spf13/viper"
   packages = ["."]
   pruneopts = ""
-  revision = "9e56dacc08fbbf8c9ee2dbc717553c758ce42bc9"
-  version = "v1.3.2"
+  revision = "b5bf975e5823809fb22c7644d008757f78a4259e"
+  version = "v1.4.0"
 
 [[projects]]
   digest = "1:740b31391e4c3e4d2b5a20e1cbf2c2f7765275ead23945acc7669c36c0b8095a"
@@ -342,7 +325,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:6f48274ef261d59303214646f131664f5dfa7acec5c405a71802b6e373174466"
+  digest = "1:5b3e9450868bcf9ecbca2b01ac04f142255b5744d89ec97e1ceedf57d4522645"
   name = "golang.org/x/crypto"
   packages = [
     "cast5",
@@ -363,11 +346,11 @@
     "ssh/knownhosts",
   ]
   pruneopts = ""
-  revision = "cbcb750295291b33242907a04be40e80801d0cfc"
+  revision = "22d7a77e9e5f409e934ed268692e56707cd169e5"
 
 [[projects]]
   branch = "master"
-  digest = "1:ccd51599eb31c3ee139de1b1fca3f5d3ddaa5ab37f3a1704a2a8426c0abd1e5b"
+  digest = "1:3fcc745bd071aa073bd666e01ff8df5fc72ab15f493ae7246710c66c738aab45"
   name = "golang.org/x/net"
   packages = [
     "context",
@@ -376,11 +359,11 @@
     "proxy",
   ]
   pruneopts = ""
-  revision = "a4d6f7feada510cc50e69a37b484cb0fdc6b7876"
+  revision = "f3200d17e092c607f615320ecaad13d87ad9a2b3"
 
 [[projects]]
   branch = "master"
-  digest = "1:8f9263a1e1d886efe08142f5e47c16520d614e3640f10f4e09f98949742d5818"
+  digest = "1:c51069376876a26ef986455d1b31ae84c774817a0afd32c0160f20913a97c8bb"
   name = "golang.org/x/sys"
   packages = [
     "cpu",
@@ -388,7 +371,7 @@
     "windows",
   ]
   pruneopts = ""
-  revision = "a5b02f93d862f065920dd6a40dddc66b60d0dec4"
+  revision = "dbbf3f1254d491605cf4a0034ce25d0dc71b0c58"
 
 [[projects]]
   digest = "1:740b51a55815493a8d0f2b1e0d0ae48fe48953bf7eaf3fcc4198823bf67768c0"
@@ -494,11 +477,9 @@
     "github.com/go-ozzo/ozzo-validation",
     "github.com/gorilla/mux",
     "github.com/gorilla/websocket",
-    "github.com/icedream/go-bsdiff",
-    "github.com/jessevdk/go-flags",
-    "github.com/parrotmac/docker-patcher/pkg/internal/docker_api",
-    "github.com/parrotmac/docker-patcher/pkg/internal/utils",
-    "github.com/parrotmac/docker-patcher/pkg/patcher",
+    "github.com/jinzhu/gorm",
+    "github.com/jinzhu/gorm/dialects/postgres",
+    "github.com/lib/pq",
     "github.com/sirupsen/logrus",
     "github.com/spf13/viper",
     "gopkg.in/src-d/go-git.v4",
