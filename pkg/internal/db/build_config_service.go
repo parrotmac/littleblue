@@ -10,3 +10,17 @@ func (s *Storage) CreateBuildConfiguration(configEntity *entities.BuildConfigura
 	}
 	return nil
 }
+
+func (s *Storage) ListRepoBuildConfigurations(sourceRepoID uint) ([]entities.BuildConfiguration, error) {
+	configModels := []buildConfigurationModel{}
+	if db := s.DB.Find(&configModels, "source_repository_id = ?", sourceRepoID); db.Error != nil {
+		return nil, db.Error
+	}
+
+	configEntities := []entities.BuildConfiguration{}
+	for _, model := range configModels {
+		configEntities = append(configEntities, *model.toEntity())
+	}
+
+	return configEntities, nil
+}

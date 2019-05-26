@@ -21,7 +21,12 @@ func (sourceRepositoryModel) TableName() string {
 }
 
 func (m *sourceRepositoryModel) toEntity() *entities.SourceRepository {
-	return &entities.SourceRepository{}
+	return &entities.SourceRepository{
+		ID:                       m.ID,
+		SourceProviderID:         m.SourceProviderID,
+		AuthenticationCodeSecret: m.AuthenticationCodeSecret,
+		Name:                     m.Name,
+	}
 }
 
 func (m *sourceRepositoryModel) fromEntity(repository *entities.SourceRepository) {

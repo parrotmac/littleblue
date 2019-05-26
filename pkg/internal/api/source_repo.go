@@ -32,3 +32,19 @@ func (router *SourceRepositoryRouter) CreateSourceRepositoryHandler(w http.Respo
 
 	httputils.RespondWithStatus(w, http.StatusCreated, "created")
 }
+
+func (router *SourceRepositoryRouter) ListSourceRepositoriesHandler(w http.ResponseWriter, r *http.Request) {
+	hardcodedUserID := uint(1)
+
+	sourceRepos, err := router.StorageService.ListUserSourceRepositories(hardcodedUserID)
+	if err != nil {
+		httputils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	for i := range sourceRepos {
+		sourceRepos[i].AuthenticationCodeSecret = ""
+	}
+
+	httputils.RespondWithJSON(w, http.StatusOK, sourceRepos)
+}

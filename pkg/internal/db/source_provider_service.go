@@ -10,3 +10,16 @@ func (s *Storage) CreateSourceProvider(providerEntity *entities.SourceProvider) 
 	}
 	return nil
 }
+
+func (s *Storage) ListUserSourceProviders(userID uint) ([]entities.SourceProvider, error) {
+	sourceProviders := []sourceProviderModel{}
+	if db := s.DB.Find(&sourceProviders, "owner_id = ?", userID); db.Error != nil {
+		return nil, db.Error
+	}
+
+	sourceProviderEntities := []entities.SourceProvider{}
+	for _, providerModel := range sourceProviders {
+		sourceProviderEntities = append(sourceProviderEntities, *providerModel.toEntity())
+	}
+	return sourceProviderEntities, nil
+}

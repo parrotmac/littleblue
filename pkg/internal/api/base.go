@@ -20,7 +20,6 @@ func (s *Server) Init() {
 	s.initUserRoutes()
 	s.initSourceProviderRoutes()
 	s.initSourceRepoRoutes()
-	s.initBuildConfigRoutes()
 	s.initBuildJobRoutes()
 
 	log.Print("[INIT] Initialization complete")
@@ -41,20 +40,23 @@ func (s *Server) initSourceProviderRoutes() {
 		StorageService: s.Storage,
 	}
 	s.APIRouter.HandleFunc("/source-providers/", router.CreateSourceProviderHandler).Methods("POST")
+	s.APIRouter.HandleFunc("/source-providers/", router.ListSourceProvidersHandler).Methods("GET")
 }
 
 func (s *Server) initSourceRepoRoutes() {
-	router := SourceRepositoryRouter{
+	repoRouter := SourceRepositoryRouter{
 		StorageService: s.Storage,
 	}
-	s.APIRouter.HandleFunc("/repos/", router.CreateSourceRepositoryHandler).Methods("POST")
-}
+	repoSubrouter := s.APIRouter.PathPrefix("/repos/").Subrouter()
 
-func (s *Server) initBuildConfigRoutes() {
-	router := BuildConfigRouter{
+	repoSubrouter.HandleFunc("", repoRouter.CreateSourceRepositoryHandler).Methods("POST")
+	repoSubrouter.HandleFunc("", repoRouter.ListSourceRepositoriesHandler).Methods("GET")
+
+	configRouter := BuildConfigRouter{
 		StorageService: s.Storage,
 	}
-	s.APIRouter.HandleFunc("/build-configs/", router.CreateBuildConfigHandler).Methods("POST")
+	repoSubrouter.HandleFunc("/{repo_id}/configs/", configRouter.CreateBuildConfigHandler).Methods("POST")
+	repoSubrouter.HandleFunc("/{repo_id}/configs/", configRouter.ListRepoBuildConfigurationsHandler).Methods("GET")
 }
 
 func (s *Server) initBuildJobRoutes() {
