@@ -48,6 +48,9 @@ type BuildJob struct {
 	// Name or address of machine performing build
 	BuildHost *string `json:"build_host"`
 
+	// For git, this is the rev hash
+	SourceRevision *string `json:"source_revision"`
+
 	// git (or other) ref
 	SourceUri string `json:"source_uri"`
 

@@ -49,8 +49,8 @@ func (s *Server) initSourceRepoRoutes() {
 	}
 	repoSubrouter := s.APIRouter.PathPrefix("/repos/").Subrouter()
 
-	repoSubrouter.HandleFunc("", repoRouter.CreateSourceRepositoryHandler).Methods("POST")
-	repoSubrouter.HandleFunc("", repoRouter.ListSourceRepositoriesHandler).Methods("GET")
+	repoSubrouter.HandleFunc("/", repoRouter.CreateSourceRepositoryHandler).Methods("POST")
+	repoSubrouter.HandleFunc("/", repoRouter.ListSourceRepositoriesHandler).Methods("GET")
 
 	configRouter := BuildConfigRouter{
 		StorageService: s.Storage,
