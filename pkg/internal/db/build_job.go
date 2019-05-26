@@ -20,6 +20,7 @@ type buildJobModel struct {
 	Failed               bool
 	FailureDetail        *string
 	BuildHost            *string
+	SourceRevision       *string
 	SourceUri            string
 	ArtifactUri          string
 	SetupLogs            pq.StringArray `gorm:"type:text[]"`
@@ -42,6 +43,7 @@ func (m *buildJobModel) toEntity() *entities.BuildJob {
 		Failed:               m.Failed,
 		FailureDetail:        m.FailureDetail,
 		BuildHost:            m.BuildHost,
+		SourceRevision:       m.SourceRevision,
 		SourceUri:            m.SourceUri,
 		ArtifactUri:          m.ArtifactUri,
 		Logs: entities.BuildLogs{
@@ -62,6 +64,7 @@ func (m *buildJobModel) fromEntity(job *entities.BuildJob) {
 	m.Failed = job.Failed
 	m.FailureDetail = job.FailureDetail
 	m.BuildHost = job.BuildHost
+	m.SourceRevision = job.SourceRevision
 	m.SourceUri = job.SourceUri
 	m.ArtifactUri = job.ArtifactUri
 	m.SetupLogs = job.Logs.SetupLogs
