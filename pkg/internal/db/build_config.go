@@ -10,6 +10,7 @@ import (
 
 type buildConfigurationModel struct {
 	gorm.Model
+	Enabled            bool                  `sql:"default:true"`
 	SourceRepositoryID uint                  `sql:"type:int REFERENCES source_repositories(id)" gorm:"not null"`
 	SourceRepository   sourceRepositoryModel `gorm:"foreignkey:Repo"`
 	DockerfileName     string
