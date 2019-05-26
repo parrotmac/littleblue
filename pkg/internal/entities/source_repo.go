@@ -2,6 +2,7 @@ package entities
 
 type SourceRepositoryService interface {
 	CreateSourceRepository(s *SourceRepository) error
+	ListUserSourceRepositories(userID uint) ([]SourceRepository, error)
 }
 
 type SourceRepository struct {
