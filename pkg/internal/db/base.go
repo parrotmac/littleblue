@@ -42,4 +42,5 @@ func (s *Storage) AutoMigrateModels() {
 	s.DB.AutoMigrate(&sourceProviderModel{})
 	s.DB.AutoMigrate(&sourceRepositoryModel{})
 	s.DB.AutoMigrate(&buildConfigurationModel{})
+	s.DB.AutoMigrate(&buildJobModel{})
 }
