@@ -49,6 +49,7 @@ func (s *Server) initSourceRepoRoutes() {
 		StorageService: s.Storage,
 	}
 	s.APIRouter.HandleFunc("/repos/", router.CreateSourceRepositoryHandler).Methods("POST")
+	s.APIRouter.HandleFunc("/repos/", router.ListSourceRepositoriesHandler).Methods("GET")
 }
 
 func (s *Server) initBuildConfigRoutes() {
