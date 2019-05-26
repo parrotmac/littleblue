@@ -7,6 +7,7 @@ type BuildConfigurationService interface {
 
 type BuildConfiguration struct {
 	ID                 uint     `json:"id"`
+	Enabled            bool     `json:"enabled"`
 	SourceRepositoryID uint     `json:"source_repo_id"`
 	DockerfileName     string   `json:"dockerfile_name"`
 	HostBuildOS        string   `json:"host_build_os"`   // e.g. "windows" or "linux"
