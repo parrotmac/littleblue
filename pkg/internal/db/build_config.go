@@ -10,6 +10,7 @@ import (
 
 type buildConfigurationModel struct {
 	gorm.Model
+	Enabled            bool                  `sql:"default:true"`
 	SourceRepositoryID uint                  `sql:"type:int REFERENCES source_repositories(id)" gorm:"not null"`
 	SourceRepository   sourceRepositoryModel `gorm:"foreignkey:Repo"`
 	DockerfileName     string
@@ -25,6 +26,7 @@ func (buildConfigurationModel) TableName() string {
 func (m *buildConfigurationModel) toEntity() *entities.BuildConfiguration {
 	return &entities.BuildConfiguration{
 		ID:                 m.ID,
+		Enabled:            m.Enabled,
 		SourceRepositoryID: m.SourceRepositoryID,
 		DockerfileName:     m.DockerfileName,
 		HostBuildOS:        m.HostBuildOS,
@@ -35,6 +37,7 @@ func (m *buildConfigurationModel) toEntity() *entities.BuildConfiguration {
 
 func (m *buildConfigurationModel) fromEntity(configuration *entities.BuildConfiguration) {
 	m.ID = configuration.ID
+	m.Enabled = configuration.Enabled
 	m.SourceRepositoryID = configuration.SourceRepositoryID
 	m.DockerfileName = configuration.DockerfileName
 	m.HostBuildOS = configuration.HostBuildOS
