@@ -10,10 +10,10 @@ import (
 type sourceProviderModel struct {
 	gorm.Model
 	OwnerID uint      `sql:"type:int REFERENCES users(id)" gorm:"not null"`
-	Owner   userModel `gorm:"foreignkey:OwnerID" json:"owner"`
+	Owner   userModel `gorm:"foreignkey:OwnerID"`
 	// TOOD: Provide access to other users via something such as 'Administrators []User `gorm:"many2many:users"`'
-	Name               string `json:"name" gorm:"not null"` // e.g. "github"
-	AuthorizationToken string `json:"auth_token"`           // token required to access resources
+	Name               string `gorm:"not null"`
+	AuthorizationToken string
 }
 
 func (sourceProviderModel) TableName() string {
