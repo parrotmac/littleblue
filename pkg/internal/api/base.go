@@ -1,10 +1,11 @@
 package api
 
 import (
-	"github.com/parrotmac/littleblue/pkg/internal/db"
 	"log"
 
 	"github.com/gorilla/mux"
+
+	"github.com/parrotmac/littleblue/pkg/internal/db"
 )
 
 type Server struct {
@@ -20,6 +21,7 @@ func (s *Server) Init() {
 	s.initSourceProviderRoutes()
 	s.initSourceRepoRoutes()
 	s.initBuildConfigRoutes()
+	s.initBuildJobRoutes()
 
 	log.Print("[INIT] Initialization complete")
 }
@@ -53,4 +55,11 @@ func (s *Server) initBuildConfigRoutes() {
 		StorageService: s.Storage,
 	}
 	s.APIRouter.HandleFunc("/build-configs/", router.CreateBuildConfigHandler).Methods("POST")
+}
+
+func (s *Server) initBuildJobRoutes() {
+	router := BuildJobRouter{
+		StorageService: s.Storage,
+	}
+	s.APIRouter.HandleFunc("/jobs/", router.CreateBuildJobHandler).Methods("POST")
 }

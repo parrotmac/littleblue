@@ -20,8 +20,8 @@ type BuildJob struct {
 	/*
 		When job started (pulled from record's `created_at` column) and finished
 	*/
-	StartTime time.Time `json:"start_time"`
-	EndTime   time.Time `json:"end_time"`
+	StartTime time.Time  `json:"start_time"`
+	EndTime   *time.Time `json:"end_time"`
 
 	/*
 		Note: Status isn't cleared on failure
@@ -43,10 +43,10 @@ type BuildJob struct {
 	Failed bool `json:"failure"`
 
 	// Details of encountered error
-	FailureDetail string `json:"failure_detail"`
+	FailureDetail *string `json:"failure_detail"`
 
 	// Name or address of machine performing build
-	BuildHost string `json:"build_host"`
+	BuildHost *string `json:"build_host"`
 
 	// git (or other) ref
 	SourceUri string `json:"source_uri"`

@@ -15,11 +15,11 @@ type buildJobModel struct {
 	BuildIdentifier      string                  `gorm:"unique;not null"`
 	BuildConfigurationID uint                    `sql:"type:int REFERENCES build_configurations(id)" gorm:"not null"`
 	BuildConfiguration   buildConfigurationModel `gorm:"foreignkey:BuildConfigurationID"`
-	EndTime              time.Time
+	EndTime              *time.Time
 	Status               string
 	Failed               bool
-	FailureDetail        string
-	BuildHost            string
+	FailureDetail        *string
+	BuildHost            *string
 	SourceUri            string
 	ArtifactUri          string
 	SetupLogs            pq.StringArray `gorm:"type:text[]"`
@@ -36,6 +36,7 @@ func (m *buildJobModel) toEntity() *entities.BuildJob {
 		ID:                   m.ID,
 		BuildIdentifier:      m.BuildIdentifier,
 		BuildConfigurationID: m.BuildConfigurationID,
+		StartTime:            m.CreatedAt,
 		EndTime:              m.EndTime,
 		Status:               m.Status,
 		Failed:               m.Failed,
@@ -55,6 +56,7 @@ func (m *buildJobModel) fromEntity(job *entities.BuildJob) {
 	m.ID = job.ID
 	m.BuildIdentifier = job.BuildIdentifier
 	m.BuildConfigurationID = job.BuildConfigurationID
+	// Created at set by Gorm
 	m.EndTime = job.EndTime
 	m.Status = job.Status
 	m.Failed = job.Failed
