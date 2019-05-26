@@ -41,6 +41,7 @@ func (s *Server) initSourceProviderRoutes() {
 		StorageService: s.Storage,
 	}
 	s.APIRouter.HandleFunc("/source-providers/", router.CreateSourceProviderHandler).Methods("POST")
+	s.APIRouter.HandleFunc("/source-providers/", router.ListSourceProvidersHandler).Methods("GET")
 }
 
 func (s *Server) initSourceRepoRoutes() {

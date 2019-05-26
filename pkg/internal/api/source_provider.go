@@ -35,3 +35,21 @@ func (router *SourceProviderRouter) CreateSourceProviderHandler(w http.ResponseW
 
 	httputils.RespondWithStatus(w, http.StatusCreated, "created")
 }
+
+func (router *SourceProviderRouter) ListSourceProvidersHandler(w http.ResponseWriter, r *http.Request) {
+	// FIXME: Lookup user from session
+	hardCodedOwnerUserId := uint(1)
+
+	sourceProviders, err := router.StorageService.ListUserSourceProviders(hardCodedOwnerUserId)
+	if err != nil {
+		httputils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	// TODO: Do this automatically
+	for i := range sourceProviders {
+		sourceProviders[i].AuthorizationToken = ""
+	}
+
+	httputils.RespondWithJSON(w, http.StatusOK, sourceProviders)
+}
