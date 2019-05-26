@@ -1,9 +1,10 @@
 package api
 
 import (
-	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
+
+	"github.com/gorilla/mux"
 
 	"github.com/parrotmac/littleblue/pkg/internal/db"
 	"github.com/parrotmac/littleblue/pkg/internal/entities"
