@@ -14,12 +14,6 @@ func (s *Storage) CreateSourceRepository(repositoryEntity *entities.SourceReposi
 func (s *Storage) ListUserSourceRepositories(userID uint) ([]entities.SourceRepository, error) {
 	soureceRepos := []sourceRepositoryModel{}
 
-	// db.Joins("left join users on users.id = emails.id").Where("users.name = ?", "jinzhu").Find(&emails)
-	//	SELECT *
-	//	FROM source_repositories r
-	//	JOIN source_providers sp on r.source_provider_id = sp.id
-	//	WHERE sp.owner_id = 1
-
 	if db := s.DB.Joins("left join source_providers sp on source_repositories.source_provider_id = sp.id").Where("sp.owner_id = ?", userID).Find(&soureceRepos); db.Error != nil {
 		return nil, db.Error
 	}

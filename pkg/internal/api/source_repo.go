@@ -1,12 +1,12 @@
 package api
 
 import (
-	"github.com/sirupsen/logrus"
 	"net/http"
 
 	"github.com/parrotmac/littleblue/pkg/internal/db"
 	"github.com/parrotmac/littleblue/pkg/internal/entities"
 	"github.com/parrotmac/littleblue/pkg/internal/httputils"
+	"github.com/parrotmac/littleblue/pkg/internal/uuidgen"
 )
 
 type SourceRepositoryRouter struct {
@@ -22,8 +22,8 @@ func (router *SourceRepositoryRouter) CreateSourceRepositoryHandler(w http.Respo
 		return
 	}
 
-	logrus.Infof("Creating Source Repo: %+v", *sourceRepo)
-
+	// Overwrite on create
+	sourceRepo.RepoUUID = uuidgen.NewUndashed()
 	err = router.StorageService.CreateSourceRepository(sourceRepo)
 	if err != nil {
 		httputils.RespondWithError(w, http.StatusInternalServerError, err.Error())

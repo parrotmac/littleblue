@@ -64,4 +64,6 @@ func (s *Server) initBuildJobRoutes() {
 		StorageService: s.Storage,
 	}
 	s.APIRouter.HandleFunc("/jobs/", router.CreateBuildJobHandler).Methods("POST")
+
+	s.APIRouter.HandleFunc("/webhook/{repo_uuid}/", router.WebhookJobHandler).Methods("POST")
 }

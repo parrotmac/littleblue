@@ -6,8 +6,9 @@ type SourceRepositoryService interface {
 }
 
 type SourceRepository struct {
-	ID               uint `json:"id"`
-	SourceProviderID uint `json:"source_provider_id"`
+	ID               uint   `json:"id"`
+	SourceProviderID uint   `json:"source_provider_id"`
+	RepoUUID         string `json:"repo_uuid"`
 	// Gitlab is not supported -- they don't use an HMAC, only a secret https://gitlab.com/gitlab-org/gitlab-ce/issues/37380
 	AuthenticationCodeSecret string `json:"auth_code_secret,omitempty"` // HMAC secret/token
 	Name                     string `json:"name"`                       // e.g. "parrotmac/littleblue"
