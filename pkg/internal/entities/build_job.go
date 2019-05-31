@@ -3,8 +3,21 @@ package entities
 import "time"
 
 type BuildJobService interface {
-	CreateBuildJob(c *BuildJob) error
+	CreateBuildJob(j *BuildJob) error
+	UpdateBuildJob(j *BuildJob) error
 }
+
+type BuildJobStatus string
+
+const (
+	BuildJobStatusUnknown  BuildJobStatus = "unknown"
+	BuildJobStatusCreated  BuildJobStatus = "created"
+	BuildJobStatusPending  BuildJobStatus = "pending"
+	BuildJobStatusCloning  BuildJobStatus = "cloning"
+	BuildJobStatusBuilding BuildJobStatus = "building"
+	BuildJobStatusPushing  BuildJobStatus = "pushing"
+	BuildJobStatusComplete BuildJobStatus = "complete"
+)
 
 type BuildJob struct {
 	ID uint `json:"id"`
@@ -33,7 +46,7 @@ type BuildJob struct {
 		pushing: Artifacts are being uploaded
 		complete: Process finished
 	*/
-	Status string `json:"status"`
+	Status BuildJobStatus `json:"status"`
 
 	/*
 		Was an error encountered?

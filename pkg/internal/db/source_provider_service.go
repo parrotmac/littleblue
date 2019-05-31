@@ -23,3 +23,24 @@ func (s *Storage) ListUserSourceProviders(userID uint) ([]entities.SourceProvide
 	}
 	return sourceProviderEntities, nil
 }
+
+func (s *Storage) GetProviderForRepo(repoID uint) (*entities.SourceProvider, error) {
+	provider := &sourceProviderModel{}
+
+	joinStr := "JOIN source_repositories sr on source_providers.id = sr.source_provider_id"
+	db := s.DB.Table(
+		"source_providers",
+	).Select(
+		"source_providers.*",
+	).Joins(
+		joinStr,
+	).Where(
+		"sr.id = ?", repoID,
+	).First(
+		provider,
+	)
+	if db.Error != nil {
+		return nil, db.Error
+	}
+	return provider.toEntity(), nil
+}

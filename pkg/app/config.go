@@ -1,22 +1,13 @@
-package config
+package app
 
 import (
 	"fmt"
+	"github.com/parrotmac/littleblue/pkg/internal/db"
 	"strings"
 
 	"github.com/go-ozzo/ozzo-validation"
 	"github.com/spf13/viper"
 )
-
-type GithubConfig struct {
-	WebhookSecret string `mapstructure:"webhook_secret"`
-	AuthToken     string `mapstructure:"auth_token"`
-}
-
-type BitbucketConfig struct {
-	WebhookSecret string `mapstructure:"webhook_secret"`
-	AuthToken     string `mapstructure:"auth_token"`
-}
 
 type DockerRegistryConfig struct {
 	URL      string `mapstructure:"url"`
@@ -24,23 +15,13 @@ type DockerRegistryConfig struct {
 	Password string `mapstructure:"password"`
 }
 
-type PostgresConfig struct {
-	Host     string `mapstructure:"host"`
-	Port     int    `mapstructure:"port"`
-	Database string `mapstructure:"database"`
-	Username string `mapstructure:"username"`
-	Password string `mapstructure:"password"`
-}
-
-type AppConfig struct {
+type Config struct {
 	ServerPort           int                  `mapstructure:"server_port"`
-	GithubConfig         GithubConfig         `mapstructure:"github"`    // TODO: Deprecate and remove
-	BitbucketConfig      BitbucketConfig      `mapstructure:"bitbucket"` // TODO: Deprecate and remove
-	DockerRegistryConfig DockerRegistryConfig `mapstructure:"registry"`  // TODO: Deprecate and remove
-	PostgresConfig       PostgresConfig       `mapstructure:"postgres"`
+	DockerRegistryConfig DockerRegistryConfig `mapstructure:"registry"` // TODO: Deprecate and remove
+	PostgresConfig       db.PostgresConfig    `mapstructure:"postgres"`
 }
 
-func (c *AppConfig) Validate() error {
+func (c *Config) Validate() error {
 	// Validate root config
 	err := validation.ValidateStruct(c,
 		validation.Field(&c.ServerPort, validation.NotNil),
@@ -60,7 +41,7 @@ func (c *AppConfig) Validate() error {
 	return nil
 }
 
-func (c *AppConfig) LoadConfig(configpaths ...string) error {
+func (c *Config) LoadConfig(configpaths ...string) error {
 	v := viper.New()
 	v.SetConfigName("config")
 	v.SetConfigType("yaml")

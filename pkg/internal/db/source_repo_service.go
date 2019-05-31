@@ -11,6 +11,14 @@ func (s *Storage) CreateSourceRepository(repositoryEntity *entities.SourceReposi
 	return nil
 }
 
+func (s *Storage) FindRepoByUUID(repoUUID string) (*entities.SourceRepository, error) {
+	sourceRepo := &entities.SourceRepository{}
+	if db := s.DB.Where("repo_uuid = ?", repoUUID).First(sourceRepo); db.Error != nil {
+		return nil, db.Error
+	}
+	return sourceRepo, nil
+}
+
 func (s *Storage) ListUserSourceRepositories(userID uint) ([]entities.SourceRepository, error) {
 	soureceRepos := []sourceRepositoryModel{}
 

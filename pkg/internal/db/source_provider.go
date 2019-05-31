@@ -13,6 +13,7 @@ type sourceProviderModel struct {
 	Owner   userModel `gorm:"foreignkey:OwnerID"`
 	// TOOD: Provide access to other users via something such as 'Administrators []User `gorm:"many2many:users"`'
 	Name               string `gorm:"not null"`
+	LoginName          string
 	AuthorizationToken string
 }
 
@@ -25,6 +26,7 @@ func (m *sourceProviderModel) toEntity() *entities.SourceProvider {
 		ID:                 m.ID,
 		OwnerID:            m.OwnerID,
 		Name:               m.Name,
+		LoginName:          m.LoginName,
 		AuthorizationToken: m.AuthorizationToken,
 	}
 }
@@ -32,5 +34,6 @@ func (m *sourceProviderModel) toEntity() *entities.SourceProvider {
 func (m *sourceProviderModel) fromEntity(provider *entities.SourceProvider) {
 	m.OwnerID = provider.OwnerID
 	m.Name = provider.Name
+	m.LoginName = provider.LoginName
 	m.AuthorizationToken = provider.AuthorizationToken
 }

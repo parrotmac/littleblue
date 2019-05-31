@@ -1,31 +1,33 @@
 package api
 
 import (
-	"log"
-
 	"github.com/gorilla/mux"
+	"github.com/parrotmac/littleblue/pkg/internal/builder"
 
 	"github.com/parrotmac/littleblue/pkg/internal/db"
 )
 
-type Server struct {
+type server struct {
 	APIRouter *mux.Router
 	Storage   *db.Storage
+	Builder   *builder.Builder
 }
 
-func (s *Server) Init() {
-
-	log.Print("[INIT] Setting up routes")
+func NewServer(pathPrefix string, router *mux.Router, storage *db.Storage, builder *builder.Builder) *server {
+	s := &server{
+		APIRouter: router.PathPrefix(pathPrefix).Subrouter(),
+		Storage:   storage,
+		Builder:   builder,
+	}
 
 	s.initUserRoutes()
 	s.initSourceProviderRoutes()
 	s.initSourceRepoRoutes()
 	s.initBuildJobRoutes()
-
-	log.Print("[INIT] Initialization complete")
+	return s
 }
 
-func (s *Server) initUserRoutes() {
+func (s *server) initUserRoutes() {
 	userRouter := UserRouter{
 		StorageService: s.Storage,
 	}
@@ -35,7 +37,7 @@ func (s *Server) initUserRoutes() {
 	s.APIRouter.HandleFunc("/users/{user_id}/", userRouter.UpdateUserHandler).Methods("PATCH")
 }
 
-func (s *Server) initSourceProviderRoutes() {
+func (s *server) initSourceProviderRoutes() {
 	router := SourceProviderRouter{
 		StorageService: s.Storage,
 	}
@@ -43,7 +45,7 @@ func (s *Server) initSourceProviderRoutes() {
 	s.APIRouter.HandleFunc("/source-providers/", router.ListSourceProvidersHandler).Methods("GET")
 }
 
-func (s *Server) initSourceRepoRoutes() {
+func (s *server) initSourceRepoRoutes() {
 	repoRouter := SourceRepositoryRouter{
 		StorageService: s.Storage,
 	}
@@ -59,9 +61,10 @@ func (s *Server) initSourceRepoRoutes() {
 	repoSubrouter.HandleFunc("/{repo_id}/configs/", configRouter.ListRepoBuildConfigurationsHandler).Methods("GET")
 }
 
-func (s *Server) initBuildJobRoutes() {
+func (s *server) initBuildJobRoutes() {
 	router := BuildJobRouter{
 		StorageService: s.Storage,
+		Builder:        s.Builder,
 	}
 	s.APIRouter.HandleFunc("/jobs/", router.CreateBuildJobHandler).Methods("POST")
 
