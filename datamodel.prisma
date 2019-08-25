@@ -1,0 +1,68 @@
+type User {
+  id: ID! @id
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  name: String!
+  email: String! @unique
+  passwordHash: String
+  githubUsername: String # Username
+  githubAccountAuthToken: String
+  googleAccountAuthToken: String
+}
+
+enum CloneStrategy {
+  GIT_SSH, GIT_HTTPS
+}
+
+enum SourceProvider {
+  Github
+}
+
+type SourceRepository {
+  id: ID! @id
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  owner: User! @relation(link: INLINE)
+  sourceProvider: SourceProvider
+  name: String! # e.g. parrotmac/littleblue
+  authClientID: String # e.g. Github username to auth as
+  authSecret: String # HMAC secret/token
+  cloneStrategy: CloneStrategy!
+  buildsEnabled: Boolean! @default(value: true)
+  baseConfigurationFileName: String! @default(value: ".littleblue/build-config.yml")
+}
+
+type DockerRegistry {
+  id: ID! @id
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  Hostname: String!
+  AuthUsername: String!
+  AuthPassword: String!
+}
+
+enum BuildJobStatus {
+  Unknown, 
+  Created,
+  Pending,
+  Cloning,
+  PreparingBuild, 
+  Building,
+  Pushing,
+  Complete
+}
+
+type BuildJob {
+  id: ID! @id
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  repo: SourceRepository! @relation(link: INLINE)
+  status: BuildJobStatus!
+  buildIdentifier: String!
+  sourceRevision: String!
+  artifactUri: String!
+
+  setupLogs: String
+  buildLogs: String
+  pushLogs: String
+}

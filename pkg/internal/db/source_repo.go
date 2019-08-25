@@ -14,7 +14,8 @@ type sourceRepositoryModel struct {
 	SourceProvider   sourceProviderModel `gorm:"foreignkey:SourceProviderID" json:"source_provider"`
 	// Gitlab is not supported -- they don't use an HMAC, only a secret https://gitlab.com/gitlab-org/gitlab-ce/issues/37380
 	AuthenticationCodeSecret string // HMAC secret/token
-	Name                     string // e.g. "parrotmac/littleblue"
+	RepoUser                 string // e.g. "parrotmac"
+	RepoName                 string // e.g. "littleblue"
 }
 
 func (sourceRepositoryModel) TableName() string {
@@ -27,7 +28,8 @@ func (m *sourceRepositoryModel) toEntity() *entities.SourceRepository {
 		RepoUUID:                 m.RepoUUID,
 		SourceProviderID:         m.SourceProviderID,
 		AuthenticationCodeSecret: m.AuthenticationCodeSecret,
-		Name:                     m.Name,
+		RepoUser:                 m.RepoUser,
+		RepoName:                 m.RepoName,
 	}
 }
 
@@ -35,5 +37,6 @@ func (m *sourceRepositoryModel) fromEntity(repository *entities.SourceRepository
 	m.SourceProviderID = repository.SourceProviderID
 	m.RepoUUID = repository.RepoUUID
 	m.AuthenticationCodeSecret = repository.AuthenticationCodeSecret
-	m.Name = repository.Name
+	m.RepoUser = repository.RepoUser
+	m.RepoName = repository.RepoName
 }

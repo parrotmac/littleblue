@@ -13,6 +13,8 @@ type buildConfigurationModel struct {
 	Enabled            bool                  `sql:"default:true"`
 	SourceRepositoryID uint                  `sql:"type:int REFERENCES source_repositories(id)" gorm:"not null"`
 	SourceRepository   sourceRepositoryModel `gorm:"foreignkey:Repo"`
+	DockerRegistryID   uint                  `sql:"type:int REFERENCES docker_registries(id)" gorm:"not null"`
+	DockerRegistry     dockerRegistryModel   `gorm:"foreignkey:Registry"`
 	DockerfileName     string
 	HostBuildOS        string
 	HostBuildArch      string
@@ -28,6 +30,7 @@ func (m *buildConfigurationModel) toEntity() *entities.BuildConfiguration {
 		ID:                 m.ID,
 		Enabled:            m.Enabled,
 		SourceRepositoryID: m.SourceRepositoryID,
+		DockerRegistryID:   m.DockerRegistryID,
 		DockerfileName:     m.DockerfileName,
 		HostBuildOS:        m.HostBuildOS,
 		HostBuildArch:      m.HostBuildArch,
@@ -39,6 +42,7 @@ func (m *buildConfigurationModel) fromEntity(configuration *entities.BuildConfig
 	m.ID = configuration.ID
 	m.Enabled = configuration.Enabled
 	m.SourceRepositoryID = configuration.SourceRepositoryID
+	m.DockerRegistryID = configuration.DockerRegistryID
 	m.DockerfileName = configuration.DockerfileName
 	m.HostBuildOS = configuration.HostBuildOS
 	m.HostBuildArch = configuration.HostBuildArch

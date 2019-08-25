@@ -1,20 +1,25 @@
 package db
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-
-	"github.com/parrotmac/littleblue/pkg/internal/config"
 )
 
 type Storage struct {
 	DB *gorm.DB
 }
 
-func Setup(config config.PostgresConfig) (*Storage, error) {
+type PostgresConfig struct {
+	Host     string `mapstructure:"host"`
+	Port     int    `mapstructure:"port"`
+	Database string `mapstructure:"database"`
+	Username string `mapstructure:"username"`
+	Password string `mapstructure:"password"`
+}
+
+func Setup(config PostgresConfig) (*Storage, error) {
 	connStr := fmt.Sprintf(
 		"host=%s port=%d user=%s dbname=%s password=%s sslmode=disable",
 		config.Host,
@@ -25,7 +30,7 @@ func Setup(config config.PostgresConfig) (*Storage, error) {
 	)
 	db, err := gorm.Open("postgres", connStr)
 	if err != nil {
-		return nil, errors.New("failed to connect database")
+		return nil, fmt.Errorf("failed to connect database: %v", err)
 	}
 
 	return &Storage{
@@ -39,6 +44,7 @@ func (s *Storage) Shutdown() error {
 
 func (s *Storage) AutoMigrateModels() {
 	s.DB.AutoMigrate(&userModel{})
+	s.DB.AutoMigrate(&dockerRegistryModel{})
 	s.DB.AutoMigrate(&sourceProviderModel{})
 	s.DB.AutoMigrate(&sourceRepositoryModel{})
 	s.DB.AutoMigrate(&buildConfigurationModel{})

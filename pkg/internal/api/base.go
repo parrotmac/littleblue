@@ -1,69 +1,41 @@
 package api
 
 import (
-	"log"
+	"github.com/gin-gonic/gin"
 
-	"github.com/gorilla/mux"
-
+	"github.com/parrotmac/littleblue/pkg/internal/builder"
 	"github.com/parrotmac/littleblue/pkg/internal/db"
 )
 
-type Server struct {
-	APIRouter *mux.Router
-	Storage   *db.Storage
+type apiServer struct {
+	RouteGroup *gin.RouterGroup
+	Storage    *db.Storage
+	Builder    *builder.Builder
 }
 
-func (s *Server) Init() {
+func NewServer(routeGroup *gin.RouterGroup, storage *db.Storage, builder *builder.Builder) *apiServer {
+	s := &apiServer{
+		RouteGroup: routeGroup,
+		Storage:    storage,
+		Builder:    builder,
+	}
 
-	log.Print("[INIT] Setting up routes")
-
-	s.initUserRoutes()
-	s.initSourceProviderRoutes()
-	s.initSourceRepoRoutes()
-	s.initBuildJobRoutes()
-
-	log.Print("[INIT] Initialization complete")
+	s.initRoutes()
+	return s
 }
 
-func (s *Server) initUserRoutes() {
-	userRouter := UserRouter{
-		StorageService: s.Storage,
-	}
-
-	s.APIRouter.HandleFunc("/users/", userRouter.CreateUserHandler).Methods("POST")
-	s.APIRouter.HandleFunc("/users/{user_id}/", userRouter.GetUserHandler).Methods("GET")
-	s.APIRouter.HandleFunc("/users/{user_id}/", userRouter.UpdateUserHandler).Methods("PATCH")
-}
-
-func (s *Server) initSourceProviderRoutes() {
-	router := SourceProviderRouter{
-		StorageService: s.Storage,
-	}
-	s.APIRouter.HandleFunc("/source-providers/", router.CreateSourceProviderHandler).Methods("POST")
-	s.APIRouter.HandleFunc("/source-providers/", router.ListSourceProvidersHandler).Methods("GET")
-}
-
-func (s *Server) initSourceRepoRoutes() {
-	repoRouter := SourceRepositoryRouter{
-		StorageService: s.Storage,
-	}
-	repoSubrouter := s.APIRouter.PathPrefix("/repos/").Subrouter()
-
-	repoSubrouter.HandleFunc("/", repoRouter.CreateSourceRepositoryHandler).Methods("POST")
-	repoSubrouter.HandleFunc("/", repoRouter.ListSourceRepositoriesHandler).Methods("GET")
-
-	configRouter := BuildConfigRouter{
-		StorageService: s.Storage,
-	}
-	repoSubrouter.HandleFunc("/{repo_id}/configs/", configRouter.CreateBuildConfigHandler).Methods("POST")
-	repoSubrouter.HandleFunc("/{repo_id}/configs/", configRouter.ListRepoBuildConfigurationsHandler).Methods("GET")
-}
-
-func (s *Server) initBuildJobRoutes() {
-	router := BuildJobRouter{
-		StorageService: s.Storage,
-	}
-	s.APIRouter.HandleFunc("/jobs/", router.CreateBuildJobHandler).Methods("POST")
-
-	s.APIRouter.HandleFunc("/webhook/{repo_uuid}/", router.WebhookJobHandler).Methods("POST")
+func (s *apiServer) initRoutes() {
+	s.RouteGroup.POST("/users/", gin.WrapF(s.CreateUserHandler))
+	s.RouteGroup.GET("/users/{user_id}/", gin.WrapF(s.GetUserHandler))
+	s.RouteGroup.PATCH("/users/{user_id}/", gin.WrapF(s.UpdateUserHandler))
+	s.RouteGroup.POST("/registries/", gin.WrapF(s.CreateDockerRegistryHandler))
+	s.RouteGroup.POST("/source-providers/", gin.WrapF(s.CreateSourceProviderHandler))
+	s.RouteGroup.GET("/source-providers/", gin.WrapF(s.ListSourceProvidersHandler))
+	s.RouteGroup.POST("/jobs/", gin.WrapF(s.CreateBuildJobHandler))
+	s.RouteGroup.POST("/webhook/{repo_uuid}/", gin.WrapF(s.WebhookJobHandler))
+	s.RouteGroup.POST("/repos/", gin.WrapF(s.CreateSourceRepositoryHandler))
+	s.RouteGroup.GET("/repos/", gin.WrapF(s.ListSourceRepositoriesHandler))
+	s.RouteGroup.POST("/repos/{repo_id}/configs/", gin.WrapF(s.CreateBuildConfigHandler))
+	s.RouteGroup.GET("/repos/{repo_id}/configs/", gin.WrapF(s.ListRepoBuildConfigurationsHandler))
+	s.RouteGroup.GET("/repos/{repo_uuid}/jobs/", gin.WrapF(s.ListRepoBuildJobsHandler))
 }

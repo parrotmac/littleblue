@@ -8,16 +8,11 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/parrotmac/littleblue/pkg/internal/db"
 	"github.com/parrotmac/littleblue/pkg/internal/entities"
 	"github.com/parrotmac/littleblue/pkg/internal/httputils"
 )
 
-type UserRouter struct {
-	StorageService *db.Storage
-}
-
-func (router *UserRouter) CreateUserHandler(w http.ResponseWriter, r *http.Request) {
+func (s *apiServer) CreateUserHandler(w http.ResponseWriter, r *http.Request) {
 	newUser := &entities.User{}
 
 	requestBody, err := ioutil.ReadAll(r.Body)
@@ -32,7 +27,7 @@ func (router *UserRouter) CreateUserHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	err = router.StorageService.CreateUser(newUser)
+	err = s.Storage.CreateUser(newUser)
 	if err != nil {
 		httputils.RespondWithError(w, http.StatusInternalServerError, err.Error())
 		return
@@ -41,7 +36,7 @@ func (router *UserRouter) CreateUserHandler(w http.ResponseWriter, r *http.Reque
 	httputils.RespondWithStatus(w, http.StatusCreated, "created")
 }
 
-func (router *UserRouter) GetUserHandler(w http.ResponseWriter, r *http.Request) {
+func (s *apiServer) GetUserHandler(w http.ResponseWriter, r *http.Request) {
 	userIdStr, ok := mux.Vars(r)["user_id"]
 	if !ok || userIdStr == "" {
 		httputils.RespondWithError(w, http.StatusBadRequest, "please specify a valid user ID")
@@ -54,7 +49,7 @@ func (router *UserRouter) GetUserHandler(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	user, err := router.StorageService.GetUserByID(uint(userID))
+	user, err := s.Storage.GetUserByID(uint(userID))
 	if err != nil {
 		httputils.RespondWithError(w, http.StatusInternalServerError, err.Error())
 		return
@@ -63,7 +58,7 @@ func (router *UserRouter) GetUserHandler(w http.ResponseWriter, r *http.Request)
 	httputils.RespondWithJSON(w, http.StatusOK, user)
 }
 
-func (router *UserRouter) UpdateUserHandler(w http.ResponseWriter, r *http.Request) {
+func (s *apiServer) UpdateUserHandler(w http.ResponseWriter, r *http.Request) {
 	updatedUser := &entities.User{}
 
 	requestBody, err := ioutil.ReadAll(r.Body)
@@ -78,7 +73,7 @@ func (router *UserRouter) UpdateUserHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	err = router.StorageService.UpdateUser(updatedUser)
+	err = s.Storage.UpdateUser(updatedUser)
 	if err != nil {
 		httputils.RespondWithError(w, http.StatusInternalServerError, err.Error())
 		return

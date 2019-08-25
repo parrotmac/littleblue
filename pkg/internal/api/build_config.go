@@ -6,19 +6,18 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/parrotmac/littleblue/pkg/internal/db"
 	"github.com/parrotmac/littleblue/pkg/internal/entities"
 	"github.com/parrotmac/littleblue/pkg/internal/httputils"
 )
 
-type BuildConfigRouter struct {
-	StorageService *db.Storage
-}
-
-func (router *BuildConfigRouter) CreateBuildConfigHandler(w http.ResponseWriter, r *http.Request) {
+func (s *apiServer) CreateBuildConfigHandler(w http.ResponseWriter, r *http.Request) {
 	// FIXME: Validate user auth
 	maybeRepoID := mux.Vars(r)["repo_id"]
 	repoID, err := strconv.Atoi(maybeRepoID)
+	if err != nil {
+		httputils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
 
 	buildCfg := &entities.BuildConfiguration{}
 	err = httputils.ReadJsonBodyToEntity(r.Body, buildCfg)
@@ -29,7 +28,7 @@ func (router *BuildConfigRouter) CreateBuildConfigHandler(w http.ResponseWriter,
 
 	buildCfg.SourceRepositoryID = uint(repoID)
 
-	err = router.StorageService.CreateBuildConfiguration(buildCfg)
+	err = s.Storage.CreateBuildConfiguration(buildCfg)
 	if err != nil {
 		httputils.RespondWithError(w, http.StatusInternalServerError, err.Error())
 		return
@@ -38,7 +37,7 @@ func (router *BuildConfigRouter) CreateBuildConfigHandler(w http.ResponseWriter,
 	httputils.RespondWithStatus(w, http.StatusCreated, "created")
 }
 
-func (router *BuildConfigRouter) ListRepoBuildConfigurationsHandler(w http.ResponseWriter, r *http.Request) {
+func (s *apiServer) ListRepoBuildConfigurationsHandler(w http.ResponseWriter, r *http.Request) {
 	// FIXME: Validate user auth
 	maybeRepoID := mux.Vars(r)["repo_id"]
 	repoID, err := strconv.Atoi(maybeRepoID)
@@ -47,7 +46,7 @@ func (router *BuildConfigRouter) ListRepoBuildConfigurationsHandler(w http.Respo
 		return
 	}
 
-	buildConfigs, err := router.StorageService.ListRepoBuildConfigurations(uint(repoID))
+	buildConfigs, err := s.Storage.ListRepoBuildConfigurations(uint(repoID))
 	if err != nil {
 		httputils.RespondWithError(w, http.StatusInternalServerError, err.Error())
 		return

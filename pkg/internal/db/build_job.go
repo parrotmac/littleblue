@@ -39,7 +39,7 @@ func (m *buildJobModel) toEntity() *entities.BuildJob {
 		BuildConfigurationID: m.BuildConfigurationID,
 		StartTime:            m.CreatedAt,
 		EndTime:              m.EndTime,
-		Status:               m.Status,
+		Status:               entities.BuildJobStatus(m.Status),
 		Failed:               m.Failed,
 		FailureDetail:        m.FailureDetail,
 		BuildHost:            m.BuildHost,
@@ -60,7 +60,7 @@ func (m *buildJobModel) fromEntity(job *entities.BuildJob) {
 	m.BuildConfigurationID = job.BuildConfigurationID
 	// Created at set by Gorm
 	m.EndTime = job.EndTime
-	m.Status = job.Status
+	m.Status = string(job.Status)
 	m.Failed = job.Failed
 	m.FailureDetail = job.FailureDetail
 	m.BuildHost = job.BuildHost

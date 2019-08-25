@@ -1,4 +1,4 @@
-package pkg
+package littleblue
 
 import (
 	"encoding/json"
@@ -8,42 +8,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gorilla/mux"
-
 	"github.com/parrotmac/littleblue/pkg/internal/httputils"
+	"github.com/parrotmac/littleblue/pkg/internal/webhook"
 )
-
-func initializeFrontendRoutes(router *mux.Router) {
-
-	staticUrlPrefix := "/static/"
-	clientDirectoryPath := "client/build/static/"
-
-	staticFileServer := http.FileServer(http.Dir(clientDirectoryPath))
-	router.PathPrefix(staticUrlPrefix).Handler(http.StripPrefix(staticUrlPrefix, staticFileServer))
-
-	indexHandler := func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "client/build/")
-	}
-	router.PathPrefix("/").HandlerFunc(indexHandler)
-}
-
-func (a *App) getJobsRoute(w http.ResponseWriter, r *http.Request) {
-	type WebSafeJob struct {
-		RepoName string    `json:"repo_name"`
-		Messages []Message `json:"messages"`
-	}
-
-	webSafeJobs := []WebSafeJob{}
-
-	for _, buildContext := range a.buildContexts {
-		webSafeJobs = append(webSafeJobs, WebSafeJob{
-			RepoName: buildContext.Source.FullName,
-			Messages: buildContext.Messages,
-		})
-	}
-
-	httputils.RespondWithJSON(w, http.StatusOK, webSafeJobs)
-}
 
 func (a *App) webhookUpdate(w http.ResponseWriter, r *http.Request) {
 	bodyBytes, err := ioutil.ReadAll(r.Body)
@@ -52,16 +19,7 @@ func (a *App) webhookUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	providedSignature := []byte(r.Header.Get("X-Hub-Signature"))
-
-	hmacSignatureValid := a.VerifyRequestBodyHmac(bodyBytes, []byte(a.config.GithubConfig.WebhookSecret), providedSignature)
-
-	if !hmacSignatureValid {
-		httputils.RespondWithError(w, http.StatusUnauthorized, "Signature verification failed. Please check your application configuration.")
-		return
-	}
-
-	var webhookBody GithubWebhookRequest
+	var webhookBody webhook.GithubWebhookRequest
 	if err := json.Unmarshal(bodyBytes, &webhookBody); err != nil {
 		httputils.RespondWithError(w, http.StatusBadRequest, "Unable to decode JSON body")
 		return

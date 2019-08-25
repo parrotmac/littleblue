@@ -6,7 +6,7 @@ registry:
   username: user
   password: pass
 postgres:
-  port: 5432
+  port: 5544
   database: littleblue
   username: littleblue
-  password: lol
+  password: cf713299cb2c4dc4b00adacb0ec01044

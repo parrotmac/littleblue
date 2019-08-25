@@ -1,0 +1,59 @@
+type Query {
+    userByID(id: ID!): User
+    enabledRepositories: [SourceRepository!]!
+    sourceRepositoryByOwnerAndName(ownerID: String!, name: String!): SourceRepository
+    sourceRepositoryByID(repoID: ID!): SourceRepository
+    userSourceRepositories(userId: ID!): [SourceRepository!]!
+}
+
+type Mutation {
+    createUser(name: String!): User
+    enableSourceRepository(repoID: ID!): SourceRepository
+}
+
+scalar DateTime
+
+enum CloneStrategy {
+    GIT_SSH, GIT_HTTPS
+}
+
+enum SourceProvider {
+    Github
+}
+
+enum BuildJobStatus {
+    Unknown,
+    Created,
+    Pending,
+    Cloning,
+    PreparingBuild,
+    Building,
+    Pushing,
+    Complete
+}
+
+type SourceRepository {
+    id: ID!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+    owner: User!
+    sourceProvider: SourceProvider
+    name: String!
+    authClientID: String
+    authSecret: String
+    cloneStrategy: CloneStrategy!
+    buildsEnabled: Boolean!
+    baseConfigurationFileName: String!
+}
+
+type User {
+    id: ID!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+    name: String!
+    email: String!
+    passwordHash: String
+    githubUsername: String
+    githubAccountAuthToken: String
+    googleAccountAuthToken: String
+}

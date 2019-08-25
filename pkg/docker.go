@@ -1,4 +1,4 @@
-package pkg
+package littleblue
 
 import (
 	"bufio"
@@ -21,8 +21,7 @@ func (bCtx *BuildContext) BuildImageFromTar(tarPath string, tag string) error {
 		}
 	}()
 
-	runEnv := string("build")
-
+	runEnv := "build"
 	buildArgs := map[string]*string{
 		"RUN_ENV": &runEnv,
 	}
@@ -42,12 +41,6 @@ func (bCtx *BuildContext) BuildImageFromTar(tarPath string, tag string) error {
 	if err != nil {
 		return err
 	}
-
-	bCtx.addMessage(MsgLevelInfo, struct {
-		BuildOS string `json:"build_os"`
-	}{
-		BuildOS: buildResponse.OSType,
-	}, true)
 
 	scanner := bufio.NewScanner(buildResponse.Body)
 	for scanner.Scan() {

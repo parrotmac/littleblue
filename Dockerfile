@@ -32,7 +32,7 @@ COPY Gopkg.lock .
 
 RUN dep ensure -v -vendor-only
 COPY . .
-RUN go build -o bin/littleblue cmd/main.go
+RUN go build -o bin/littleblue cmd/server/main.go
 # Final artifact: /go/src/github.com/parrotmac/littleblue/bin/littleblue
 
 FROM alpine:latest

@@ -1,0 +1,20 @@
+name: littleblue
+base: core18
+version: '0.1'
+summary: The littleblue container builder
+description: |
+  The littleblue container builder. Currently under heavy development.
+
+grade: devel
+confinement: devmode
+
+parts:
+  littleblue:
+    source: .
+    plugin: go
+    go-importpath: github.com/parrotmac/littleblue
+
+apps:
+  littleblue:
+    command: littleblue
+
