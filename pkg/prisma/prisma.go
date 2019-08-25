@@ -68,7 +68,7 @@ func (client *Client) BuildJob(params BuildJobWhereUniqueInput) *BuildJobExec {
 		params,
 		[2]string{"BuildJobWhereUniqueInput!", "BuildJob"},
 		"buildJob",
-		[]string{"id", "createdAt", "updatedAt", "status", "buildIdentifier", "sourceRevision", "artifactUri", "setupLogs", "buildLogs", "pushLogs"})
+		[]string{"id", "createdAt", "updatedAt", "completedAt", "buildHostKind", "buildHostIdentifier", "status", "buildIdentifier", "sourceRevision", "artifactUri", "setupLogs", "buildLogs", "pushLogs"})
 
 	return &BuildJobExec{ret}
 }
@@ -102,7 +102,7 @@ func (client *Client) BuildJobs(params *BuildJobsParams) *BuildJobExecArray {
 		wparams,
 		[3]string{"BuildJobWhereInput", "BuildJobOrderByInput", "BuildJob"},
 		"buildJobs",
-		[]string{"id", "createdAt", "updatedAt", "status", "buildIdentifier", "sourceRevision", "artifactUri", "setupLogs", "buildLogs", "pushLogs"})
+		[]string{"id", "createdAt", "updatedAt", "completedAt", "buildHostKind", "buildHostIdentifier", "status", "buildIdentifier", "sourceRevision", "artifactUri", "setupLogs", "buildLogs", "pushLogs"})
 
 	return &BuildJobExecArray{ret}
 }
@@ -383,7 +383,7 @@ func (client *Client) CreateBuildJob(params BuildJobCreateInput) *BuildJobExec {
 		params,
 		[2]string{"BuildJobCreateInput!", "BuildJob"},
 		"createBuildJob",
-		[]string{"id", "createdAt", "updatedAt", "status", "buildIdentifier", "sourceRevision", "artifactUri", "setupLogs", "buildLogs", "pushLogs"})
+		[]string{"id", "createdAt", "updatedAt", "completedAt", "buildHostKind", "buildHostIdentifier", "status", "buildIdentifier", "sourceRevision", "artifactUri", "setupLogs", "buildLogs", "pushLogs"})
 
 	return &BuildJobExec{ret}
 }
@@ -401,7 +401,7 @@ func (client *Client) UpdateBuildJob(params BuildJobUpdateParams) *BuildJobExec 
 		},
 		[3]string{"BuildJobUpdateInput!", "BuildJobWhereUniqueInput!", "BuildJob"},
 		"updateBuildJob",
-		[]string{"id", "createdAt", "updatedAt", "status", "buildIdentifier", "sourceRevision", "artifactUri", "setupLogs", "buildLogs", "pushLogs"})
+		[]string{"id", "createdAt", "updatedAt", "completedAt", "buildHostKind", "buildHostIdentifier", "status", "buildIdentifier", "sourceRevision", "artifactUri", "setupLogs", "buildLogs", "pushLogs"})
 
 	return &BuildJobExec{ret}
 }
@@ -438,7 +438,7 @@ func (client *Client) UpsertBuildJob(params BuildJobUpsertParams) *BuildJobExec 
 		uparams,
 		[4]string{"BuildJobWhereUniqueInput!", "BuildJobCreateInput!", "BuildJobUpdateInput!", "BuildJob"},
 		"upsertBuildJob",
-		[]string{"id", "createdAt", "updatedAt", "status", "buildIdentifier", "sourceRevision", "artifactUri", "setupLogs", "buildLogs", "pushLogs"})
+		[]string{"id", "createdAt", "updatedAt", "completedAt", "buildHostKind", "buildHostIdentifier", "status", "buildIdentifier", "sourceRevision", "artifactUri", "setupLogs", "buildLogs", "pushLogs"})
 
 	return &BuildJobExec{ret}
 }
@@ -448,7 +448,7 @@ func (client *Client) DeleteBuildJob(params BuildJobWhereUniqueInput) *BuildJobE
 		params,
 		[2]string{"BuildJobWhereUniqueInput!", "BuildJob"},
 		"deleteBuildJob",
-		[]string{"id", "createdAt", "updatedAt", "status", "buildIdentifier", "sourceRevision", "artifactUri", "setupLogs", "buildLogs", "pushLogs"})
+		[]string{"id", "createdAt", "updatedAt", "completedAt", "buildHostKind", "buildHostIdentifier", "status", "buildIdentifier", "sourceRevision", "artifactUri", "setupLogs", "buildLogs", "pushLogs"})
 
 	return &BuildJobExec{ret}
 }
@@ -714,26 +714,32 @@ const (
 type BuildJobOrderByInput string
 
 const (
-	BuildJobOrderByInputIDAsc               BuildJobOrderByInput = "id_ASC"
-	BuildJobOrderByInputIDDesc              BuildJobOrderByInput = "id_DESC"
-	BuildJobOrderByInputCreatedAtAsc        BuildJobOrderByInput = "createdAt_ASC"
-	BuildJobOrderByInputCreatedAtDesc       BuildJobOrderByInput = "createdAt_DESC"
-	BuildJobOrderByInputUpdatedAtAsc        BuildJobOrderByInput = "updatedAt_ASC"
-	BuildJobOrderByInputUpdatedAtDesc       BuildJobOrderByInput = "updatedAt_DESC"
-	BuildJobOrderByInputStatusAsc           BuildJobOrderByInput = "status_ASC"
-	BuildJobOrderByInputStatusDesc          BuildJobOrderByInput = "status_DESC"
-	BuildJobOrderByInputBuildIdentifierAsc  BuildJobOrderByInput = "buildIdentifier_ASC"
-	BuildJobOrderByInputBuildIdentifierDesc BuildJobOrderByInput = "buildIdentifier_DESC"
-	BuildJobOrderByInputSourceRevisionAsc   BuildJobOrderByInput = "sourceRevision_ASC"
-	BuildJobOrderByInputSourceRevisionDesc  BuildJobOrderByInput = "sourceRevision_DESC"
-	BuildJobOrderByInputArtifactUriAsc      BuildJobOrderByInput = "artifactUri_ASC"
-	BuildJobOrderByInputArtifactUriDesc     BuildJobOrderByInput = "artifactUri_DESC"
-	BuildJobOrderByInputSetupLogsAsc        BuildJobOrderByInput = "setupLogs_ASC"
-	BuildJobOrderByInputSetupLogsDesc       BuildJobOrderByInput = "setupLogs_DESC"
-	BuildJobOrderByInputBuildLogsAsc        BuildJobOrderByInput = "buildLogs_ASC"
-	BuildJobOrderByInputBuildLogsDesc       BuildJobOrderByInput = "buildLogs_DESC"
-	BuildJobOrderByInputPushLogsAsc         BuildJobOrderByInput = "pushLogs_ASC"
-	BuildJobOrderByInputPushLogsDesc        BuildJobOrderByInput = "pushLogs_DESC"
+	BuildJobOrderByInputIDAsc                   BuildJobOrderByInput = "id_ASC"
+	BuildJobOrderByInputIDDesc                  BuildJobOrderByInput = "id_DESC"
+	BuildJobOrderByInputCreatedAtAsc            BuildJobOrderByInput = "createdAt_ASC"
+	BuildJobOrderByInputCreatedAtDesc           BuildJobOrderByInput = "createdAt_DESC"
+	BuildJobOrderByInputUpdatedAtAsc            BuildJobOrderByInput = "updatedAt_ASC"
+	BuildJobOrderByInputUpdatedAtDesc           BuildJobOrderByInput = "updatedAt_DESC"
+	BuildJobOrderByInputCompletedAtAsc          BuildJobOrderByInput = "completedAt_ASC"
+	BuildJobOrderByInputCompletedAtDesc         BuildJobOrderByInput = "completedAt_DESC"
+	BuildJobOrderByInputBuildHostKindAsc        BuildJobOrderByInput = "buildHostKind_ASC"
+	BuildJobOrderByInputBuildHostKindDesc       BuildJobOrderByInput = "buildHostKind_DESC"
+	BuildJobOrderByInputBuildHostIdentifierAsc  BuildJobOrderByInput = "buildHostIdentifier_ASC"
+	BuildJobOrderByInputBuildHostIdentifierDesc BuildJobOrderByInput = "buildHostIdentifier_DESC"
+	BuildJobOrderByInputStatusAsc               BuildJobOrderByInput = "status_ASC"
+	BuildJobOrderByInputStatusDesc              BuildJobOrderByInput = "status_DESC"
+	BuildJobOrderByInputBuildIdentifierAsc      BuildJobOrderByInput = "buildIdentifier_ASC"
+	BuildJobOrderByInputBuildIdentifierDesc     BuildJobOrderByInput = "buildIdentifier_DESC"
+	BuildJobOrderByInputSourceRevisionAsc       BuildJobOrderByInput = "sourceRevision_ASC"
+	BuildJobOrderByInputSourceRevisionDesc      BuildJobOrderByInput = "sourceRevision_DESC"
+	BuildJobOrderByInputArtifactUriAsc          BuildJobOrderByInput = "artifactUri_ASC"
+	BuildJobOrderByInputArtifactUriDesc         BuildJobOrderByInput = "artifactUri_DESC"
+	BuildJobOrderByInputSetupLogsAsc            BuildJobOrderByInput = "setupLogs_ASC"
+	BuildJobOrderByInputSetupLogsDesc           BuildJobOrderByInput = "setupLogs_DESC"
+	BuildJobOrderByInputBuildLogsAsc            BuildJobOrderByInput = "buildLogs_ASC"
+	BuildJobOrderByInputBuildLogsDesc           BuildJobOrderByInput = "buildLogs_DESC"
+	BuildJobOrderByInputPushLogsAsc             BuildJobOrderByInput = "pushLogs_ASC"
+	BuildJobOrderByInputPushLogsDesc            BuildJobOrderByInput = "pushLogs_DESC"
 )
 
 type CloneStrategy string
@@ -799,6 +805,14 @@ const (
 	SourceRepositoryOrderByInputBaseConfigurationFileNameDesc SourceRepositoryOrderByInput = "baseConfigurationFileName_DESC"
 )
 
+type BuildHost string
+
+const (
+	BuildHostLinuxAmd64   BuildHost = "LINUX_AMD64"
+	BuildHostLinuxAarch64 BuildHost = "LINUX_AARCH64"
+	BuildHostWindowsAmd64 BuildHost = "WINDOWS_AMD64"
+)
+
 type UserOrderByInput string
 
 const (
@@ -848,128 +862,154 @@ type SourceRepositoryWhereUniqueInput struct {
 }
 
 type BuildJobWhereInput struct {
-	ID                           *string                     `json:"id,omitempty"`
-	IDNot                        *string                     `json:"id_not,omitempty"`
-	IDIn                         []string                    `json:"id_in,omitempty"`
-	IDNotIn                      []string                    `json:"id_not_in,omitempty"`
-	IDLt                         *string                     `json:"id_lt,omitempty"`
-	IDLte                        *string                     `json:"id_lte,omitempty"`
-	IDGt                         *string                     `json:"id_gt,omitempty"`
-	IDGte                        *string                     `json:"id_gte,omitempty"`
-	IDContains                   *string                     `json:"id_contains,omitempty"`
-	IDNotContains                *string                     `json:"id_not_contains,omitempty"`
-	IDStartsWith                 *string                     `json:"id_starts_with,omitempty"`
-	IDNotStartsWith              *string                     `json:"id_not_starts_with,omitempty"`
-	IDEndsWith                   *string                     `json:"id_ends_with,omitempty"`
-	IDNotEndsWith                *string                     `json:"id_not_ends_with,omitempty"`
-	CreatedAt                    *string                     `json:"createdAt,omitempty"`
-	CreatedAtNot                 *string                     `json:"createdAt_not,omitempty"`
-	CreatedAtIn                  []string                    `json:"createdAt_in,omitempty"`
-	CreatedAtNotIn               []string                    `json:"createdAt_not_in,omitempty"`
-	CreatedAtLt                  *string                     `json:"createdAt_lt,omitempty"`
-	CreatedAtLte                 *string                     `json:"createdAt_lte,omitempty"`
-	CreatedAtGt                  *string                     `json:"createdAt_gt,omitempty"`
-	CreatedAtGte                 *string                     `json:"createdAt_gte,omitempty"`
-	UpdatedAt                    *string                     `json:"updatedAt,omitempty"`
-	UpdatedAtNot                 *string                     `json:"updatedAt_not,omitempty"`
-	UpdatedAtIn                  []string                    `json:"updatedAt_in,omitempty"`
-	UpdatedAtNotIn               []string                    `json:"updatedAt_not_in,omitempty"`
-	UpdatedAtLt                  *string                     `json:"updatedAt_lt,omitempty"`
-	UpdatedAtLte                 *string                     `json:"updatedAt_lte,omitempty"`
-	UpdatedAtGt                  *string                     `json:"updatedAt_gt,omitempty"`
-	UpdatedAtGte                 *string                     `json:"updatedAt_gte,omitempty"`
-	Repo                         *SourceRepositoryWhereInput `json:"repo,omitempty"`
-	Status                       *BuildJobStatus             `json:"status,omitempty"`
-	StatusNot                    *BuildJobStatus             `json:"status_not,omitempty"`
-	StatusIn                     []BuildJobStatus            `json:"status_in,omitempty"`
-	StatusNotIn                  []BuildJobStatus            `json:"status_not_in,omitempty"`
-	BuildIdentifier              *string                     `json:"buildIdentifier,omitempty"`
-	BuildIdentifierNot           *string                     `json:"buildIdentifier_not,omitempty"`
-	BuildIdentifierIn            []string                    `json:"buildIdentifier_in,omitempty"`
-	BuildIdentifierNotIn         []string                    `json:"buildIdentifier_not_in,omitempty"`
-	BuildIdentifierLt            *string                     `json:"buildIdentifier_lt,omitempty"`
-	BuildIdentifierLte           *string                     `json:"buildIdentifier_lte,omitempty"`
-	BuildIdentifierGt            *string                     `json:"buildIdentifier_gt,omitempty"`
-	BuildIdentifierGte           *string                     `json:"buildIdentifier_gte,omitempty"`
-	BuildIdentifierContains      *string                     `json:"buildIdentifier_contains,omitempty"`
-	BuildIdentifierNotContains   *string                     `json:"buildIdentifier_not_contains,omitempty"`
-	BuildIdentifierStartsWith    *string                     `json:"buildIdentifier_starts_with,omitempty"`
-	BuildIdentifierNotStartsWith *string                     `json:"buildIdentifier_not_starts_with,omitempty"`
-	BuildIdentifierEndsWith      *string                     `json:"buildIdentifier_ends_with,omitempty"`
-	BuildIdentifierNotEndsWith   *string                     `json:"buildIdentifier_not_ends_with,omitempty"`
-	SourceRevision               *string                     `json:"sourceRevision,omitempty"`
-	SourceRevisionNot            *string                     `json:"sourceRevision_not,omitempty"`
-	SourceRevisionIn             []string                    `json:"sourceRevision_in,omitempty"`
-	SourceRevisionNotIn          []string                    `json:"sourceRevision_not_in,omitempty"`
-	SourceRevisionLt             *string                     `json:"sourceRevision_lt,omitempty"`
-	SourceRevisionLte            *string                     `json:"sourceRevision_lte,omitempty"`
-	SourceRevisionGt             *string                     `json:"sourceRevision_gt,omitempty"`
-	SourceRevisionGte            *string                     `json:"sourceRevision_gte,omitempty"`
-	SourceRevisionContains       *string                     `json:"sourceRevision_contains,omitempty"`
-	SourceRevisionNotContains    *string                     `json:"sourceRevision_not_contains,omitempty"`
-	SourceRevisionStartsWith     *string                     `json:"sourceRevision_starts_with,omitempty"`
-	SourceRevisionNotStartsWith  *string                     `json:"sourceRevision_not_starts_with,omitempty"`
-	SourceRevisionEndsWith       *string                     `json:"sourceRevision_ends_with,omitempty"`
-	SourceRevisionNotEndsWith    *string                     `json:"sourceRevision_not_ends_with,omitempty"`
-	ArtifactUri                  *string                     `json:"artifactUri,omitempty"`
-	ArtifactUriNot               *string                     `json:"artifactUri_not,omitempty"`
-	ArtifactUriIn                []string                    `json:"artifactUri_in,omitempty"`
-	ArtifactUriNotIn             []string                    `json:"artifactUri_not_in,omitempty"`
-	ArtifactUriLt                *string                     `json:"artifactUri_lt,omitempty"`
-	ArtifactUriLte               *string                     `json:"artifactUri_lte,omitempty"`
-	ArtifactUriGt                *string                     `json:"artifactUri_gt,omitempty"`
-	ArtifactUriGte               *string                     `json:"artifactUri_gte,omitempty"`
-	ArtifactUriContains          *string                     `json:"artifactUri_contains,omitempty"`
-	ArtifactUriNotContains       *string                     `json:"artifactUri_not_contains,omitempty"`
-	ArtifactUriStartsWith        *string                     `json:"artifactUri_starts_with,omitempty"`
-	ArtifactUriNotStartsWith     *string                     `json:"artifactUri_not_starts_with,omitempty"`
-	ArtifactUriEndsWith          *string                     `json:"artifactUri_ends_with,omitempty"`
-	ArtifactUriNotEndsWith       *string                     `json:"artifactUri_not_ends_with,omitempty"`
-	SetupLogs                    *string                     `json:"setupLogs,omitempty"`
-	SetupLogsNot                 *string                     `json:"setupLogs_not,omitempty"`
-	SetupLogsIn                  []string                    `json:"setupLogs_in,omitempty"`
-	SetupLogsNotIn               []string                    `json:"setupLogs_not_in,omitempty"`
-	SetupLogsLt                  *string                     `json:"setupLogs_lt,omitempty"`
-	SetupLogsLte                 *string                     `json:"setupLogs_lte,omitempty"`
-	SetupLogsGt                  *string                     `json:"setupLogs_gt,omitempty"`
-	SetupLogsGte                 *string                     `json:"setupLogs_gte,omitempty"`
-	SetupLogsContains            *string                     `json:"setupLogs_contains,omitempty"`
-	SetupLogsNotContains         *string                     `json:"setupLogs_not_contains,omitempty"`
-	SetupLogsStartsWith          *string                     `json:"setupLogs_starts_with,omitempty"`
-	SetupLogsNotStartsWith       *string                     `json:"setupLogs_not_starts_with,omitempty"`
-	SetupLogsEndsWith            *string                     `json:"setupLogs_ends_with,omitempty"`
-	SetupLogsNotEndsWith         *string                     `json:"setupLogs_not_ends_with,omitempty"`
-	BuildLogs                    *string                     `json:"buildLogs,omitempty"`
-	BuildLogsNot                 *string                     `json:"buildLogs_not,omitempty"`
-	BuildLogsIn                  []string                    `json:"buildLogs_in,omitempty"`
-	BuildLogsNotIn               []string                    `json:"buildLogs_not_in,omitempty"`
-	BuildLogsLt                  *string                     `json:"buildLogs_lt,omitempty"`
-	BuildLogsLte                 *string                     `json:"buildLogs_lte,omitempty"`
-	BuildLogsGt                  *string                     `json:"buildLogs_gt,omitempty"`
-	BuildLogsGte                 *string                     `json:"buildLogs_gte,omitempty"`
-	BuildLogsContains            *string                     `json:"buildLogs_contains,omitempty"`
-	BuildLogsNotContains         *string                     `json:"buildLogs_not_contains,omitempty"`
-	BuildLogsStartsWith          *string                     `json:"buildLogs_starts_with,omitempty"`
-	BuildLogsNotStartsWith       *string                     `json:"buildLogs_not_starts_with,omitempty"`
-	BuildLogsEndsWith            *string                     `json:"buildLogs_ends_with,omitempty"`
-	BuildLogsNotEndsWith         *string                     `json:"buildLogs_not_ends_with,omitempty"`
-	PushLogs                     *string                     `json:"pushLogs,omitempty"`
-	PushLogsNot                  *string                     `json:"pushLogs_not,omitempty"`
-	PushLogsIn                   []string                    `json:"pushLogs_in,omitempty"`
-	PushLogsNotIn                []string                    `json:"pushLogs_not_in,omitempty"`
-	PushLogsLt                   *string                     `json:"pushLogs_lt,omitempty"`
-	PushLogsLte                  *string                     `json:"pushLogs_lte,omitempty"`
-	PushLogsGt                   *string                     `json:"pushLogs_gt,omitempty"`
-	PushLogsGte                  *string                     `json:"pushLogs_gte,omitempty"`
-	PushLogsContains             *string                     `json:"pushLogs_contains,omitempty"`
-	PushLogsNotContains          *string                     `json:"pushLogs_not_contains,omitempty"`
-	PushLogsStartsWith           *string                     `json:"pushLogs_starts_with,omitempty"`
-	PushLogsNotStartsWith        *string                     `json:"pushLogs_not_starts_with,omitempty"`
-	PushLogsEndsWith             *string                     `json:"pushLogs_ends_with,omitempty"`
-	PushLogsNotEndsWith          *string                     `json:"pushLogs_not_ends_with,omitempty"`
-	And                          []BuildJobWhereInput        `json:"AND,omitempty"`
-	Or                           []BuildJobWhereInput        `json:"OR,omitempty"`
-	Not                          []BuildJobWhereInput        `json:"NOT,omitempty"`
+	ID                               *string                     `json:"id,omitempty"`
+	IDNot                            *string                     `json:"id_not,omitempty"`
+	IDIn                             []string                    `json:"id_in,omitempty"`
+	IDNotIn                          []string                    `json:"id_not_in,omitempty"`
+	IDLt                             *string                     `json:"id_lt,omitempty"`
+	IDLte                            *string                     `json:"id_lte,omitempty"`
+	IDGt                             *string                     `json:"id_gt,omitempty"`
+	IDGte                            *string                     `json:"id_gte,omitempty"`
+	IDContains                       *string                     `json:"id_contains,omitempty"`
+	IDNotContains                    *string                     `json:"id_not_contains,omitempty"`
+	IDStartsWith                     *string                     `json:"id_starts_with,omitempty"`
+	IDNotStartsWith                  *string                     `json:"id_not_starts_with,omitempty"`
+	IDEndsWith                       *string                     `json:"id_ends_with,omitempty"`
+	IDNotEndsWith                    *string                     `json:"id_not_ends_with,omitempty"`
+	CreatedAt                        *string                     `json:"createdAt,omitempty"`
+	CreatedAtNot                     *string                     `json:"createdAt_not,omitempty"`
+	CreatedAtIn                      []string                    `json:"createdAt_in,omitempty"`
+	CreatedAtNotIn                   []string                    `json:"createdAt_not_in,omitempty"`
+	CreatedAtLt                      *string                     `json:"createdAt_lt,omitempty"`
+	CreatedAtLte                     *string                     `json:"createdAt_lte,omitempty"`
+	CreatedAtGt                      *string                     `json:"createdAt_gt,omitempty"`
+	CreatedAtGte                     *string                     `json:"createdAt_gte,omitempty"`
+	UpdatedAt                        *string                     `json:"updatedAt,omitempty"`
+	UpdatedAtNot                     *string                     `json:"updatedAt_not,omitempty"`
+	UpdatedAtIn                      []string                    `json:"updatedAt_in,omitempty"`
+	UpdatedAtNotIn                   []string                    `json:"updatedAt_not_in,omitempty"`
+	UpdatedAtLt                      *string                     `json:"updatedAt_lt,omitempty"`
+	UpdatedAtLte                     *string                     `json:"updatedAt_lte,omitempty"`
+	UpdatedAtGt                      *string                     `json:"updatedAt_gt,omitempty"`
+	UpdatedAtGte                     *string                     `json:"updatedAt_gte,omitempty"`
+	CompletedAt                      *string                     `json:"completedAt,omitempty"`
+	CompletedAtNot                   *string                     `json:"completedAt_not,omitempty"`
+	CompletedAtIn                    []string                    `json:"completedAt_in,omitempty"`
+	CompletedAtNotIn                 []string                    `json:"completedAt_not_in,omitempty"`
+	CompletedAtLt                    *string                     `json:"completedAt_lt,omitempty"`
+	CompletedAtLte                   *string                     `json:"completedAt_lte,omitempty"`
+	CompletedAtGt                    *string                     `json:"completedAt_gt,omitempty"`
+	CompletedAtGte                   *string                     `json:"completedAt_gte,omitempty"`
+	BuildHostKind                    *BuildHost                  `json:"buildHostKind,omitempty"`
+	BuildHostKindNot                 *BuildHost                  `json:"buildHostKind_not,omitempty"`
+	BuildHostKindIn                  []BuildHost                 `json:"buildHostKind_in,omitempty"`
+	BuildHostKindNotIn               []BuildHost                 `json:"buildHostKind_not_in,omitempty"`
+	BuildHostIdentifier              *string                     `json:"buildHostIdentifier,omitempty"`
+	BuildHostIdentifierNot           *string                     `json:"buildHostIdentifier_not,omitempty"`
+	BuildHostIdentifierIn            []string                    `json:"buildHostIdentifier_in,omitempty"`
+	BuildHostIdentifierNotIn         []string                    `json:"buildHostIdentifier_not_in,omitempty"`
+	BuildHostIdentifierLt            *string                     `json:"buildHostIdentifier_lt,omitempty"`
+	BuildHostIdentifierLte           *string                     `json:"buildHostIdentifier_lte,omitempty"`
+	BuildHostIdentifierGt            *string                     `json:"buildHostIdentifier_gt,omitempty"`
+	BuildHostIdentifierGte           *string                     `json:"buildHostIdentifier_gte,omitempty"`
+	BuildHostIdentifierContains      *string                     `json:"buildHostIdentifier_contains,omitempty"`
+	BuildHostIdentifierNotContains   *string                     `json:"buildHostIdentifier_not_contains,omitempty"`
+	BuildHostIdentifierStartsWith    *string                     `json:"buildHostIdentifier_starts_with,omitempty"`
+	BuildHostIdentifierNotStartsWith *string                     `json:"buildHostIdentifier_not_starts_with,omitempty"`
+	BuildHostIdentifierEndsWith      *string                     `json:"buildHostIdentifier_ends_with,omitempty"`
+	BuildHostIdentifierNotEndsWith   *string                     `json:"buildHostIdentifier_not_ends_with,omitempty"`
+	Repo                             *SourceRepositoryWhereInput `json:"repo,omitempty"`
+	Status                           *BuildJobStatus             `json:"status,omitempty"`
+	StatusNot                        *BuildJobStatus             `json:"status_not,omitempty"`
+	StatusIn                         []BuildJobStatus            `json:"status_in,omitempty"`
+	StatusNotIn                      []BuildJobStatus            `json:"status_not_in,omitempty"`
+	BuildIdentifier                  *string                     `json:"buildIdentifier,omitempty"`
+	BuildIdentifierNot               *string                     `json:"buildIdentifier_not,omitempty"`
+	BuildIdentifierIn                []string                    `json:"buildIdentifier_in,omitempty"`
+	BuildIdentifierNotIn             []string                    `json:"buildIdentifier_not_in,omitempty"`
+	BuildIdentifierLt                *string                     `json:"buildIdentifier_lt,omitempty"`
+	BuildIdentifierLte               *string                     `json:"buildIdentifier_lte,omitempty"`
+	BuildIdentifierGt                *string                     `json:"buildIdentifier_gt,omitempty"`
+	BuildIdentifierGte               *string                     `json:"buildIdentifier_gte,omitempty"`
+	BuildIdentifierContains          *string                     `json:"buildIdentifier_contains,omitempty"`
+	BuildIdentifierNotContains       *string                     `json:"buildIdentifier_not_contains,omitempty"`
+	BuildIdentifierStartsWith        *string                     `json:"buildIdentifier_starts_with,omitempty"`
+	BuildIdentifierNotStartsWith     *string                     `json:"buildIdentifier_not_starts_with,omitempty"`
+	BuildIdentifierEndsWith          *string                     `json:"buildIdentifier_ends_with,omitempty"`
+	BuildIdentifierNotEndsWith       *string                     `json:"buildIdentifier_not_ends_with,omitempty"`
+	SourceRevision                   *string                     `json:"sourceRevision,omitempty"`
+	SourceRevisionNot                *string                     `json:"sourceRevision_not,omitempty"`
+	SourceRevisionIn                 []string                    `json:"sourceRevision_in,omitempty"`
+	SourceRevisionNotIn              []string                    `json:"sourceRevision_not_in,omitempty"`
+	SourceRevisionLt                 *string                     `json:"sourceRevision_lt,omitempty"`
+	SourceRevisionLte                *string                     `json:"sourceRevision_lte,omitempty"`
+	SourceRevisionGt                 *string                     `json:"sourceRevision_gt,omitempty"`
+	SourceRevisionGte                *string                     `json:"sourceRevision_gte,omitempty"`
+	SourceRevisionContains           *string                     `json:"sourceRevision_contains,omitempty"`
+	SourceRevisionNotContains        *string                     `json:"sourceRevision_not_contains,omitempty"`
+	SourceRevisionStartsWith         *string                     `json:"sourceRevision_starts_with,omitempty"`
+	SourceRevisionNotStartsWith      *string                     `json:"sourceRevision_not_starts_with,omitempty"`
+	SourceRevisionEndsWith           *string                     `json:"sourceRevision_ends_with,omitempty"`
+	SourceRevisionNotEndsWith        *string                     `json:"sourceRevision_not_ends_with,omitempty"`
+	ArtifactUri                      *string                     `json:"artifactUri,omitempty"`
+	ArtifactUriNot                   *string                     `json:"artifactUri_not,omitempty"`
+	ArtifactUriIn                    []string                    `json:"artifactUri_in,omitempty"`
+	ArtifactUriNotIn                 []string                    `json:"artifactUri_not_in,omitempty"`
+	ArtifactUriLt                    *string                     `json:"artifactUri_lt,omitempty"`
+	ArtifactUriLte                   *string                     `json:"artifactUri_lte,omitempty"`
+	ArtifactUriGt                    *string                     `json:"artifactUri_gt,omitempty"`
+	ArtifactUriGte                   *string                     `json:"artifactUri_gte,omitempty"`
+	ArtifactUriContains              *string                     `json:"artifactUri_contains,omitempty"`
+	ArtifactUriNotContains           *string                     `json:"artifactUri_not_contains,omitempty"`
+	ArtifactUriStartsWith            *string                     `json:"artifactUri_starts_with,omitempty"`
+	ArtifactUriNotStartsWith         *string                     `json:"artifactUri_not_starts_with,omitempty"`
+	ArtifactUriEndsWith              *string                     `json:"artifactUri_ends_with,omitempty"`
+	ArtifactUriNotEndsWith           *string                     `json:"artifactUri_not_ends_with,omitempty"`
+	SetupLogs                        *string                     `json:"setupLogs,omitempty"`
+	SetupLogsNot                     *string                     `json:"setupLogs_not,omitempty"`
+	SetupLogsIn                      []string                    `json:"setupLogs_in,omitempty"`
+	SetupLogsNotIn                   []string                    `json:"setupLogs_not_in,omitempty"`
+	SetupLogsLt                      *string                     `json:"setupLogs_lt,omitempty"`
+	SetupLogsLte                     *string                     `json:"setupLogs_lte,omitempty"`
+	SetupLogsGt                      *string                     `json:"setupLogs_gt,omitempty"`
+	SetupLogsGte                     *string                     `json:"setupLogs_gte,omitempty"`
+	SetupLogsContains                *string                     `json:"setupLogs_contains,omitempty"`
+	SetupLogsNotContains             *string                     `json:"setupLogs_not_contains,omitempty"`
+	SetupLogsStartsWith              *string                     `json:"setupLogs_starts_with,omitempty"`
+	SetupLogsNotStartsWith           *string                     `json:"setupLogs_not_starts_with,omitempty"`
+	SetupLogsEndsWith                *string                     `json:"setupLogs_ends_with,omitempty"`
+	SetupLogsNotEndsWith             *string                     `json:"setupLogs_not_ends_with,omitempty"`
+	BuildLogs                        *string                     `json:"buildLogs,omitempty"`
+	BuildLogsNot                     *string                     `json:"buildLogs_not,omitempty"`
+	BuildLogsIn                      []string                    `json:"buildLogs_in,omitempty"`
+	BuildLogsNotIn                   []string                    `json:"buildLogs_not_in,omitempty"`
+	BuildLogsLt                      *string                     `json:"buildLogs_lt,omitempty"`
+	BuildLogsLte                     *string                     `json:"buildLogs_lte,omitempty"`
+	BuildLogsGt                      *string                     `json:"buildLogs_gt,omitempty"`
+	BuildLogsGte                     *string                     `json:"buildLogs_gte,omitempty"`
+	BuildLogsContains                *string                     `json:"buildLogs_contains,omitempty"`
+	BuildLogsNotContains             *string                     `json:"buildLogs_not_contains,omitempty"`
+	BuildLogsStartsWith              *string                     `json:"buildLogs_starts_with,omitempty"`
+	BuildLogsNotStartsWith           *string                     `json:"buildLogs_not_starts_with,omitempty"`
+	BuildLogsEndsWith                *string                     `json:"buildLogs_ends_with,omitempty"`
+	BuildLogsNotEndsWith             *string                     `json:"buildLogs_not_ends_with,omitempty"`
+	PushLogs                         *string                     `json:"pushLogs,omitempty"`
+	PushLogsNot                      *string                     `json:"pushLogs_not,omitempty"`
+	PushLogsIn                       []string                    `json:"pushLogs_in,omitempty"`
+	PushLogsNotIn                    []string                    `json:"pushLogs_not_in,omitempty"`
+	PushLogsLt                       *string                     `json:"pushLogs_lt,omitempty"`
+	PushLogsLte                      *string                     `json:"pushLogs_lte,omitempty"`
+	PushLogsGt                       *string                     `json:"pushLogs_gt,omitempty"`
+	PushLogsGte                      *string                     `json:"pushLogs_gte,omitempty"`
+	PushLogsContains                 *string                     `json:"pushLogs_contains,omitempty"`
+	PushLogsNotContains              *string                     `json:"pushLogs_not_contains,omitempty"`
+	PushLogsStartsWith               *string                     `json:"pushLogs_starts_with,omitempty"`
+	PushLogsNotStartsWith            *string                     `json:"pushLogs_not_starts_with,omitempty"`
+	PushLogsEndsWith                 *string                     `json:"pushLogs_ends_with,omitempty"`
+	PushLogsNotEndsWith              *string                     `json:"pushLogs_not_ends_with,omitempty"`
+	And                              []BuildJobWhereInput        `json:"AND,omitempty"`
+	Or                               []BuildJobWhereInput        `json:"OR,omitempty"`
+	Not                              []BuildJobWhereInput        `json:"NOT,omitempty"`
 }
 
 type DockerRegistrySubscriptionWhereInput struct {
@@ -1207,14 +1247,17 @@ type SourceRepositoryUpsertNestedInput struct {
 }
 
 type BuildJobUpdateInput struct {
-	Repo            *SourceRepositoryUpdateOneRequiredInput `json:"repo,omitempty"`
-	Status          *BuildJobStatus                         `json:"status,omitempty"`
-	BuildIdentifier *string                                 `json:"buildIdentifier,omitempty"`
-	SourceRevision  *string                                 `json:"sourceRevision,omitempty"`
-	ArtifactUri     *string                                 `json:"artifactUri,omitempty"`
-	SetupLogs       *string                                 `json:"setupLogs,omitempty"`
-	BuildLogs       *string                                 `json:"buildLogs,omitempty"`
-	PushLogs        *string                                 `json:"pushLogs,omitempty"`
+	CompletedAt         *string                                 `json:"completedAt,omitempty"`
+	BuildHostKind       *BuildHost                              `json:"buildHostKind,omitempty"`
+	BuildHostIdentifier *string                                 `json:"buildHostIdentifier,omitempty"`
+	Repo                *SourceRepositoryUpdateOneRequiredInput `json:"repo,omitempty"`
+	Status              *BuildJobStatus                         `json:"status,omitempty"`
+	BuildIdentifier     *string                                 `json:"buildIdentifier,omitempty"`
+	SourceRevision      *string                                 `json:"sourceRevision,omitempty"`
+	ArtifactUri         *string                                 `json:"artifactUri,omitempty"`
+	SetupLogs           *string                                 `json:"setupLogs,omitempty"`
+	BuildLogs           *string                                 `json:"buildLogs,omitempty"`
+	PushLogs            *string                                 `json:"pushLogs,omitempty"`
 }
 
 type UserUpdateManyMutationInput struct {
@@ -1338,25 +1381,31 @@ type SourceRepositoryCreateOneInput struct {
 }
 
 type BuildJobCreateInput struct {
-	ID              *string                        `json:"id,omitempty"`
-	Repo            SourceRepositoryCreateOneInput `json:"repo"`
-	Status          BuildJobStatus                 `json:"status"`
-	BuildIdentifier string                         `json:"buildIdentifier"`
-	SourceRevision  string                         `json:"sourceRevision"`
-	ArtifactUri     string                         `json:"artifactUri"`
-	SetupLogs       *string                        `json:"setupLogs,omitempty"`
-	BuildLogs       *string                        `json:"buildLogs,omitempty"`
-	PushLogs        *string                        `json:"pushLogs,omitempty"`
+	ID                  *string                        `json:"id,omitempty"`
+	CompletedAt         *string                        `json:"completedAt,omitempty"`
+	BuildHostKind       BuildHost                      `json:"buildHostKind"`
+	BuildHostIdentifier *string                        `json:"buildHostIdentifier,omitempty"`
+	Repo                SourceRepositoryCreateOneInput `json:"repo"`
+	Status              BuildJobStatus                 `json:"status"`
+	BuildIdentifier     string                         `json:"buildIdentifier"`
+	SourceRevision      string                         `json:"sourceRevision"`
+	ArtifactUri         string                         `json:"artifactUri"`
+	SetupLogs           *string                        `json:"setupLogs,omitempty"`
+	BuildLogs           *string                        `json:"buildLogs,omitempty"`
+	PushLogs            *string                        `json:"pushLogs,omitempty"`
 }
 
 type BuildJobUpdateManyMutationInput struct {
-	Status          *BuildJobStatus `json:"status,omitempty"`
-	BuildIdentifier *string         `json:"buildIdentifier,omitempty"`
-	SourceRevision  *string         `json:"sourceRevision,omitempty"`
-	ArtifactUri     *string         `json:"artifactUri,omitempty"`
-	SetupLogs       *string         `json:"setupLogs,omitempty"`
-	BuildLogs       *string         `json:"buildLogs,omitempty"`
-	PushLogs        *string         `json:"pushLogs,omitempty"`
+	CompletedAt         *string         `json:"completedAt,omitempty"`
+	BuildHostKind       *BuildHost      `json:"buildHostKind,omitempty"`
+	BuildHostIdentifier *string         `json:"buildHostIdentifier,omitempty"`
+	Status              *BuildJobStatus `json:"status,omitempty"`
+	BuildIdentifier     *string         `json:"buildIdentifier,omitempty"`
+	SourceRevision      *string         `json:"sourceRevision,omitempty"`
+	ArtifactUri         *string         `json:"artifactUri,omitempty"`
+	SetupLogs           *string         `json:"setupLogs,omitempty"`
+	BuildLogs           *string         `json:"buildLogs,omitempty"`
+	PushLogs            *string         `json:"pushLogs,omitempty"`
 }
 
 type DockerRegistryWhereUniqueInput struct {
@@ -1932,16 +1981,19 @@ func (instance BuildJobExecArray) Exec(ctx context.Context) ([]BuildJob, error) 
 }
 
 type BuildJob struct {
-	ID              string         `json:"id"`
-	CreatedAt       string         `json:"createdAt"`
-	UpdatedAt       string         `json:"updatedAt"`
-	Status          BuildJobStatus `json:"status"`
-	BuildIdentifier string         `json:"buildIdentifier"`
-	SourceRevision  string         `json:"sourceRevision"`
-	ArtifactUri     string         `json:"artifactUri"`
-	SetupLogs       *string        `json:"setupLogs,omitempty"`
-	BuildLogs       *string        `json:"buildLogs,omitempty"`
-	PushLogs        *string        `json:"pushLogs,omitempty"`
+	ID                  string         `json:"id"`
+	CreatedAt           string         `json:"createdAt"`
+	UpdatedAt           string         `json:"updatedAt"`
+	CompletedAt         *string        `json:"completedAt,omitempty"`
+	BuildHostKind       BuildHost      `json:"buildHostKind"`
+	BuildHostIdentifier *string        `json:"buildHostIdentifier,omitempty"`
+	Status              BuildJobStatus `json:"status"`
+	BuildIdentifier     string         `json:"buildIdentifier"`
+	SourceRevision      string         `json:"sourceRevision"`
+	ArtifactUri         string         `json:"artifactUri"`
+	SetupLogs           *string        `json:"setupLogs,omitempty"`
+	BuildLogs           *string        `json:"buildLogs,omitempty"`
+	PushLogs            *string        `json:"pushLogs,omitempty"`
 }
 
 type DockerRegistryEdgeExec struct {
@@ -1990,49 +2042,6 @@ type DockerRegistryEdge struct {
 	Cursor string         `json:"cursor"`
 }
 
-type SourceRepositoryPreviousValuesExec struct {
-	exec *prisma.Exec
-}
-
-func (instance SourceRepositoryPreviousValuesExec) Exec(ctx context.Context) (*SourceRepositoryPreviousValues, error) {
-	var v SourceRepositoryPreviousValues
-	ok, err := instance.exec.Exec(ctx, &v)
-	if err != nil {
-		return nil, err
-	}
-	if !ok {
-		return nil, ErrNoResult
-	}
-	return &v, nil
-}
-
-func (instance SourceRepositoryPreviousValuesExec) Exists(ctx context.Context) (bool, error) {
-	return instance.exec.Exists(ctx)
-}
-
-type SourceRepositoryPreviousValuesExecArray struct {
-	exec *prisma.Exec
-}
-
-func (instance SourceRepositoryPreviousValuesExecArray) Exec(ctx context.Context) ([]SourceRepositoryPreviousValues, error) {
-	var v []SourceRepositoryPreviousValues
-	err := instance.exec.ExecArray(ctx, &v)
-	return v, err
-}
-
-type SourceRepositoryPreviousValues struct {
-	ID                        string          `json:"id"`
-	CreatedAt                 string          `json:"createdAt"`
-	UpdatedAt                 string          `json:"updatedAt"`
-	SourceProvider            *SourceProvider `json:"sourceProvider,omitempty"`
-	Name                      string          `json:"name"`
-	AuthClientId              *string         `json:"authClientID,omitempty"`
-	AuthSecret                *string         `json:"authSecret,omitempty"`
-	CloneStrategy             CloneStrategy   `json:"cloneStrategy"`
-	BuildsEnabled             bool            `json:"buildsEnabled"`
-	BaseConfigurationFileName string          `json:"baseConfigurationFileName"`
-}
-
 type UserExec struct {
 	exec *prisma.Exec
 }
@@ -2073,6 +2082,60 @@ type User struct {
 	GithubUsername         *string `json:"githubUsername,omitempty"`
 	GithubAccountAuthToken *string `json:"githubAccountAuthToken,omitempty"`
 	GoogleAccountAuthToken *string `json:"googleAccountAuthToken,omitempty"`
+}
+
+type SourceRepositoryExec struct {
+	exec *prisma.Exec
+}
+
+func (instance *SourceRepositoryExec) Owner() *UserExec {
+	ret := instance.exec.Client.GetOne(
+		instance.exec,
+		nil,
+		[2]string{"", "User"},
+		"owner",
+		[]string{"id", "createdAt", "updatedAt", "name", "email", "passwordHash", "githubUsername", "githubAccountAuthToken", "googleAccountAuthToken"})
+
+	return &UserExec{ret}
+}
+
+func (instance SourceRepositoryExec) Exec(ctx context.Context) (*SourceRepository, error) {
+	var v SourceRepository
+	ok, err := instance.exec.Exec(ctx, &v)
+	if err != nil {
+		return nil, err
+	}
+	if !ok {
+		return nil, ErrNoResult
+	}
+	return &v, nil
+}
+
+func (instance SourceRepositoryExec) Exists(ctx context.Context) (bool, error) {
+	return instance.exec.Exists(ctx)
+}
+
+type SourceRepositoryExecArray struct {
+	exec *prisma.Exec
+}
+
+func (instance SourceRepositoryExecArray) Exec(ctx context.Context) ([]SourceRepository, error) {
+	var v []SourceRepository
+	err := instance.exec.ExecArray(ctx, &v)
+	return v, err
+}
+
+type SourceRepository struct {
+	ID                        string          `json:"id"`
+	CreatedAt                 string          `json:"createdAt"`
+	UpdatedAt                 string          `json:"updatedAt"`
+	SourceProvider            *SourceProvider `json:"sourceProvider,omitempty"`
+	Name                      string          `json:"name"`
+	AuthClientId              *string         `json:"authClientID,omitempty"`
+	AuthSecret                *string         `json:"authSecret,omitempty"`
+	CloneStrategy             CloneStrategy   `json:"cloneStrategy"`
+	BuildsEnabled             bool            `json:"buildsEnabled"`
+	BaseConfigurationFileName string          `json:"baseConfigurationFileName"`
 }
 
 type DockerRegistryExec struct {
@@ -2124,7 +2187,7 @@ func (instance *BuildJobSubscriptionPayloadExec) Node() *BuildJobExec {
 		nil,
 		[2]string{"", "BuildJob"},
 		"node",
-		[]string{"id", "createdAt", "updatedAt", "status", "buildIdentifier", "sourceRevision", "artifactUri", "setupLogs", "buildLogs", "pushLogs"})
+		[]string{"id", "createdAt", "updatedAt", "completedAt", "buildHostKind", "buildHostIdentifier", "status", "buildIdentifier", "sourceRevision", "artifactUri", "setupLogs", "buildLogs", "pushLogs"})
 
 	return &BuildJobExec{ret}
 }
@@ -2135,7 +2198,7 @@ func (instance *BuildJobSubscriptionPayloadExec) PreviousValues() *BuildJobPrevi
 		nil,
 		[2]string{"", "BuildJobPreviousValues"},
 		"previousValues",
-		[]string{"id", "createdAt", "updatedAt", "status", "buildIdentifier", "sourceRevision", "artifactUri", "setupLogs", "buildLogs", "pushLogs"})
+		[]string{"id", "createdAt", "updatedAt", "completedAt", "buildHostKind", "buildHostIdentifier", "status", "buildIdentifier", "sourceRevision", "artifactUri", "setupLogs", "buildLogs", "pushLogs"})
 
 	return &BuildJobPreviousValuesExec{ret}
 }
@@ -2182,7 +2245,7 @@ func (instance *BuildJobEdgeExec) Node() *BuildJobExec {
 		nil,
 		[2]string{"", "BuildJob"},
 		"node",
-		[]string{"id", "createdAt", "updatedAt", "status", "buildIdentifier", "sourceRevision", "artifactUri", "setupLogs", "buildLogs", "pushLogs"})
+		[]string{"id", "createdAt", "updatedAt", "completedAt", "buildHostKind", "buildHostIdentifier", "status", "buildIdentifier", "sourceRevision", "artifactUri", "setupLogs", "buildLogs", "pushLogs"})
 
 	return &BuildJobExec{ret}
 }
@@ -2315,23 +2378,12 @@ type DockerRegistrySubscriptionPayload struct {
 	UpdatedFields []string        `json:"updatedFields,omitempty"`
 }
 
-type SourceRepositoryExec struct {
+type SourceRepositoryPreviousValuesExec struct {
 	exec *prisma.Exec
 }
 
-func (instance *SourceRepositoryExec) Owner() *UserExec {
-	ret := instance.exec.Client.GetOne(
-		instance.exec,
-		nil,
-		[2]string{"", "User"},
-		"owner",
-		[]string{"id", "createdAt", "updatedAt", "name", "email", "passwordHash", "githubUsername", "githubAccountAuthToken", "googleAccountAuthToken"})
-
-	return &UserExec{ret}
-}
-
-func (instance SourceRepositoryExec) Exec(ctx context.Context) (*SourceRepository, error) {
-	var v SourceRepository
+func (instance SourceRepositoryPreviousValuesExec) Exec(ctx context.Context) (*SourceRepositoryPreviousValues, error) {
+	var v SourceRepositoryPreviousValues
 	ok, err := instance.exec.Exec(ctx, &v)
 	if err != nil {
 		return nil, err
@@ -2342,21 +2394,21 @@ func (instance SourceRepositoryExec) Exec(ctx context.Context) (*SourceRepositor
 	return &v, nil
 }
 
-func (instance SourceRepositoryExec) Exists(ctx context.Context) (bool, error) {
+func (instance SourceRepositoryPreviousValuesExec) Exists(ctx context.Context) (bool, error) {
 	return instance.exec.Exists(ctx)
 }
 
-type SourceRepositoryExecArray struct {
+type SourceRepositoryPreviousValuesExecArray struct {
 	exec *prisma.Exec
 }
 
-func (instance SourceRepositoryExecArray) Exec(ctx context.Context) ([]SourceRepository, error) {
-	var v []SourceRepository
+func (instance SourceRepositoryPreviousValuesExecArray) Exec(ctx context.Context) ([]SourceRepositoryPreviousValues, error) {
+	var v []SourceRepositoryPreviousValues
 	err := instance.exec.ExecArray(ctx, &v)
 	return v, err
 }
 
-type SourceRepository struct {
+type SourceRepositoryPreviousValues struct {
 	ID                        string          `json:"id"`
 	CreatedAt                 string          `json:"createdAt"`
 	UpdatedAt                 string          `json:"updatedAt"`
@@ -2400,16 +2452,19 @@ func (instance BuildJobPreviousValuesExecArray) Exec(ctx context.Context) ([]Bui
 }
 
 type BuildJobPreviousValues struct {
-	ID              string         `json:"id"`
-	CreatedAt       string         `json:"createdAt"`
-	UpdatedAt       string         `json:"updatedAt"`
-	Status          BuildJobStatus `json:"status"`
-	BuildIdentifier string         `json:"buildIdentifier"`
-	SourceRevision  string         `json:"sourceRevision"`
-	ArtifactUri     string         `json:"artifactUri"`
-	SetupLogs       *string        `json:"setupLogs,omitempty"`
-	BuildLogs       *string        `json:"buildLogs,omitempty"`
-	PushLogs        *string        `json:"pushLogs,omitempty"`
+	ID                  string         `json:"id"`
+	CreatedAt           string         `json:"createdAt"`
+	UpdatedAt           string         `json:"updatedAt"`
+	CompletedAt         *string        `json:"completedAt,omitempty"`
+	BuildHostKind       BuildHost      `json:"buildHostKind"`
+	BuildHostIdentifier *string        `json:"buildHostIdentifier,omitempty"`
+	Status              BuildJobStatus `json:"status"`
+	BuildIdentifier     string         `json:"buildIdentifier"`
+	SourceRevision      string         `json:"sourceRevision"`
+	ArtifactUri         string         `json:"artifactUri"`
+	SetupLogs           *string        `json:"setupLogs,omitempty"`
+	BuildLogs           *string        `json:"buildLogs,omitempty"`
+	PushLogs            *string        `json:"pushLogs,omitempty"`
 }
 
 type DockerRegistryConnectionExec struct {
