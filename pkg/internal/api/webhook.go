@@ -13,23 +13,6 @@ import (
 	"github.com/parrotmac/littleblue/pkg/internal/webhook"
 )
 
-func (s *apiServer) CreateBuildJobHandler(w http.ResponseWriter, r *http.Request) {
-	buildJob := &entities.BuildJob{}
-	err := httputils.ReadJsonBodyToEntity(r.Body, buildJob)
-	if err != nil {
-		httputils.RespondWithError(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	newJob, err := s.Storage.CreateBuildJob(buildJob)
-	if err != nil {
-		httputils.RespondWithError(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	httputils.RespondWithJSON(w, http.StatusCreated, newJob)
-}
-
 func (s *apiServer) WebhookJobHandler(w http.ResponseWriter, r *http.Request) {
 	repoUuid := mux.Vars(r)["repo_uuid"]
 	providedSignature := []byte(r.Header.Get("X-Hub-Signature"))
@@ -110,16 +93,4 @@ func (s *apiServer) WebhookJobHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	httputils.RespondWithStatus(w, http.StatusOK, "ok")
-}
-
-func (s *apiServer) ListRepoBuildJobsHandler(w http.ResponseWriter, r *http.Request) {
-	// FIXME: User auth
-	repoUUID := mux.Vars(r)["repo_uuid"]
-
-	jobs, err := s.Storage.ListRepoBuildJobs(repoUUID)
-	if err != nil {
-		httputils.RespondWithError(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-	httputils.RespondWithJSON(w, http.StatusOK, jobs)
 }

@@ -21,9 +21,7 @@ import (
 
 type Builder struct {
 	TaskQueue    TaskQueue
-	Storage      *db.Storage
 	GithubClient source.GitClient
-	jobs         chan entities.BuildDefinition
 	results      chan buildResult
 }
 
