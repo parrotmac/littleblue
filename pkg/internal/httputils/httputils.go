@@ -35,7 +35,7 @@ func RespondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	}
 }
 
-func ReadJsonBodyToEntity(body io.ReadCloser, dst interface{}) error {
+func ReadJsonToEntity(body io.ReadCloser, dst interface{}) error {
 	bodyData, err := ioutil.ReadAll(body)
 	if err != nil {
 		return err
