@@ -315,25 +315,6 @@
   revision = "d14ea06fba99483203c19d92cfcd13ebe73135f4"
 
 [[projects]]
-  digest = "1:3755c1a3de6404d58d7767562d00a84ee4a507df69a1490c9cebb931d7b11b96"
-  name = "github.com/jinzhu/gorm"
-  packages = [
-    ".",
-    "dialects/postgres",
-  ]
-  pruneopts = ""
-  revision = "836fb2c19d84dac7b0272958dfb9af7cf0d0ade4"
-  version = "v1.9.10"
-
-[[projects]]
-  digest = "1:a7b97371fb9af808b6a4fcc6693276ef7869bb1f282c3c87038c6c7e74ef4ae6"
-  name = "github.com/jinzhu/inflection"
-  packages = ["."]
-  pruneopts = ""
-  revision = "f5c5f50e6090ae76a29240b61ae2a90dd810112e"
-  version = "v1.0.0"
-
-[[projects]]
   digest = "1:e716a02584d94519e2ccf7ac461c4028da736d41a58c1ed95e641c1603bdb056"
   name = "github.com/json-iterator/go"
   packages = ["."]
@@ -356,19 +337,6 @@
   pruneopts = ""
   revision = "f55edac94c9bbba5d6182a4be46d86a2c9b5b50e"
   version = "v1.0.2"
-
-[[projects]]
-  digest = "1:f4216047c24ab66fb757045febd7dac4edc6f4ad9f6c0063d0755d654d04f25e"
-  name = "github.com/lib/pq"
-  packages = [
-    ".",
-    "hstore",
-    "oid",
-    "scram",
-  ]
-  pruneopts = ""
-  revision = "3427c32cb71afc948325f299f040e53c1dd78979"
-  version = "v1.2.0"
 
 [[projects]]
   digest = "1:953a3dedbd5d1c988528b0aa45b6fae0e449e342adec639ad398dd858804c5ca"
@@ -835,9 +803,6 @@
     "github.com/go-ozzo/ozzo-validation",
     "github.com/google/uuid",
     "github.com/gorilla/mux",
-    "github.com/jinzhu/gorm",
-    "github.com/jinzhu/gorm/dialects/postgres",
-    "github.com/lib/pq",
     "github.com/machinebox/graphql",
     "github.com/pkg/errors",
     "github.com/prisma/prisma-client-lib-go",
