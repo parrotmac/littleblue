@@ -1,0 +1,1067 @@
+type AggregateBuildJob {
+  count: Int!
+}
+
+type AggregateDockerRegistry {
+  count: Int!
+}
+
+type AggregateSourceRepository {
+  count: Int!
+}
+
+type AggregateUser {
+  count: Int!
+}
+
+type BatchPayload {
+  count: Long!
+}
+
+enum BuildHost {
+  LINUX_AMD64
+  LINUX_AARCH64
+  WINDOWS_AMD64
+}
+
+type BuildJob {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  completedAt: DateTime
+  buildHostKind: BuildHost!
+  buildHostIdentifier: String
+  repo: SourceRepository!
+  status: BuildJobStatus!
+  buildIdentifier: String!
+  sourceRevision: String!
+  artifactUri: String!
+  setupLogs: String
+  buildLogs: String
+  pushLogs: String
+}
+
+type BuildJobConnection {
+  pageInfo: PageInfo!
+  edges: [BuildJobEdge]!
+  aggregate: AggregateBuildJob!
+}
+
+input BuildJobCreateInput {
+  id: ID
+  completedAt: DateTime
+  buildHostKind: BuildHost!
+  buildHostIdentifier: String
+  repo: SourceRepositoryCreateOneInput!
+  status: BuildJobStatus!
+  buildIdentifier: String!
+  sourceRevision: String!
+  artifactUri: String!
+  setupLogs: String
+  buildLogs: String
+  pushLogs: String
+}
+
+type BuildJobEdge {
+  node: BuildJob!
+  cursor: String!
+}
+
+enum BuildJobOrderByInput {
+  id_ASC
+  id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  completedAt_ASC
+  completedAt_DESC
+  buildHostKind_ASC
+  buildHostKind_DESC
+  buildHostIdentifier_ASC
+  buildHostIdentifier_DESC
+  status_ASC
+  status_DESC
+  buildIdentifier_ASC
+  buildIdentifier_DESC
+  sourceRevision_ASC
+  sourceRevision_DESC
+  artifactUri_ASC
+  artifactUri_DESC
+  setupLogs_ASC
+  setupLogs_DESC
+  buildLogs_ASC
+  buildLogs_DESC
+  pushLogs_ASC
+  pushLogs_DESC
+}
+
+type BuildJobPreviousValues {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  completedAt: DateTime
+  buildHostKind: BuildHost!
+  buildHostIdentifier: String
+  status: BuildJobStatus!
+  buildIdentifier: String!
+  sourceRevision: String!
+  artifactUri: String!
+  setupLogs: String
+  buildLogs: String
+  pushLogs: String
+}
+
+enum BuildJobStatus {
+  Unknown
+  Created
+  Pending
+  Cloning
+  PreparingBuild
+  Building
+  Pushing
+  Complete
+}
+
+type BuildJobSubscriptionPayload {
+  mutation: MutationType!
+  node: BuildJob
+  updatedFields: [String!]
+  previousValues: BuildJobPreviousValues
+}
+
+input BuildJobSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: BuildJobWhereInput
+  AND: [BuildJobSubscriptionWhereInput!]
+  OR: [BuildJobSubscriptionWhereInput!]
+  NOT: [BuildJobSubscriptionWhereInput!]
+}
+
+input BuildJobUpdateInput {
+  completedAt: DateTime
+  buildHostKind: BuildHost
+  buildHostIdentifier: String
+  repo: SourceRepositoryUpdateOneRequiredInput
+  status: BuildJobStatus
+  buildIdentifier: String
+  sourceRevision: String
+  artifactUri: String
+  setupLogs: String
+  buildLogs: String
+  pushLogs: String
+}
+
+input BuildJobUpdateManyMutationInput {
+  completedAt: DateTime
+  buildHostKind: BuildHost
+  buildHostIdentifier: String
+  status: BuildJobStatus
+  buildIdentifier: String
+  sourceRevision: String
+  artifactUri: String
+  setupLogs: String
+  buildLogs: String
+  pushLogs: String
+}
+
+input BuildJobWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  completedAt: DateTime
+  completedAt_not: DateTime
+  completedAt_in: [DateTime!]
+  completedAt_not_in: [DateTime!]
+  completedAt_lt: DateTime
+  completedAt_lte: DateTime
+  completedAt_gt: DateTime
+  completedAt_gte: DateTime
+  buildHostKind: BuildHost
+  buildHostKind_not: BuildHost
+  buildHostKind_in: [BuildHost!]
+  buildHostKind_not_in: [BuildHost!]
+  buildHostIdentifier: String
+  buildHostIdentifier_not: String
+  buildHostIdentifier_in: [String!]
+  buildHostIdentifier_not_in: [String!]
+  buildHostIdentifier_lt: String
+  buildHostIdentifier_lte: String
+  buildHostIdentifier_gt: String
+  buildHostIdentifier_gte: String
+  buildHostIdentifier_contains: String
+  buildHostIdentifier_not_contains: String
+  buildHostIdentifier_starts_with: String
+  buildHostIdentifier_not_starts_with: String
+  buildHostIdentifier_ends_with: String
+  buildHostIdentifier_not_ends_with: String
+  repo: SourceRepositoryWhereInput
+  status: BuildJobStatus
+  status_not: BuildJobStatus
+  status_in: [BuildJobStatus!]
+  status_not_in: [BuildJobStatus!]
+  buildIdentifier: String
+  buildIdentifier_not: String
+  buildIdentifier_in: [String!]
+  buildIdentifier_not_in: [String!]
+  buildIdentifier_lt: String
+  buildIdentifier_lte: String
+  buildIdentifier_gt: String
+  buildIdentifier_gte: String
+  buildIdentifier_contains: String
+  buildIdentifier_not_contains: String
+  buildIdentifier_starts_with: String
+  buildIdentifier_not_starts_with: String
+  buildIdentifier_ends_with: String
+  buildIdentifier_not_ends_with: String
+  sourceRevision: String
+  sourceRevision_not: String
+  sourceRevision_in: [String!]
+  sourceRevision_not_in: [String!]
+  sourceRevision_lt: String
+  sourceRevision_lte: String
+  sourceRevision_gt: String
+  sourceRevision_gte: String
+  sourceRevision_contains: String
+  sourceRevision_not_contains: String
+  sourceRevision_starts_with: String
+  sourceRevision_not_starts_with: String
+  sourceRevision_ends_with: String
+  sourceRevision_not_ends_with: String
+  artifactUri: String
+  artifactUri_not: String
+  artifactUri_in: [String!]
+  artifactUri_not_in: [String!]
+  artifactUri_lt: String
+  artifactUri_lte: String
+  artifactUri_gt: String
+  artifactUri_gte: String
+  artifactUri_contains: String
+  artifactUri_not_contains: String
+  artifactUri_starts_with: String
+  artifactUri_not_starts_with: String
+  artifactUri_ends_with: String
+  artifactUri_not_ends_with: String
+  setupLogs: String
+  setupLogs_not: String
+  setupLogs_in: [String!]
+  setupLogs_not_in: [String!]
+  setupLogs_lt: String
+  setupLogs_lte: String
+  setupLogs_gt: String
+  setupLogs_gte: String
+  setupLogs_contains: String
+  setupLogs_not_contains: String
+  setupLogs_starts_with: String
+  setupLogs_not_starts_with: String
+  setupLogs_ends_with: String
+  setupLogs_not_ends_with: String
+  buildLogs: String
+  buildLogs_not: String
+  buildLogs_in: [String!]
+  buildLogs_not_in: [String!]
+  buildLogs_lt: String
+  buildLogs_lte: String
+  buildLogs_gt: String
+  buildLogs_gte: String
+  buildLogs_contains: String
+  buildLogs_not_contains: String
+  buildLogs_starts_with: String
+  buildLogs_not_starts_with: String
+  buildLogs_ends_with: String
+  buildLogs_not_ends_with: String
+  pushLogs: String
+  pushLogs_not: String
+  pushLogs_in: [String!]
+  pushLogs_not_in: [String!]
+  pushLogs_lt: String
+  pushLogs_lte: String
+  pushLogs_gt: String
+  pushLogs_gte: String
+  pushLogs_contains: String
+  pushLogs_not_contains: String
+  pushLogs_starts_with: String
+  pushLogs_not_starts_with: String
+  pushLogs_ends_with: String
+  pushLogs_not_ends_with: String
+  AND: [BuildJobWhereInput!]
+  OR: [BuildJobWhereInput!]
+  NOT: [BuildJobWhereInput!]
+}
+
+input BuildJobWhereUniqueInput {
+  id: ID
+}
+
+enum CloneStrategy {
+  GIT_SSH
+  GIT_HTTPS
+}
+
+scalar DateTime
+
+type DockerRegistry {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  Hostname: String!
+  AuthUsername: String!
+  AuthPassword: String!
+}
+
+type DockerRegistryConnection {
+  pageInfo: PageInfo!
+  edges: [DockerRegistryEdge]!
+  aggregate: AggregateDockerRegistry!
+}
+
+input DockerRegistryCreateInput {
+  id: ID
+  Hostname: String!
+  AuthUsername: String!
+  AuthPassword: String!
+}
+
+type DockerRegistryEdge {
+  node: DockerRegistry!
+  cursor: String!
+}
+
+enum DockerRegistryOrderByInput {
+  id_ASC
+  id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  Hostname_ASC
+  Hostname_DESC
+  AuthUsername_ASC
+  AuthUsername_DESC
+  AuthPassword_ASC
+  AuthPassword_DESC
+}
+
+type DockerRegistryPreviousValues {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  Hostname: String!
+  AuthUsername: String!
+  AuthPassword: String!
+}
+
+type DockerRegistrySubscriptionPayload {
+  mutation: MutationType!
+  node: DockerRegistry
+  updatedFields: [String!]
+  previousValues: DockerRegistryPreviousValues
+}
+
+input DockerRegistrySubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: DockerRegistryWhereInput
+  AND: [DockerRegistrySubscriptionWhereInput!]
+  OR: [DockerRegistrySubscriptionWhereInput!]
+  NOT: [DockerRegistrySubscriptionWhereInput!]
+}
+
+input DockerRegistryUpdateInput {
+  Hostname: String
+  AuthUsername: String
+  AuthPassword: String
+}
+
+input DockerRegistryUpdateManyMutationInput {
+  Hostname: String
+  AuthUsername: String
+  AuthPassword: String
+}
+
+input DockerRegistryWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  Hostname: String
+  Hostname_not: String
+  Hostname_in: [String!]
+  Hostname_not_in: [String!]
+  Hostname_lt: String
+  Hostname_lte: String
+  Hostname_gt: String
+  Hostname_gte: String
+  Hostname_contains: String
+  Hostname_not_contains: String
+  Hostname_starts_with: String
+  Hostname_not_starts_with: String
+  Hostname_ends_with: String
+  Hostname_not_ends_with: String
+  AuthUsername: String
+  AuthUsername_not: String
+  AuthUsername_in: [String!]
+  AuthUsername_not_in: [String!]
+  AuthUsername_lt: String
+  AuthUsername_lte: String
+  AuthUsername_gt: String
+  AuthUsername_gte: String
+  AuthUsername_contains: String
+  AuthUsername_not_contains: String
+  AuthUsername_starts_with: String
+  AuthUsername_not_starts_with: String
+  AuthUsername_ends_with: String
+  AuthUsername_not_ends_with: String
+  AuthPassword: String
+  AuthPassword_not: String
+  AuthPassword_in: [String!]
+  AuthPassword_not_in: [String!]
+  AuthPassword_lt: String
+  AuthPassword_lte: String
+  AuthPassword_gt: String
+  AuthPassword_gte: String
+  AuthPassword_contains: String
+  AuthPassword_not_contains: String
+  AuthPassword_starts_with: String
+  AuthPassword_not_starts_with: String
+  AuthPassword_ends_with: String
+  AuthPassword_not_ends_with: String
+  AND: [DockerRegistryWhereInput!]
+  OR: [DockerRegistryWhereInput!]
+  NOT: [DockerRegistryWhereInput!]
+}
+
+input DockerRegistryWhereUniqueInput {
+  id: ID
+}
+
+scalar Long
+
+type Mutation {
+  createBuildJob(data: BuildJobCreateInput!): BuildJob!
+  updateBuildJob(data: BuildJobUpdateInput!, where: BuildJobWhereUniqueInput!): BuildJob
+  updateManyBuildJobs(data: BuildJobUpdateManyMutationInput!, where: BuildJobWhereInput): BatchPayload!
+  upsertBuildJob(where: BuildJobWhereUniqueInput!, create: BuildJobCreateInput!, update: BuildJobUpdateInput!): BuildJob!
+  deleteBuildJob(where: BuildJobWhereUniqueInput!): BuildJob
+  deleteManyBuildJobs(where: BuildJobWhereInput): BatchPayload!
+  createDockerRegistry(data: DockerRegistryCreateInput!): DockerRegistry!
+  updateDockerRegistry(data: DockerRegistryUpdateInput!, where: DockerRegistryWhereUniqueInput!): DockerRegistry
+  updateManyDockerRegistries(data: DockerRegistryUpdateManyMutationInput!, where: DockerRegistryWhereInput): BatchPayload!
+  upsertDockerRegistry(where: DockerRegistryWhereUniqueInput!, create: DockerRegistryCreateInput!, update: DockerRegistryUpdateInput!): DockerRegistry!
+  deleteDockerRegistry(where: DockerRegistryWhereUniqueInput!): DockerRegistry
+  deleteManyDockerRegistries(where: DockerRegistryWhereInput): BatchPayload!
+  createSourceRepository(data: SourceRepositoryCreateInput!): SourceRepository!
+  updateSourceRepository(data: SourceRepositoryUpdateInput!, where: SourceRepositoryWhereUniqueInput!): SourceRepository
+  updateManySourceRepositories(data: SourceRepositoryUpdateManyMutationInput!, where: SourceRepositoryWhereInput): BatchPayload!
+  upsertSourceRepository(where: SourceRepositoryWhereUniqueInput!, create: SourceRepositoryCreateInput!, update: SourceRepositoryUpdateInput!): SourceRepository!
+  deleteSourceRepository(where: SourceRepositoryWhereUniqueInput!): SourceRepository
+  deleteManySourceRepositories(where: SourceRepositoryWhereInput): BatchPayload!
+  createUser(data: UserCreateInput!): User!
+  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
+  updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
+  upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
+  deleteUser(where: UserWhereUniqueInput!): User
+  deleteManyUsers(where: UserWhereInput): BatchPayload!
+}
+
+enum MutationType {
+  CREATED
+  UPDATED
+  DELETED
+}
+
+interface Node {
+  id: ID!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type Query {
+  buildJob(where: BuildJobWhereUniqueInput!): BuildJob
+  buildJobs(where: BuildJobWhereInput, orderBy: BuildJobOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [BuildJob]!
+  buildJobsConnection(where: BuildJobWhereInput, orderBy: BuildJobOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): BuildJobConnection!
+  dockerRegistry(where: DockerRegistryWhereUniqueInput!): DockerRegistry
+  dockerRegistries(where: DockerRegistryWhereInput, orderBy: DockerRegistryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [DockerRegistry]!
+  dockerRegistriesConnection(where: DockerRegistryWhereInput, orderBy: DockerRegistryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): DockerRegistryConnection!
+  sourceRepository(where: SourceRepositoryWhereUniqueInput!): SourceRepository
+  sourceRepositories(where: SourceRepositoryWhereInput, orderBy: SourceRepositoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [SourceRepository]!
+  sourceRepositoriesConnection(where: SourceRepositoryWhereInput, orderBy: SourceRepositoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SourceRepositoryConnection!
+  user(where: UserWhereUniqueInput!): User
+  users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
+  usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
+  node(id: ID!): Node
+}
+
+enum SourceProvider {
+  Github
+}
+
+type SourceRepository {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  owner: User!
+  sourceProvider: SourceProvider
+  name: String!
+  authClientID: String
+  authSecret: String
+  cloneStrategy: CloneStrategy!
+  buildsEnabled: Boolean!
+  baseConfigurationFileName: String!
+}
+
+type SourceRepositoryConnection {
+  pageInfo: PageInfo!
+  edges: [SourceRepositoryEdge]!
+  aggregate: AggregateSourceRepository!
+}
+
+input SourceRepositoryCreateInput {
+  id: ID
+  owner: UserCreateOneInput!
+  sourceProvider: SourceProvider
+  name: String!
+  authClientID: String
+  authSecret: String
+  cloneStrategy: CloneStrategy!
+  buildsEnabled: Boolean
+  baseConfigurationFileName: String
+}
+
+input SourceRepositoryCreateOneInput {
+  create: SourceRepositoryCreateInput
+  connect: SourceRepositoryWhereUniqueInput
+}
+
+type SourceRepositoryEdge {
+  node: SourceRepository!
+  cursor: String!
+}
+
+enum SourceRepositoryOrderByInput {
+  id_ASC
+  id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  sourceProvider_ASC
+  sourceProvider_DESC
+  name_ASC
+  name_DESC
+  authClientID_ASC
+  authClientID_DESC
+  authSecret_ASC
+  authSecret_DESC
+  cloneStrategy_ASC
+  cloneStrategy_DESC
+  buildsEnabled_ASC
+  buildsEnabled_DESC
+  baseConfigurationFileName_ASC
+  baseConfigurationFileName_DESC
+}
+
+type SourceRepositoryPreviousValues {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  sourceProvider: SourceProvider
+  name: String!
+  authClientID: String
+  authSecret: String
+  cloneStrategy: CloneStrategy!
+  buildsEnabled: Boolean!
+  baseConfigurationFileName: String!
+}
+
+type SourceRepositorySubscriptionPayload {
+  mutation: MutationType!
+  node: SourceRepository
+  updatedFields: [String!]
+  previousValues: SourceRepositoryPreviousValues
+}
+
+input SourceRepositorySubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: SourceRepositoryWhereInput
+  AND: [SourceRepositorySubscriptionWhereInput!]
+  OR: [SourceRepositorySubscriptionWhereInput!]
+  NOT: [SourceRepositorySubscriptionWhereInput!]
+}
+
+input SourceRepositoryUpdateDataInput {
+  owner: UserUpdateOneRequiredInput
+  sourceProvider: SourceProvider
+  name: String
+  authClientID: String
+  authSecret: String
+  cloneStrategy: CloneStrategy
+  buildsEnabled: Boolean
+  baseConfigurationFileName: String
+}
+
+input SourceRepositoryUpdateInput {
+  owner: UserUpdateOneRequiredInput
+  sourceProvider: SourceProvider
+  name: String
+  authClientID: String
+  authSecret: String
+  cloneStrategy: CloneStrategy
+  buildsEnabled: Boolean
+  baseConfigurationFileName: String
+}
+
+input SourceRepositoryUpdateManyMutationInput {
+  sourceProvider: SourceProvider
+  name: String
+  authClientID: String
+  authSecret: String
+  cloneStrategy: CloneStrategy
+  buildsEnabled: Boolean
+  baseConfigurationFileName: String
+}
+
+input SourceRepositoryUpdateOneRequiredInput {
+  create: SourceRepositoryCreateInput
+  update: SourceRepositoryUpdateDataInput
+  upsert: SourceRepositoryUpsertNestedInput
+  connect: SourceRepositoryWhereUniqueInput
+}
+
+input SourceRepositoryUpsertNestedInput {
+  update: SourceRepositoryUpdateDataInput!
+  create: SourceRepositoryCreateInput!
+}
+
+input SourceRepositoryWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  owner: UserWhereInput
+  sourceProvider: SourceProvider
+  sourceProvider_not: SourceProvider
+  sourceProvider_in: [SourceProvider!]
+  sourceProvider_not_in: [SourceProvider!]
+  name: String
+  name_not: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_gt: String
+  name_gte: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  authClientID: String
+  authClientID_not: String
+  authClientID_in: [String!]
+  authClientID_not_in: [String!]
+  authClientID_lt: String
+  authClientID_lte: String
+  authClientID_gt: String
+  authClientID_gte: String
+  authClientID_contains: String
+  authClientID_not_contains: String
+  authClientID_starts_with: String
+  authClientID_not_starts_with: String
+  authClientID_ends_with: String
+  authClientID_not_ends_with: String
+  authSecret: String
+  authSecret_not: String
+  authSecret_in: [String!]
+  authSecret_not_in: [String!]
+  authSecret_lt: String
+  authSecret_lte: String
+  authSecret_gt: String
+  authSecret_gte: String
+  authSecret_contains: String
+  authSecret_not_contains: String
+  authSecret_starts_with: String
+  authSecret_not_starts_with: String
+  authSecret_ends_with: String
+  authSecret_not_ends_with: String
+  cloneStrategy: CloneStrategy
+  cloneStrategy_not: CloneStrategy
+  cloneStrategy_in: [CloneStrategy!]
+  cloneStrategy_not_in: [CloneStrategy!]
+  buildsEnabled: Boolean
+  buildsEnabled_not: Boolean
+  baseConfigurationFileName: String
+  baseConfigurationFileName_not: String
+  baseConfigurationFileName_in: [String!]
+  baseConfigurationFileName_not_in: [String!]
+  baseConfigurationFileName_lt: String
+  baseConfigurationFileName_lte: String
+  baseConfigurationFileName_gt: String
+  baseConfigurationFileName_gte: String
+  baseConfigurationFileName_contains: String
+  baseConfigurationFileName_not_contains: String
+  baseConfigurationFileName_starts_with: String
+  baseConfigurationFileName_not_starts_with: String
+  baseConfigurationFileName_ends_with: String
+  baseConfigurationFileName_not_ends_with: String
+  AND: [SourceRepositoryWhereInput!]
+  OR: [SourceRepositoryWhereInput!]
+  NOT: [SourceRepositoryWhereInput!]
+}
+
+input SourceRepositoryWhereUniqueInput {
+  id: ID
+}
+
+type Subscription {
+  buildJob(where: BuildJobSubscriptionWhereInput): BuildJobSubscriptionPayload
+  dockerRegistry(where: DockerRegistrySubscriptionWhereInput): DockerRegistrySubscriptionPayload
+  sourceRepository(where: SourceRepositorySubscriptionWhereInput): SourceRepositorySubscriptionPayload
+  user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
+}
+
+type User {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  name: String!
+  email: String!
+  passwordHash: String
+  githubUsername: String
+  githubAccountAuthToken: String
+  googleAccountAuthToken: String
+}
+
+type UserConnection {
+  pageInfo: PageInfo!
+  edges: [UserEdge]!
+  aggregate: AggregateUser!
+}
+
+input UserCreateInput {
+  id: ID
+  name: String!
+  email: String!
+  passwordHash: String
+  githubUsername: String
+  githubAccountAuthToken: String
+  googleAccountAuthToken: String
+}
+
+input UserCreateOneInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
+}
+
+type UserEdge {
+  node: User!
+  cursor: String!
+}
+
+enum UserOrderByInput {
+  id_ASC
+  id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  name_ASC
+  name_DESC
+  email_ASC
+  email_DESC
+  passwordHash_ASC
+  passwordHash_DESC
+  githubUsername_ASC
+  githubUsername_DESC
+  githubAccountAuthToken_ASC
+  githubAccountAuthToken_DESC
+  googleAccountAuthToken_ASC
+  googleAccountAuthToken_DESC
+}
+
+type UserPreviousValues {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  name: String!
+  email: String!
+  passwordHash: String
+  githubUsername: String
+  githubAccountAuthToken: String
+  googleAccountAuthToken: String
+}
+
+type UserSubscriptionPayload {
+  mutation: MutationType!
+  node: User
+  updatedFields: [String!]
+  previousValues: UserPreviousValues
+}
+
+input UserSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: UserWhereInput
+  AND: [UserSubscriptionWhereInput!]
+  OR: [UserSubscriptionWhereInput!]
+  NOT: [UserSubscriptionWhereInput!]
+}
+
+input UserUpdateDataInput {
+  name: String
+  email: String
+  passwordHash: String
+  githubUsername: String
+  githubAccountAuthToken: String
+  googleAccountAuthToken: String
+}
+
+input UserUpdateInput {
+  name: String
+  email: String
+  passwordHash: String
+  githubUsername: String
+  githubAccountAuthToken: String
+  googleAccountAuthToken: String
+}
+
+input UserUpdateManyMutationInput {
+  name: String
+  email: String
+  passwordHash: String
+  githubUsername: String
+  githubAccountAuthToken: String
+  googleAccountAuthToken: String
+}
+
+input UserUpdateOneRequiredInput {
+  create: UserCreateInput
+  update: UserUpdateDataInput
+  upsert: UserUpsertNestedInput
+  connect: UserWhereUniqueInput
+}
+
+input UserUpsertNestedInput {
+  update: UserUpdateDataInput!
+  create: UserCreateInput!
+}
+
+input UserWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  name: String
+  name_not: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_gt: String
+  name_gte: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  email: String
+  email_not: String
+  email_in: [String!]
+  email_not_in: [String!]
+  email_lt: String
+  email_lte: String
+  email_gt: String
+  email_gte: String
+  email_contains: String
+  email_not_contains: String
+  email_starts_with: String
+  email_not_starts_with: String
+  email_ends_with: String
+  email_not_ends_with: String
+  passwordHash: String
+  passwordHash_not: String
+  passwordHash_in: [String!]
+  passwordHash_not_in: [String!]
+  passwordHash_lt: String
+  passwordHash_lte: String
+  passwordHash_gt: String
+  passwordHash_gte: String
+  passwordHash_contains: String
+  passwordHash_not_contains: String
+  passwordHash_starts_with: String
+  passwordHash_not_starts_with: String
+  passwordHash_ends_with: String
+  passwordHash_not_ends_with: String
+  githubUsername: String
+  githubUsername_not: String
+  githubUsername_in: [String!]
+  githubUsername_not_in: [String!]
+  githubUsername_lt: String
+  githubUsername_lte: String
+  githubUsername_gt: String
+  githubUsername_gte: String
+  githubUsername_contains: String
+  githubUsername_not_contains: String
+  githubUsername_starts_with: String
+  githubUsername_not_starts_with: String
+  githubUsername_ends_with: String
+  githubUsername_not_ends_with: String
+  githubAccountAuthToken: String
+  githubAccountAuthToken_not: String
+  githubAccountAuthToken_in: [String!]
+  githubAccountAuthToken_not_in: [String!]
+  githubAccountAuthToken_lt: String
+  githubAccountAuthToken_lte: String
+  githubAccountAuthToken_gt: String
+  githubAccountAuthToken_gte: String
+  githubAccountAuthToken_contains: String
+  githubAccountAuthToken_not_contains: String
+  githubAccountAuthToken_starts_with: String
+  githubAccountAuthToken_not_starts_with: String
+  githubAccountAuthToken_ends_with: String
+  githubAccountAuthToken_not_ends_with: String
+  googleAccountAuthToken: String
+  googleAccountAuthToken_not: String
+  googleAccountAuthToken_in: [String!]
+  googleAccountAuthToken_not_in: [String!]
+  googleAccountAuthToken_lt: String
+  googleAccountAuthToken_lte: String
+  googleAccountAuthToken_gt: String
+  googleAccountAuthToken_gte: String
+  googleAccountAuthToken_contains: String
+  googleAccountAuthToken_not_contains: String
+  googleAccountAuthToken_starts_with: String
+  googleAccountAuthToken_not_starts_with: String
+  googleAccountAuthToken_ends_with: String
+  googleAccountAuthToken_not_ends_with: String
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  NOT: [UserWhereInput!]
+}
+
+input UserWhereUniqueInput {
+  id: ID
+  email: String
+}

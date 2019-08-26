@@ -1,16 +1,14 @@
-schema: pkg/schema.graphql
+schema:
+  - schema/generated.graphql
 exec:
-  filename: pkg/server/generated.go # generated.go
+  filename: pkg/internal/server/server_gen.go # server_gen.go
   package: server
 model:
-  filename: pkg/models/generated.go # models_gen.go
+  filename: pkg/internal/models/models_gen.go # models_gen.go
   package: models
-models:
-  User:
-    model: github.com/parrotmac/littleblue/pkg/prisma.User
-  SourceRepository:
-    model: github.com/parrotmac/littleblue/pkg/prisma.SourceRepository
+# models:
+#   ...
 resolver:
   # Goal: copy&paste from generated file
-  filename: tmp/resolver.go
+  filename: pkg/internal/api/resolver/tmp/resolver_gen.go
   type: Resolver
