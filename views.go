@@ -1,12 +1,12 @@
 package main
 
 import (
-	"net/http"
+	"encoding/json"
 	"io/ioutil"
 	"log"
-	"encoding/json"
-	"fmt"
-	"time"
+	"net/http"
+
+	"github.com/gofrs/uuid"
 )
 
 func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
@@ -65,6 +65,12 @@ func (a *App) webhookUpdate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	repoDashedName := webhookBody.getDashedName()
+	buildIdentifier, err := uuid.NewV4()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("Unable to create build identifier"))
+		return
+	}
 
 	newBuildContext := &BuildContext{
 
@@ -85,7 +91,7 @@ func (a *App) webhookUpdate(w http.ResponseWriter, r *http.Request) {
 		},
 		Messages: []Message{},
 		broadcastChannel: &a.wsBroadcast,
-		BuildIdentifier: fmt.Sprint(int64(time.Now().Unix())),
+		BuildIdentifier: buildIdentifier.String(),
 	}
 
 	oldBuildCtx := a.buildContexts

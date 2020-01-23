@@ -1,18 +1,19 @@
 package main
 
 import (
-	"io"
-	"os"
-	"fmt"
-	"log"
+	"archive/tar"
+	"bytes"
 	"crypto/hmac"
 	"crypto/sha1"
 	"encoding/hex"
-	"gopkg.in/src-d/go-git.v4"
+	"fmt"
+	"io"
+	"log"
+	"os"
 	"path/filepath"
-	"archive/tar"
-	"bytes"
 	"strings"
+
+	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/plumbing"
 )
 
@@ -95,8 +96,8 @@ func (wh *GithubWebhookRequest) WalkDir(searchDir string) ([]string, error) {
 
 func (a *App) ProcessWebhook(bCtx *BuildContext, wh *GithubWebhookRequest) {
 
-	workingDirectory := fmt.Sprintf("workdir/repo-%s", filepath.Clean(bCtx.BuildIdentifier))
-	tarTargetFilename := fmt.Sprintf("workdir/repo-%s.tar", filepath.Clean(bCtx.BuildIdentifier))
+	workingDirectory := fmt.Sprintf("workdir/%s/repo/", filepath.Clean(bCtx.BuildIdentifier))
+	tarTargetFilename := fmt.Sprintf("workdir/%s/repo.tar", filepath.Clean(bCtx.BuildIdentifier))
 
 	os.RemoveAll(workingDirectory)
 	os.MkdirAll(workingDirectory, 0755)
@@ -168,4 +169,5 @@ func (a *App) ProcessWebhook(bCtx *BuildContext, wh *GithubWebhookRequest) {
 	log.Printf("Building %s", fullImageTag)
 
 	bCtx.BuildImageFromTar(tarTargetFilename, fullImageTag)
+
 }

@@ -76,7 +76,7 @@ func (bCtx *BuildContext) addMessage(level MessageLevel, iface interface{}, shou
 		BuildIdentifier: 	bCtx.BuildIdentifier,
 	}
 
-	if (shouldMarshal) {
+	if shouldMarshal {
 		messageJsonBytes, err := json2.Marshal(iface)
 		if err != nil {
 			log.Println(err)

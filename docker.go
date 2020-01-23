@@ -44,9 +44,12 @@ func (bCtx *BuildContext) BuildImageFromTar(tarPath string, tag string) error {
 		BuildOS: buildResponse.OSType,
 	}, true)
 
-	scanner := bufio.NewScanner(buildResponse.Body)
+	respBody := buildResponse.Body
+	scanner := bufio.NewScanner(respBody)
 	for scanner.Scan() {
-		bCtx.addMessage(MSG_LEVEL_INFO, scanner.Text(), false)
+		scannerText := scanner.Text()
+		log.Printf("[%s] %s", MSG_LEVEL_INFO, scannerText)
+		bCtx.addMessage(MSG_LEVEL_INFO, scannerText, false)
 	}
 
 	auth := types.AuthConfig{
@@ -61,12 +64,15 @@ func (bCtx *BuildContext) BuildImageFromTar(tarPath string, tag string) error {
 	})
 
 	if err != nil {
+		log.Printf("Push encountered error: %s", err.Error())
 		return err
 	}
 
 	scanner = bufio.NewScanner(readCloser)
 	for scanner.Scan() {
-		bCtx.addMessage(MSG_LEVEL_INFO, scanner.Text(), false)
+		scannerText := scanner.Text()
+		log.Printf("[%s] %s", MSG_LEVEL_INFO, scannerText)
+		bCtx.addMessage(MSG_LEVEL_INFO, scannerText, false)
 	}
 
 	return nil
