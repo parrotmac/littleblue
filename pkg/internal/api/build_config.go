@@ -23,7 +23,7 @@ func (router *BuildConfigRouter) CreateBuildConfigHandler(w http.ResponseWriter,
 	buildCfg := &entities.BuildConfiguration{}
 	err = httputils.ReadJsonBodyToEntity(r.Body, buildCfg)
 	if err != nil {
-		httputils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		httputils.RespondWithError(w, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -31,7 +31,7 @@ func (router *BuildConfigRouter) CreateBuildConfigHandler(w http.ResponseWriter,
 
 	err = router.StorageService.CreateBuildConfiguration(buildCfg)
 	if err != nil {
-		httputils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		httputils.RespondWithError(w, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -43,13 +43,13 @@ func (router *BuildConfigRouter) ListRepoBuildConfigurationsHandler(w http.Respo
 	maybeRepoID := mux.Vars(r)["repo_id"]
 	repoID, err := strconv.Atoi(maybeRepoID)
 	if err != nil {
-		httputils.RespondWithError(w, http.StatusBadRequest, err.Error())
+		httputils.RespondWithError(w, http.StatusBadRequest, err)
 		return
 	}
 
-	buildConfigs, err := router.StorageService.ListRepoBuildConfigurations(uint(repoID))
+	buildConfigs, err := router.StorageService.ListBuildConfigurationsForRepo(uint(repoID))
 	if err != nil {
-		httputils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		httputils.RespondWithError(w, http.StatusInternalServerError, err)
 		return
 	}
 

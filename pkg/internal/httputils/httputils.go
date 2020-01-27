@@ -1,6 +1,9 @@
 package httputils
 
 import (
+	"crypto/hmac"
+	"crypto/sha1"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -11,8 +14,22 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func RespondWithError(w http.ResponseWriter, code int, message string) {
-	RespondWithJSON(w, code, map[string]string{"error": message})
+func VerifyRequestBodyHmac(body []byte, hmacSecret []byte, providedSignature []byte) (bool, error) {
+	mac := hmac.New(sha1.New, hmacSecret)
+
+	_, err := mac.Write(body)
+	if err != nil {
+		return false, err
+	}
+
+	expectedMAC := mac.Sum(nil)
+	fullComputedHash := fmt.Sprintf("sha1=%s", hex.EncodeToString(expectedMAC))
+
+	return hmac.Equal(providedSignature, []byte(fullComputedHash)), nil
+}
+
+func RespondWithError(w http.ResponseWriter, code int, err error) {
+	RespondWithJSON(w, code, map[string]string{"error": err.Error()})
 }
 
 func RespondWithStatus(w http.ResponseWriter, code int, message string) {
@@ -23,7 +40,7 @@ func RespondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	response, err := json.Marshal(payload)
 	if err != nil {
 		// This is (at least theoretically) dangerous as respondWithError calls this function
-		RespondWithError(w, http.StatusInternalServerError, err.Error())
+		RespondWithError(w, http.StatusInternalServerError, err)
 		return
 	}
 

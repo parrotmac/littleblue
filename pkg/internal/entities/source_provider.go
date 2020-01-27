@@ -3,6 +3,7 @@ package entities
 type SourceProviderService interface {
 	CreateSourceProvider(s *SourceProvider) error
 	ListUserSourceProviders(userID uint) ([]SourceProvider, error)
+	GetSourceProvider(id uint) (*SourceProvider, error)
 }
 
 type SourceProvider struct {

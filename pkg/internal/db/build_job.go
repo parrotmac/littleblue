@@ -20,6 +20,7 @@ type buildJobModel struct {
 	Failed               bool
 	FailureDetail        *string
 	BuildHost            *string
+	SourceReference      *string
 	SourceRevision       *string
 	SourceUri            string
 	ArtifactUri          string
@@ -43,6 +44,7 @@ func (m *buildJobModel) toEntity() *entities.BuildJob {
 		Failed:               m.Failed,
 		FailureDetail:        m.FailureDetail,
 		BuildHost:            m.BuildHost,
+		SourceReference:      m.SourceReference,
 		SourceRevision:       m.SourceRevision,
 		SourceUri:            m.SourceUri,
 		ArtifactUri:          m.ArtifactUri,
@@ -64,6 +66,7 @@ func (m *buildJobModel) fromEntity(job *entities.BuildJob) {
 	m.Failed = job.Failed
 	m.FailureDetail = job.FailureDetail
 	m.BuildHost = job.BuildHost
+	m.SourceReference = job.SourceReference
 	m.SourceRevision = job.SourceRevision
 	m.SourceUri = job.SourceUri
 	m.ArtifactUri = job.ArtifactUri

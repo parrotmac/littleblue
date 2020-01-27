@@ -25,3 +25,19 @@ func (s *Storage) ListUserSourceRepositories(userID uint) ([]entities.SourceRepo
 
 	return soureceRepoEntities, nil
 }
+
+func (s *Storage) GetSourceRepository(id uint) (*entities.SourceRepository, error) {
+	repo := sourceRepositoryModel{}
+	if db := s.DB.First(&repo, id); db.Error != nil {
+		return nil, db.Error
+	}
+	return repo.toEntity(), nil
+}
+
+func (s *Storage) GetSourceRepositoryByUUID(uuid string) (*entities.SourceRepository, error) {
+	repo := sourceRepositoryModel{}
+	if db := s.DB.Where("repo_uuid = ?", uuid).Find(&repo); db.Error != nil {
+		return nil, db.Error
+	}
+	return repo.toEntity(), nil
+}

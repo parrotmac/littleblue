@@ -18,7 +18,7 @@ func (router *SourceRepositoryRouter) CreateSourceRepositoryHandler(w http.Respo
 
 	err := httputils.ReadJsonBodyToEntity(r.Body, sourceRepo)
 	if err != nil {
-		httputils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		httputils.RespondWithError(w, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -26,7 +26,7 @@ func (router *SourceRepositoryRouter) CreateSourceRepositoryHandler(w http.Respo
 	sourceRepo.RepoUUID = uuidgen.NewUndashed()
 	err = router.StorageService.CreateSourceRepository(sourceRepo)
 	if err != nil {
-		httputils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		httputils.RespondWithError(w, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -38,7 +38,7 @@ func (router *SourceRepositoryRouter) ListSourceRepositoriesHandler(w http.Respo
 
 	sourceRepos, err := router.StorageService.ListUserSourceRepositories(hardcodedUserID)
 	if err != nil {
-		httputils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		httputils.RespondWithError(w, http.StatusInternalServerError, err)
 		return
 	}
 

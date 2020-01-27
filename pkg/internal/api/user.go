@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -22,19 +23,19 @@ func (router *UserRouter) CreateUserHandler(w http.ResponseWriter, r *http.Reque
 
 	requestBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		httputils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		httputils.RespondWithError(w, http.StatusInternalServerError, err)
 		return
 	}
 
 	err = json.Unmarshal(requestBody, newUser)
 	if err != nil {
-		httputils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		httputils.RespondWithError(w, http.StatusInternalServerError, err)
 		return
 	}
 
 	err = router.StorageService.CreateUser(newUser)
 	if err != nil {
-		httputils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		httputils.RespondWithError(w, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -44,19 +45,19 @@ func (router *UserRouter) CreateUserHandler(w http.ResponseWriter, r *http.Reque
 func (router *UserRouter) GetUserHandler(w http.ResponseWriter, r *http.Request) {
 	userIdStr, ok := mux.Vars(r)["user_id"]
 	if !ok || userIdStr == "" {
-		httputils.RespondWithError(w, http.StatusBadRequest, "please specify a valid user ID")
+		httputils.RespondWithError(w, http.StatusBadRequest, errors.New("please specify a valid user ID"))
 		return
 	}
 
 	userID, err := strconv.Atoi(userIdStr)
 	if err != nil {
-		httputils.RespondWithError(w, http.StatusBadRequest, "please specify a valid user ID")
+		httputils.RespondWithError(w, http.StatusBadRequest, errors.New("please specify a valid user ID"))
 		return
 	}
 
 	user, err := router.StorageService.GetUserByID(uint(userID))
 	if err != nil {
-		httputils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		httputils.RespondWithError(w, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -68,19 +69,19 @@ func (router *UserRouter) UpdateUserHandler(w http.ResponseWriter, r *http.Reque
 
 	requestBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		httputils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		httputils.RespondWithError(w, http.StatusInternalServerError, err)
 		return
 	}
 
 	err = json.Unmarshal(requestBody, updatedUser)
 	if err != nil {
-		httputils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		httputils.RespondWithError(w, http.StatusInternalServerError, err)
 		return
 	}
 
 	err = router.StorageService.UpdateUser(updatedUser)
 	if err != nil {
-		httputils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		httputils.RespondWithError(w, http.StatusInternalServerError, err)
 		return
 	}
 
