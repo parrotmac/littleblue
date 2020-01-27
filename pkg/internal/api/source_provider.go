@@ -23,13 +23,13 @@ func (router *SourceProviderRouter) CreateSourceProviderHandler(w http.ResponseW
 
 	err := httputils.ReadJsonBodyToEntity(r.Body, sourceProvider)
 	if err != nil {
-		httputils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		httputils.RespondWithError(w, http.StatusInternalServerError, err)
 		return
 	}
 
 	err = router.StorageService.CreateSourceProvider(sourceProvider)
 	if err != nil {
-		httputils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		httputils.RespondWithError(w, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -42,7 +42,7 @@ func (router *SourceProviderRouter) ListSourceProvidersHandler(w http.ResponseWr
 
 	sourceProviders, err := router.StorageService.ListUserSourceProviders(hardCodedOwnerUserId)
 	if err != nil {
-		httputils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		httputils.RespondWithError(w, http.StatusInternalServerError, err)
 		return
 	}
 

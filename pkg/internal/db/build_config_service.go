@@ -11,7 +11,7 @@ func (s *Storage) CreateBuildConfiguration(configEntity *entities.BuildConfigura
 	return nil
 }
 
-func (s *Storage) ListRepoBuildConfigurations(sourceRepoID uint) ([]entities.BuildConfiguration, error) {
+func (s *Storage) ListBuildConfigurationsForRepo(sourceRepoID uint) ([]entities.BuildConfiguration, error) {
 	configModels := []buildConfigurationModel{}
 	if db := s.DB.Find(&configModels, "source_repository_id = ?", sourceRepoID); db.Error != nil {
 		return nil, db.Error
@@ -23,4 +23,12 @@ func (s *Storage) ListRepoBuildConfigurations(sourceRepoID uint) ([]entities.Bui
 	}
 
 	return configEntities, nil
+}
+
+func (s *Storage) GetBuildConfiguration(id uint) (*entities.BuildConfiguration, error) {
+	config := buildConfigurationModel{}
+	if db := s.DB.First(&config, id); db.Error != nil {
+		return nil, db.Error
+	}
+	return config.toEntity(), nil
 }

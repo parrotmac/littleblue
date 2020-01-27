@@ -6,6 +6,18 @@ type BuildJobService interface {
 	CreateBuildJob(c *BuildJob) error
 }
 
+type JobStatus string
+
+const (
+	JobStatusUnknown  JobStatus = "unknown"
+	JobStatusCreated  JobStatus = "created"
+	JobStatusPending  JobStatus = "pending"
+	JobStatusCloning  JobStatus = "cloning"
+	JobStatusBuilding JobStatus = "building"
+	JobStatusPushing  JobStatus = "pushing"
+	JobStatusComplete JobStatus = "complete"
+)
+
 type BuildJob struct {
 	ID uint `json:"id"`
 
@@ -48,6 +60,9 @@ type BuildJob struct {
 	// Name or address of machine performing build
 	BuildHost *string `json:"build_host"`
 
+	// The branch
+	SourceReference *string `json:"source_reference"`
+
 	// For git, this is the rev hash
 	SourceRevision *string `json:"source_revision"`
 
@@ -60,6 +75,14 @@ type BuildJob struct {
 	// Logs from different stages
 	Logs BuildLogs `json:"logs"`
 }
+
+type BuildLogKind string
+
+const (
+	BuildLogKindSetup BuildLogKind = "setup"
+	BuildLogKindBuild BuildLogKind = "build"
+	BuildLogKindPush  BuildLogKind = "push"
+)
 
 type BuildLogs struct {
 	// Logs from getting source

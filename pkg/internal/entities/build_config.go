@@ -2,7 +2,8 @@ package entities
 
 type BuildConfigurationService interface {
 	CreateBuildConfiguration(c *BuildConfiguration) error
-	ListRepoBuildConfigurations(sourceRepoID uint) ([]BuildConfiguration, error)
+	ListBuildConfigurationsForRepo(sourceRepoID uint) ([]BuildConfiguration, error)
+	GetBuildConfiguration(id uint) (BuildConfiguration, error)
 }
 
 type BuildConfiguration struct {

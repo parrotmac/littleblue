@@ -23,3 +23,11 @@ func (s *Storage) ListUserSourceProviders(userID uint) ([]entities.SourceProvide
 	}
 	return sourceProviderEntities, nil
 }
+
+func (s *Storage) GetSourceProvider(id uint) (*entities.SourceProvider, error) {
+	provider := sourceProviderModel{}
+	if db := s.DB.First(&provider, id); db.Error != nil {
+		return nil, db.Error
+	}
+	return provider.toEntity(), nil
+}

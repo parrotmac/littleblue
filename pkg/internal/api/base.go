@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/parrotmac/littleblue/pkg/internal/meta"
 	"log"
 
 	"github.com/gorilla/mux"
@@ -11,6 +12,7 @@ import (
 type Server struct {
 	APIRouter *mux.Router
 	Storage   *db.Storage
+	JobQueue  meta.JobQueue
 }
 
 func (s *Server) Init() {
@@ -62,8 +64,8 @@ func (s *Server) initSourceRepoRoutes() {
 func (s *Server) initBuildJobRoutes() {
 	router := BuildJobRouter{
 		StorageService: s.Storage,
+		JobQueue:       s.JobQueue,
 	}
 	s.APIRouter.HandleFunc("/jobs/", router.CreateBuildJobHandler).Methods("POST")
-
 	s.APIRouter.HandleFunc("/webhook/{repo_uuid}/", router.WebhookJobHandler).Methods("POST")
 }

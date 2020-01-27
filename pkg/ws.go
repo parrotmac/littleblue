@@ -29,7 +29,7 @@ func (a *App) websocketConnectionHandler(w http.ResponseWriter, r *http.Request)
 
 	for {
 		var msg Message
-		// Read in a new message as JSON and map it to a Message object
+		// Read in a new message as JSON and map it to a DockerMessage object
 		err := ws.ReadJSON(&msg)
 		if err != nil {
 			log.Printf("error: %v", err)
