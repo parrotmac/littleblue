@@ -21,7 +21,7 @@ class BuildLog extends Component<IBuildLog> {
         let messageStream = "";
         messages.forEach((msg) => {
             try {
-                const parsedMsg = JSON.parse(msg.body);
+                const parsedMsg = JSON.parse(msg);
                 if ("error" in parsedMsg) {
                     const err: IBuildMessageBody_Error = parsedMsg;
                     messageStream += `\u001b[91m${err.error}\n\u001b[0m`; // TODO: Refactor color handling
@@ -75,7 +75,7 @@ class BuildLog extends Component<IBuildLog> {
         if (isLoading || job === null) { // FIXME
             return this.loadingContent();
         }
-        const buildLog: string = this.createHtmlRecord(job.messages);
+        const buildLog: string = this.createHtmlRecord(job.logs.build || []);
         return <pre className={"build-log"} dangerouslySetInnerHTML={{ __html: buildLog }} />;
     }
 }

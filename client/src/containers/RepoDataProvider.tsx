@@ -1,38 +1,40 @@
 import React, {Component} from "react";
 import RepoPage from "../pages/RepoPage";
-import {IBuildStatus} from "../utils/types";
 import ApiClient from "../utils/apiClient";
+import {IRepo} from "../utils/types";
 
-interface IState {
-    buildStatus: IBuildStatus
-    isLoading: boolean
+interface IProps {
+    apiClient: ApiClient
 }
 
-class RepoDataProvider extends Component {
+interface IState {
+    isLoading: boolean
+    repoList: Array<IRepo>
+}
+
+class RepoDataProvider extends Component<IProps, IState> {
     state = {
-        buildStatus: {
-            jobs: []
-        },
+        repoList: [],
         isLoading: true
     };
 
-    public componentDidMount(): void {
-        const apiClient = new ApiClient("");
-        apiClient.fetchJobs().then(
-            jobStatus => {
+    componentDidMount = (): void => {
+        const {apiClient} = this.props;
+        apiClient.fetchRepos().then(
+            repoListing => {
                 const newState: IState = {
-                    buildStatus: jobStatus,
+                    repoList:repoListing,
                     isLoading: false
                 };
-                this.setState(newState as any);
+                this.setState(newState);
             }
         ).catch(console.error);
-    }
+    };
 
     public render(): JSX.Element {
-        const { isLoading, buildStatus } = this.state;
+        const { isLoading, repoList } = this.state;
         return (
-            <RepoPage isLoading={isLoading} buildJobsStatus={buildStatus} />
+            <RepoPage isLoading={isLoading} repos={repoList} />
         )
     }
 }
