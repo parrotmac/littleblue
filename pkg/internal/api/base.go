@@ -59,6 +59,8 @@ func (s *Server) initSourceRepoRoutes() {
 	}
 	repoSubrouter.HandleFunc("/{repo_id}/configs/", configRouter.CreateBuildConfigHandler).Methods("POST")
 	repoSubrouter.HandleFunc("/{repo_id}/configs/", configRouter.ListRepoBuildConfigurationsHandler).Methods("GET")
+
+	repoSubrouter.HandleFunc("/{repo_id}/jobs/", repoRouter.ListRepoBuildJobsHandler).Methods("GET")
 }
 
 func (s *Server) initBuildJobRoutes() {
@@ -66,6 +68,7 @@ func (s *Server) initBuildJobRoutes() {
 		StorageService: s.Storage,
 		JobQueue:       s.JobQueue,
 	}
+	s.APIRouter.HandleFunc("/jobs/", router.ListBuildJobsHandler).Methods("GET")
 	s.APIRouter.HandleFunc("/jobs/", router.CreateBuildJobHandler).Methods("POST")
 	s.APIRouter.HandleFunc("/webhook/{repo_uuid}/", router.WebhookJobHandler).Methods("POST")
 }

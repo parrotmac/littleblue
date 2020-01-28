@@ -23,6 +23,18 @@ type BuildJobRouter struct {
 	JobQueue       meta.JobQueue
 }
 
+func (router *BuildJobRouter) ListBuildJobsHandler(w http.ResponseWriter, r *http.Request) {
+	hardcodedUserID := 1
+
+	jobs, err := router.StorageService.ListBuildJobsForUserID(uint(hardcodedUserID))
+	if err != nil {
+		httputils.RespondWithError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	httputils.RespondWithJSON(w, http.StatusOK, jobs)
+}
+
 func (router *BuildJobRouter) CreateBuildJobHandler(w http.ResponseWriter, r *http.Request) {
 	buildJob := &entities.BuildJob{}
 	err := httputils.ReadJsonBodyToEntity(r.Body, buildJob)
