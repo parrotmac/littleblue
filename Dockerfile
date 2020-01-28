@@ -22,18 +22,11 @@ FROM golang:latest as builder
 
 ENV CGO_ENABLED=0
 
-# Install script isn't cross-platform
-RUN go get -u github.com/golang/dep/cmd/dep
-
-RUN mkdir -p /go/src/github.com/parrotmac/littleblue/
-WORKDIR /go/src/github.com/parrotmac/littleblue/
-COPY Gopkg.toml .
-COPY Gopkg.lock .
-
-RUN dep ensure -v -vendor-only
+WORKDIR /app
 COPY . .
+
 RUN go build -o bin/littleblue cmd/main.go
-# Final artifact: /go/src/github.com/parrotmac/littleblue/bin/littleblue
+# Final artifact: /app/bin/littleblue
 
 FROM alpine:latest
 
@@ -46,7 +39,7 @@ RUN apk update \
 
 RUN mkdir -p /opt/littleblue
 WORKDIR /opt/littleblue
-COPY --from=builder /go/src/github.com/parrotmac/littleblue/bin/littleblue .
+COPY --from=builder /app/bin/littleblue .
 COPY --from=frontend /app/client/build ./client/build
 COPY config.yml .
 
