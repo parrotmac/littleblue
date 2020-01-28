@@ -1,7 +1,10 @@
 package api
 
 import (
+	"errors"
+	"github.com/gorilla/mux"
 	"net/http"
+	"strconv"
 
 	"github.com/parrotmac/littleblue/pkg/internal/db"
 	"github.com/parrotmac/littleblue/pkg/internal/entities"
@@ -47,4 +50,22 @@ func (router *SourceRepositoryRouter) ListSourceRepositoriesHandler(w http.Respo
 	}
 
 	httputils.RespondWithJSON(w, http.StatusOK, sourceRepos)
+}
+
+func (router *SourceRepositoryRouter) ListRepoBuildJobsHandler(w http.ResponseWriter, r *http.Request) {
+	hardcodedUserID := uint(1)
+	repoID, ok := mux.Vars(r)["repo_id"]
+	repoIntID, err := strconv.Atoi(repoID)
+	if !ok || err != nil {
+		httputils.RespondWithError(w, http.StatusBadRequest, errors.New("bad URL"))
+		return
+	}
+
+	buildJobs, err := router.StorageService.ListBuildJobsForRepoAndUserID(hardcodedUserID, uint(repoIntID))
+	if err != nil {
+		httputils.RespondWithError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	httputils.RespondWithJSON(w, http.StatusOK, buildJobs)
 }

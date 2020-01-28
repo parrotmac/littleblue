@@ -2,6 +2,7 @@ package db
 
 import (
 	"github.com/jinzhu/gorm"
+
 	"github.com/parrotmac/littleblue/pkg/internal/entities"
 )
 
@@ -28,6 +29,38 @@ func (s *Storage) UpdateBuildJob(jobEntity *entities.BuildJob) (*entities.BuildJ
 		return nil, db.Error
 	}
 	return model.toEntity(), nil
+}
+
+func (s *Storage) ListBuildJobsForRepoAndUserID(userID uint, repoID uint) ([]entities.BuildJob, error) {
+	buildJobs := []buildJobModel{}
+
+	if db := s.DB.Joins(`LEFT JOIN build_configurations bc on bc.id = build_jobs.build_configuration_id
+LEFT JOIN source_repositories sr on sr.id = bc.source_repository_id
+LEFT JOIN source_providers sp on sp.id = sr.source_provider_id`).Where("sp.owner_id = ?", userID).Where("bc.source_repository_id = ?", repoID).Find(&buildJobs); db.Error != nil {
+		return nil, db.Error
+	}
+
+	buildJobEntities := make([]entities.BuildJob, len(buildJobs))
+	for i, model := range buildJobs {
+		buildJobEntities[i] = *model.toEntity()
+	}
+	return buildJobEntities, nil
+}
+
+func (s *Storage) ListBuildJobsForUserID(userID uint) ([]entities.BuildJob, error) {
+	buildJobs := []buildJobModel{}
+
+	if db := s.DB.Joins(`LEFT JOIN build_configurations bc on bc.id = build_jobs.build_configuration_id
+LEFT JOIN source_repositories sr on sr.id = bc.source_repository_id
+LEFT JOIN source_providers sp on sp.id = sr.source_provider_id`).Where("sp.owner_id = ?", userID).Find(&buildJobs); db.Error != nil {
+		return nil, db.Error
+	}
+
+	buildJobEntities := make([]entities.BuildJob, len(buildJobs))
+	for i, model := range buildJobs {
+		buildJobEntities[i] = *model.toEntity()
+	}
+	return buildJobEntities, nil
 }
 
 func (s *Storage) SetStatus(jobID uint, status entities.JobStatus) error {
