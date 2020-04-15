@@ -14,7 +14,15 @@ Copy-paste desired updates into this model
 */
 
 type Resolver struct {
-	Prisma *prisma.Client
+	backend *backend
+}
+
+func NewResolver(client *prisma.Client) Resolver {
+	return Resolver{
+		backend: &backend{
+			prisma: client,
+		},
+	}
 }
 
 func (r *Resolver) Mutation() server.MutationResolver {
@@ -29,132 +37,132 @@ func (r *Resolver) Subscription() server.SubscriptionResolver {
 
 type mutationResolver struct{ *Resolver }
 
-func (r *mutationResolver) CreateBuildJob(ctx context.Context, data models.BuildJobCreateInput) (*models.BuildJob, error) {
-	panic("not implemented")
+func (r *mutationResolver) CreateBuildJob(ctx context.Context, data prisma.BuildJobCreateInput) (*prisma.BuildJob, error) {
+	return r.backend.mutationBackend.CreateBuildJob(ctx, data)
 }
-func (r *mutationResolver) UpdateBuildJob(ctx context.Context, data models.BuildJobUpdateInput, where models.BuildJobWhereUniqueInput) (*models.BuildJob, error) {
-	panic("not implemented")
+func (r *mutationResolver) UpdateBuildJob(ctx context.Context, data prisma.BuildJobUpdateInput, where prisma.BuildJobWhereUniqueInput) (*prisma.BuildJob, error) {
+	return r.backend.mutationBackend.UpdateBuildJob(ctx, data, where)
 }
-func (r *mutationResolver) UpdateManyBuildJobs(ctx context.Context, data models.BuildJobUpdateManyMutationInput, where *models.BuildJobWhereInput) (*models.BatchPayload, error) {
-	panic("not implemented")
+func (r *mutationResolver) UpdateManyBuildJobs(ctx context.Context, data prisma.BuildJobUpdateManyMutationInput, where *prisma.BuildJobWhereInput) (*prisma.BatchPayload, error) {
+	return r.backend.mutationBackend.UpdateManyBuildJobs(ctx, data, where)
 }
-func (r *mutationResolver) UpsertBuildJob(ctx context.Context, where models.BuildJobWhereUniqueInput, create models.BuildJobCreateInput, update models.BuildJobUpdateInput) (*models.BuildJob, error) {
-	panic("not implemented")
+func (r *mutationResolver) UpsertBuildJob(ctx context.Context, where prisma.BuildJobWhereUniqueInput, create prisma.BuildJobCreateInput, update prisma.BuildJobUpdateInput) (*prisma.BuildJob, error) {
+	return r.backend.mutationBackend.UpsertBuildJob(ctx, where, create, update)
 }
-func (r *mutationResolver) DeleteBuildJob(ctx context.Context, where models.BuildJobWhereUniqueInput) (*models.BuildJob, error) {
-	panic("not implemented")
+func (r *mutationResolver) DeleteBuildJob(ctx context.Context, where prisma.BuildJobWhereUniqueInput) (*prisma.BuildJob, error) {
+	return r.backend.mutationBackend.DeleteBuildJob(ctx, where)
 }
-func (r *mutationResolver) DeleteManyBuildJobs(ctx context.Context, where *models.BuildJobWhereInput) (*models.BatchPayload, error) {
-	panic("not implemented")
+func (r *mutationResolver) DeleteManyBuildJobs(ctx context.Context, where *prisma.BuildJobWhereInput) (*prisma.BatchPayload, error) {
+	return r.backend.mutationBackend.DeleteManyBuildJobs(ctx, where)
 }
-func (r *mutationResolver) CreateDockerRegistry(ctx context.Context, data models.DockerRegistryCreateInput) (*models.DockerRegistry, error) {
-	panic("not implemented")
+func (r *mutationResolver) CreateDockerRegistry(ctx context.Context, data prisma.DockerRegistryCreateInput) (*prisma.DockerRegistry, error) {
+	return r.backend.mutationBackend.CreateDockerRegistry(ctx, data)
 }
-func (r *mutationResolver) UpdateDockerRegistry(ctx context.Context, data models.DockerRegistryUpdateInput, where models.DockerRegistryWhereUniqueInput) (*models.DockerRegistry, error) {
-	panic("not implemented")
+func (r *mutationResolver) UpdateDockerRegistry(ctx context.Context, data prisma.DockerRegistryUpdateInput, where prisma.DockerRegistryWhereUniqueInput) (*prisma.DockerRegistry, error) {
+	return r.backend.mutationBackend.UpdateDockerRegistry(ctx, data, where)
 }
-func (r *mutationResolver) UpdateManyDockerRegistries(ctx context.Context, data models.DockerRegistryUpdateManyMutationInput, where *models.DockerRegistryWhereInput) (*models.BatchPayload, error) {
-	panic("not implemented")
+func (r *mutationResolver) UpdateManyDockerRegistries(ctx context.Context, data prisma.DockerRegistryUpdateManyMutationInput, where *prisma.DockerRegistryWhereInput) (*prisma.BatchPayload, error) {
+	return r.backend.mutationBackend.UpdateManyDockerRegistries(ctx, data, where)
 }
-func (r *mutationResolver) UpsertDockerRegistry(ctx context.Context, where models.DockerRegistryWhereUniqueInput, create models.DockerRegistryCreateInput, update models.DockerRegistryUpdateInput) (*models.DockerRegistry, error) {
-	panic("not implemented")
+func (r *mutationResolver) UpsertDockerRegistry(ctx context.Context, where prisma.DockerRegistryWhereUniqueInput, create prisma.DockerRegistryCreateInput, update prisma.DockerRegistryUpdateInput) (*prisma.DockerRegistry, error) {
+	return r.backend.mutationBackend.UpsertDockerRegistry(ctx, where, create, update)
 }
-func (r *mutationResolver) DeleteDockerRegistry(ctx context.Context, where models.DockerRegistryWhereUniqueInput) (*models.DockerRegistry, error) {
-	panic("not implemented")
+func (r *mutationResolver) DeleteDockerRegistry(ctx context.Context, where prisma.DockerRegistryWhereUniqueInput) (*prisma.DockerRegistry, error) {
+	return r.backend.mutationBackend.DeleteDockerRegistry(ctx, where)
 }
-func (r *mutationResolver) DeleteManyDockerRegistries(ctx context.Context, where *models.DockerRegistryWhereInput) (*models.BatchPayload, error) {
-	panic("not implemented")
+func (r *mutationResolver) DeleteManyDockerRegistries(ctx context.Context, where *prisma.DockerRegistryWhereInput) (*prisma.BatchPayload, error) {
+	return r.backend.mutationBackend.DeleteManyDockerRegistries(ctx, where)
 }
-func (r *mutationResolver) CreateSourceRepository(ctx context.Context, data models.SourceRepositoryCreateInput) (*models.SourceRepository, error) {
-	panic("not implemented")
+func (r *mutationResolver) CreateSourceRepository(ctx context.Context, data prisma.SourceRepositoryCreateInput) (*prisma.SourceRepository, error) {
+	return r.backend.mutationBackend.CreateSourceRepository(ctx, data)
 }
-func (r *mutationResolver) UpdateSourceRepository(ctx context.Context, data models.SourceRepositoryUpdateInput, where models.SourceRepositoryWhereUniqueInput) (*models.SourceRepository, error) {
-	panic("not implemented")
+func (r *mutationResolver) UpdateSourceRepository(ctx context.Context, data prisma.SourceRepositoryUpdateInput, where prisma.SourceRepositoryWhereUniqueInput) (*prisma.SourceRepository, error) {
+	return r.backend.mutationBackend.UpdateSourceRepository(ctx, data, where)
 }
-func (r *mutationResolver) UpdateManySourceRepositories(ctx context.Context, data models.SourceRepositoryUpdateManyMutationInput, where *models.SourceRepositoryWhereInput) (*models.BatchPayload, error) {
-	panic("not implemented")
+func (r *mutationResolver) UpdateManySourceRepositories(ctx context.Context, data prisma.SourceRepositoryUpdateManyMutationInput, where *prisma.SourceRepositoryWhereInput) (*prisma.BatchPayload, error) {
+	return r.backend.mutationBackend.UpdateManySourceRepositories(ctx, data, where)
 }
-func (r *mutationResolver) UpsertSourceRepository(ctx context.Context, where models.SourceRepositoryWhereUniqueInput, create models.SourceRepositoryCreateInput, update models.SourceRepositoryUpdateInput) (*models.SourceRepository, error) {
-	panic("not implemented")
+func (r *mutationResolver) UpsertSourceRepository(ctx context.Context, where prisma.SourceRepositoryWhereUniqueInput, create prisma.SourceRepositoryCreateInput, update prisma.SourceRepositoryUpdateInput) (*prisma.SourceRepository, error) {
+	return r.backend.mutationBackend.UpsertSourceRepository(ctx, where, create, update)
 }
-func (r *mutationResolver) DeleteSourceRepository(ctx context.Context, where models.SourceRepositoryWhereUniqueInput) (*models.SourceRepository, error) {
-	panic("not implemented")
+func (r *mutationResolver) DeleteSourceRepository(ctx context.Context, where prisma.SourceRepositoryWhereUniqueInput) (*prisma.SourceRepository, error) {
+	return r.backend.mutationBackend.DeleteSourceRepository(ctx, where)
 }
-func (r *mutationResolver) DeleteManySourceRepositories(ctx context.Context, where *models.SourceRepositoryWhereInput) (*models.BatchPayload, error) {
-	panic("not implemented")
+func (r *mutationResolver) DeleteManySourceRepositories(ctx context.Context, where *prisma.SourceRepositoryWhereInput) (*prisma.BatchPayload, error) {
+	return r.backend.mutationBackend.DeleteManySourceRepositories(ctx, where)
 }
-func (r *mutationResolver) CreateUser(ctx context.Context, data models.UserCreateInput) (*models.User, error) {
-	panic("not implemented")
+func (r *mutationResolver) CreateUser(ctx context.Context, data prisma.UserCreateInput) (*prisma.User, error) {
+	return r.backend.mutationBackend.CreateUser(ctx, data)
 }
-func (r *mutationResolver) UpdateUser(ctx context.Context, data models.UserUpdateInput, where models.UserWhereUniqueInput) (*models.User, error) {
-	panic("not implemented")
+func (r *mutationResolver) UpdateUser(ctx context.Context, data prisma.UserUpdateInput, where prisma.UserWhereUniqueInput) (*prisma.User, error) {
+	return r.backend.mutationBackend.UpdateUser(ctx, data, where)
 }
-func (r *mutationResolver) UpdateManyUsers(ctx context.Context, data models.UserUpdateManyMutationInput, where *models.UserWhereInput) (*models.BatchPayload, error) {
-	panic("not implemented")
+func (r *mutationResolver) UpdateManyUsers(ctx context.Context, data prisma.UserUpdateManyMutationInput, where *prisma.UserWhereInput) (*prisma.BatchPayload, error) {
+	return r.backend.mutationBackend.UpdateManyUsers(ctx, data, where)
 }
-func (r *mutationResolver) UpsertUser(ctx context.Context, where models.UserWhereUniqueInput, create models.UserCreateInput, update models.UserUpdateInput) (*models.User, error) {
-	panic("not implemented")
+func (r *mutationResolver) UpsertUser(ctx context.Context, where prisma.UserWhereUniqueInput, create prisma.UserCreateInput, update prisma.UserUpdateInput) (*prisma.User, error) {
+	return r.backend.mutationBackend.UpsertUser(ctx, where, create, update)
 }
-func (r *mutationResolver) DeleteUser(ctx context.Context, where models.UserWhereUniqueInput) (*models.User, error) {
-	panic("not implemented")
+func (r *mutationResolver) DeleteUser(ctx context.Context, where prisma.UserWhereUniqueInput) (*prisma.User, error) {
+	return r.backend.mutationBackend.DeleteUser(ctx, where)
 }
-func (r *mutationResolver) DeleteManyUsers(ctx context.Context, where *models.UserWhereInput) (*models.BatchPayload, error) {
-	panic("not implemented")
+func (r *mutationResolver) DeleteManyUsers(ctx context.Context, where *prisma.UserWhereInput) (*prisma.BatchPayload, error) {
+	return r.backend.mutationBackend.DeleteManyUsers(ctx, where)
 }
 
 type queryResolver struct{ *Resolver }
 
-func (r *queryResolver) BuildJob(ctx context.Context, where models.BuildJobWhereUniqueInput) (*models.BuildJob, error) {
-	panic("not implemented")
+func (r *queryResolver) BuildJob(ctx context.Context, where prisma.BuildJobWhereUniqueInput) (*prisma.BuildJob, error) {
+	return r.backend.queryBackend.BuildJob(ctx, where)
 }
-func (r *queryResolver) BuildJobs(ctx context.Context, where *models.BuildJobWhereInput, orderBy *models.BuildJobOrderByInput, skip *int, after *string, before *string, first *int, last *int) ([]*models.BuildJob, error) {
-	panic("not implemented")
+func (r *queryResolver) BuildJobs(ctx context.Context, where *prisma.BuildJobWhereInput, orderBy *prisma.BuildJobOrderByInput, skip *int, after *string, before *string, first *int, last *int) ([]*prisma.BuildJob, error) {
+	return r.backend.queryBackend.BuildJobs(ctx, where, orderBy, skip, after, before, first, last)
 }
-func (r *queryResolver) BuildJobsConnection(ctx context.Context, where *models.BuildJobWhereInput, orderBy *models.BuildJobOrderByInput, skip *int, after *string, before *string, first *int, last *int) (*models.BuildJobConnection, error) {
-	panic("not implemented")
+func (r *queryResolver) BuildJobsConnection(ctx context.Context, where *prisma.BuildJobWhereInput, orderBy *prisma.BuildJobOrderByInput, skip *int, after *string, before *string, first *int, last *int) (*prisma.BuildJobConnection, error) {
+	return r.backend.queryBackend.BuildJobsConnection(ctx, where, orderBy, skip, after, before, first, last)
 }
-func (r *queryResolver) DockerRegistry(ctx context.Context, where models.DockerRegistryWhereUniqueInput) (*models.DockerRegistry, error) {
-	panic("not implemented")
+func (r *queryResolver) DockerRegistry(ctx context.Context, where prisma.DockerRegistryWhereUniqueInput) (*prisma.DockerRegistry, error) {
+	return r.backend.queryBackend.DockerRegistry(ctx, where)
 }
-func (r *queryResolver) DockerRegistries(ctx context.Context, where *models.DockerRegistryWhereInput, orderBy *models.DockerRegistryOrderByInput, skip *int, after *string, before *string, first *int, last *int) ([]*models.DockerRegistry, error) {
-	panic("not implemented")
+func (r *queryResolver) DockerRegistries(ctx context.Context, where *prisma.DockerRegistryWhereInput, orderBy *prisma.DockerRegistryOrderByInput, skip *int, after *string, before *string, first *int, last *int) ([]*prisma.DockerRegistry, error) {
+	return r.backend.queryBackend.DockerRegistries(ctx, where, orderBy, skip, after, before, first, last)
 }
-func (r *queryResolver) DockerRegistriesConnection(ctx context.Context, where *models.DockerRegistryWhereInput, orderBy *models.DockerRegistryOrderByInput, skip *int, after *string, before *string, first *int, last *int) (*models.DockerRegistryConnection, error) {
-	panic("not implemented")
+func (r *queryResolver) DockerRegistriesConnection(ctx context.Context, where *prisma.DockerRegistryWhereInput, orderBy *prisma.DockerRegistryOrderByInput, skip *int, after *string, before *string, first *int, last *int) (*prisma.DockerRegistryConnection, error) {
+	return r.backend.queryBackend.DockerRegistriesConnection(ctx, where, orderBy, skip, after, before, first, last)
 }
-func (r *queryResolver) SourceRepository(ctx context.Context, where models.SourceRepositoryWhereUniqueInput) (*models.SourceRepository, error) {
-	panic("not implemented")
+func (r *queryResolver) SourceRepository(ctx context.Context, where prisma.SourceRepositoryWhereUniqueInput) (*prisma.SourceRepository, error) {
+	return r.backend.queryBackend.SourceRepository(ctx, where)
 }
-func (r *queryResolver) SourceRepositories(ctx context.Context, where *models.SourceRepositoryWhereInput, orderBy *models.SourceRepositoryOrderByInput, skip *int, after *string, before *string, first *int, last *int) ([]*models.SourceRepository, error) {
-	panic("not implemented")
+func (r *queryResolver) SourceRepositories(ctx context.Context, where *prisma.SourceRepositoryWhereInput, orderBy *prisma.SourceRepositoryOrderByInput, skip *int, after *string, before *string, first *int, last *int) ([]*prisma.SourceRepository, error) {
+	return r.backend.queryBackend.SourceRepositories(ctx, where, orderBy, skip, after, before, first, last)
 }
-func (r *queryResolver) SourceRepositoriesConnection(ctx context.Context, where *models.SourceRepositoryWhereInput, orderBy *models.SourceRepositoryOrderByInput, skip *int, after *string, before *string, first *int, last *int) (*models.SourceRepositoryConnection, error) {
-	panic("not implemented")
+func (r *queryResolver) SourceRepositoriesConnection(ctx context.Context, where *prisma.SourceRepositoryWhereInput, orderBy *prisma.SourceRepositoryOrderByInput, skip *int, after *string, before *string, first *int, last *int) (*prisma.SourceRepositoryConnection, error) {
+	return r.backend.queryBackend.SourceRepositoriesConnection(ctx, where, orderBy, skip, after, before, first, last)
 }
-func (r *queryResolver) User(ctx context.Context, where models.UserWhereUniqueInput) (*models.User, error) {
-	panic("not implemented")
+func (r *queryResolver) User(ctx context.Context, where prisma.UserWhereUniqueInput) (*prisma.User, error) {
+	return r.backend.queryBackend.User(ctx, where)
 }
-func (r *queryResolver) Users(ctx context.Context, where *models.UserWhereInput, orderBy *models.UserOrderByInput, skip *int, after *string, before *string, first *int, last *int) ([]*models.User, error) {
-	panic("not implemented")
+func (r *queryResolver) Users(ctx context.Context, where *prisma.UserWhereInput, orderBy *prisma.UserOrderByInput, skip *int, after *string, before *string, first *int, last *int) ([]*prisma.User, error) {
+	return r.backend.queryBackend.Users(ctx, where, orderBy, skip, after, before, first, last)
 }
-func (r *queryResolver) UsersConnection(ctx context.Context, where *models.UserWhereInput, orderBy *models.UserOrderByInput, skip *int, after *string, before *string, first *int, last *int) (*models.UserConnection, error) {
-	panic("not implemented")
+func (r *queryResolver) UsersConnection(ctx context.Context, where *prisma.UserWhereInput, orderBy *prisma.UserOrderByInput, skip *int, after *string, before *string, first *int, last *int) (*prisma.UserConnection, error) {
+	return r.backend.queryBackend.UsersConnection(ctx, where, orderBy, skip, after, before, first, last)
 }
-func (r *queryResolver) Node(ctx context.Context, id string) (models.Node, error) {
-	panic("not implemented")
+func (r *queryResolver) Node(ctx context.Context, id string) (prisma.Node, error) {
+	return r.backend.queryBackend.Node(ctx, id)
 }
 
 type subscriptionResolver struct{ *Resolver }
 
-func (r *subscriptionResolver) BuildJob(ctx context.Context, where *models.BuildJobSubscriptionWhereInput) (<-chan *models.BuildJobSubscriptionPayload, error) {
+func (r *subscriptionResolver) BuildJob(ctx context.Context, where *prisma.BuildJobSubscriptionWhereInput) (<-chan *prisma.BuildJobSubscriptionPayload, error) {
 	panic("not implemented")
 }
-func (r *subscriptionResolver) DockerRegistry(ctx context.Context, where *models.DockerRegistrySubscriptionWhereInput) (<-chan *models.DockerRegistrySubscriptionPayload, error) {
+func (r *subscriptionResolver) DockerRegistry(ctx context.Context, where *prisma.DockerRegistrySubscriptionWhereInput) (<-chan *prisma.DockerRegistrySubscriptionPayload, error) {
 	panic("not implemented")
 }
-func (r *subscriptionResolver) SourceRepository(ctx context.Context, where *models.SourceRepositorySubscriptionWhereInput) (<-chan *models.SourceRepositorySubscriptionPayload, error) {
+func (r *subscriptionResolver) SourceRepository(ctx context.Context, where *prisma.SourceRepositorySubscriptionWhereInput) (<-chan *prisma.SourceRepositorySubscriptionPayload, error) {
 	panic("not implemented")
 }
-func (r *subscriptionResolver) User(ctx context.Context, where *models.UserSubscriptionWhereInput) (<-chan *models.UserSubscriptionPayload, error) {
+func (r *subscriptionResolver) User(ctx context.Context, where *prisma.UserSubscriptionWhereInput) (<-chan *prisma.UserSubscriptionPayload, error) {
 	panic("not implemented")
 }
