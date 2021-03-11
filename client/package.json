@@ -9,7 +9,7 @@
     "@types/react": "16.8.17",
     "@types/react-dom": "16.8.4",
     "@types/react-router-dom": "^4.3.3",
-    "ansi_up": "^4.0.3",
+    "ansi_up": "^5.0.0",
     "flexboxgrid-sass": "^8.0.5",
     "node-sass": "^4.12.0",
     "react": "^16.8.6",
