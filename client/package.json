@@ -11,7 +11,7 @@
     "@types/react-router-dom": "^4.3.3",
     "ansi_up": "^5.0.0",
     "flexboxgrid-sass": "^8.0.5",
-    "node-sass": "^4.13.1",
+    "node-sass": "^7.0.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-router-dom": "^5.0.0",
